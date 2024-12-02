@@ -25,7 +25,8 @@ class BoardGameApp extends StatelessWidget {
 class GameFilterScreen extends StatefulWidget {
   final GameRepository repository;
 
-  const GameFilterScreen({Key? key, required this.repository}) : super(key: key);
+  const GameFilterScreen({Key? key, required this.repository})
+      : super(key: key);
 
   @override
   _GameFilterScreenState createState() => _GameFilterScreenState();
@@ -61,7 +62,8 @@ class _GameFilterScreenState extends State<GameFilterScreen> {
         final year = int.tryParse(yearController.text.trim());
         final rating = double.tryParse(ratingController.text.trim());
 
-        final matchesName = name.isEmpty || game.name.toLowerCase().contains(name);
+        final matchesName =
+            name.isEmpty || game.name.toLowerCase().contains(name);
         final matchesPlayers = players == null ||
             (players >= game.minPlayers && players <= game.maxPlayers);
         final matchesDuration = duration == null ||
@@ -86,55 +88,45 @@ class _GameFilterScreenState extends State<GameFilterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Board Game Finder')),
-      body: Column(
-        children: [
-          // Filters
-          Expanded(
-            flex: 2,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  buildFilterRow('Name', nameController),
-                  buildFilterRow('Players', playersController),
-                  buildFilterRow('Duration (min)', durationController),
-                  buildFilterRow('Year', yearController),
-                  buildFilterRow('Rating', ratingController),
-                ],
+      appBar: AppBar(title: const Text('Spielwiesn Spielothek Spiele')),
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Column(
+          children: [
+            buildFilterRow('Name', nameController),
+            buildFilterRow('Spieleranzahl', playersController),
+            buildFilterRow('Dauer (minuten)', durationController),
+            buildFilterRow('Erscheinungsjahr', yearController),
+            buildFilterRow('Mindestbewertung', ratingController),
+            Expanded(
+              child: ListView.builder(
+                itemCount: filteredGames.length,
+                itemBuilder: (context, index) {
+                  final game = filteredGames[index];
+                  return Card(
+                    margin: const EdgeInsets.all(8.0),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${game.name} (${game.yearPublished}) ${game.rating.toStringAsFixed(1)}',
+                            style: const TextStyle(
+                                fontWeight: FontWeight.bold, fontSize: 16),
+                          ),
+                          const SizedBox(height: 4),
+                          Text('${game.minPlayers}-${game.maxPlayers} Spieler'),
+                          Text('${game.minPlayTime}-${game.maxPlayTime} Minuten'),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
             ),
-          ),
-          // Results
-          Expanded(
-            flex: 3,
-            child: ListView.builder(
-              itemCount: filteredGames.length,
-              itemBuilder: (context, index) {
-                final game = filteredGames[index];
-                return Card(
-                  margin: const EdgeInsets.all(8.0),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          '${game.name} (${game.yearPublished}) ${game.rating.toStringAsFixed(1)}',
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 16),
-                        ),
-                        const SizedBox(height: 4),
-                        Text('${game.minPlayers}-${game.maxPlayers} players'),
-                        Text('${game.minPlayTime}-${game.maxPlayTime} minutes'),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
