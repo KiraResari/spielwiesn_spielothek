@@ -29,10 +29,10 @@ flutter:
 flutter_launcher_icons:
   android: "launcher_icon"
   ios: true
-  image_path: "assets/logo.png"
-  adaptive_icon_foreground: "assets/logo.png"
+  image_path: "assets/Logo.png"
+  adaptive_icon_foreground: "assets/Logo_Android.png"
   adaptive_icon_background: "#ffffff"
   windows:
     generate: true
-    image_path: "assets/logo.png"
+    image_path: "assets/Logo.png"
     icon_size: 256

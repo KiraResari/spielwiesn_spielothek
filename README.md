@@ -1,16 +1,5 @@
-# spielwiesn_spielothek
+![BGG Game List XML Reader Logo](/assets/Logo.png)
 
-Eine App für die Spielothek auf der Spielwiesn
+# Spielwiesn Spielothek Spiele
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Eine App für die verfügbaren Spiele an der Spielothek auf der Spielwiesn.
