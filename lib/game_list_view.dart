@@ -38,39 +38,89 @@ class GameFilterView extends StatelessWidget {
     final controller = Provider.of<GameListController>(context);
     return Column(
       children: [
-        buildFilterRow('Name', controller.nameController, controller),
-        buildFilterRow(
-            'Spieleranzahl', controller.playersController, controller),
-        buildFilterRow(
-            'Dauer (minuten)', controller.durationController, controller),
-        buildFilterRow(
-            'Erscheinungsjahr', controller.yearController, controller),
-        buildFilterRow(
-            'Mindestbewertung', controller.ratingController, controller),
+        _buildFullWidthField('Name', controller.nameController, controller),
+        _buildDoubleFieldRow(
+          'Spieleranzahl',
+          controller.playersController,
+          'Dauer (min)',
+          controller.durationController,
+          controller,
+        ),
+        _buildDoubleFieldRow(
+          'Jahr',
+          controller.yearController,
+          'Bewertung',
+          controller.ratingController,
+          controller,
+        ),
       ],
     );
   }
 
-  Widget buildFilterRow(
+  Widget _buildFullWidthField(
     String label,
     TextEditingController controller,
     GameListController filterController,
   ) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => filterController.clearField(controller),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDoubleFieldRow(
+    String label1,
+    TextEditingController controller1,
+    String label2,
+    TextEditingController controller2,
+    GameListController filterController,
+  ) {
     return Row(
       children: [
-        Expanded(
-          child: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: label,
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () => filterController.clearField(controller),
-              ),
+        _buildExpandedFilterField(
+          controller1,
+          label1,
+          filterController,
+          rightPadding: 4.0,
+        ),
+        _buildExpandedFilterField(
+          controller2,
+          label2,
+          filterController,
+          leftPadding: 4.0,
+        ),
+      ],
+    );
+  }
+
+  Expanded _buildExpandedFilterField(
+    TextEditingController controller1,
+    String label1,
+    GameListController filterController, {
+    double leftPadding = 0.0,
+    double rightPadding = 0.0,
+  }) {
+    return Expanded(
+      child: Padding(
+        padding: EdgeInsets.only(
+            left: leftPadding, right: rightPadding),
+        child: TextField(
+          controller: controller1,
+          decoration: InputDecoration(
+            labelText: label1,
+            suffixIcon: IconButton(
+              icon: const Icon(Icons.clear),
+              onPressed: () => filterController.clearField(controller1),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 
