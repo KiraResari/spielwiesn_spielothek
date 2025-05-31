@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:xml/xml.dart';
 
@@ -16,9 +17,9 @@ class XmlGameRepository implements GameRepository {
 
     return xmlDoc.findAllElements('item').map((item) {
       try {
-        String? name = item.findElements('name').first.innerText;
-        String? yearPublishedText = item.findElements('yearpublished').first.innerText;
-        int yearPublished = int.parse(yearPublishedText?? "0");
+        String name = item.findElements('name').first.innerText;
+        String yearPublishedText = item.findElements('yearpublished').first.innerText;
+        int yearPublished = int.parse(yearPublishedText);
         XmlElement stats = item.findElements('stats').first;
         String? minPlayersText = stats.getAttribute('minplayers');
         int minPlayers = int.parse(minPlayersText?? "0");
@@ -32,7 +33,7 @@ class XmlGameRepository implements GameRepository {
         String? ratingText = ratingNode.findElements('average').first.getAttribute('value');
         double rating = double.parse(ratingText?? "0");
         return Game(
-          name: name?? "",
+          name: name,
           yearPublished: yearPublished,
           minPlayers: minPlayers,
           maxPlayers: maxPlayers,
@@ -41,7 +42,9 @@ class XmlGameRepository implements GameRepository {
           rating: rating,
         );
       } catch (e) {
-        print('Error parsing item: $e');
+        if (kDebugMode) {
+          print('Error parsing item: $e');
+        }
         return null;
       }
     }).whereType<Game>().toList();

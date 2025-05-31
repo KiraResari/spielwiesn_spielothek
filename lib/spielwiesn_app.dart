@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:spielwiesn_spielothek/xml_game_respository.dart';
 
-import 'game_filter_screen.dart';
+import 'game_list_view.dart';
 
 class SpielwiesnApp extends StatelessWidget {
   const SpielwiesnApp({super.key});
@@ -13,9 +12,7 @@ class SpielwiesnApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: GameFilterScreen(
-        repository: XmlGameRepository('assets/Spieleliste.xml'),
-      ),
+      home: const GameListView(),
     );
   }
 }
