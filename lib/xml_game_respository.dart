@@ -43,7 +43,7 @@ class XmlGameRepository implements GameRepository {
         );
       } catch (e) {
         if (kDebugMode) {
-          print('Error parsing item: $e');
+          print('Error while reading games list: $e');
         }
         return null;
       }

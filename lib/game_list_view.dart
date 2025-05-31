@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'game_list_controller.dart';
 
 class GameListView extends StatelessWidget {
-
   const GameListView({Key? key}) : super(key: key);
 
   @override
@@ -21,62 +20,42 @@ class GameFilterView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = Provider.of<GameListController>(context);
-
     return Scaffold(
       appBar: AppBar(title: const Text('Spielwiesn Spielothek Spiele')),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
-            buildFilterRow('Name', controller.nameController, controller),
-            buildFilterRow(
-                'Spieleranzahl', controller.playersController, controller),
-            buildFilterRow(
-                'Dauer (minuten)', controller.durationController, controller),
-            buildFilterRow(
-                'Erscheinungsjahr', controller.yearController, controller),
-            buildFilterRow(
-                'Mindestbewertung', controller.ratingController, controller),
-            Expanded(
-              child: ListView.builder(
-                itemCount: controller.filteredGames.length,
-                itemBuilder: (context, index) {
-                  final game = controller.filteredGames[index];
-                  return Card(
-                    margin: const EdgeInsets.all(8.0),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${game.name} (${game.yearPublished}) ${game.rating.toStringAsFixed(1)}',
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 16),
-                          ),
-                          const SizedBox(height: 4),
-                          Text('${game.minPlayers}-${game.maxPlayers} Spieler'),
-                          Text(
-                              '${game.minPlayTime}-${game.maxPlayTime} Minuten'),
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-            ),
+            _buildFilterSection(context),
+            _buildResultList(context),
           ],
         ),
       ),
     );
   }
 
+  Widget _buildFilterSection(BuildContext context) {
+    final controller = Provider.of<GameListController>(context);
+    return Column(
+      children: [
+        buildFilterRow('Name', controller.nameController, controller),
+        buildFilterRow(
+            'Spieleranzahl', controller.playersController, controller),
+        buildFilterRow(
+            'Dauer (minuten)', controller.durationController, controller),
+        buildFilterRow(
+            'Erscheinungsjahr', controller.yearController, controller),
+        buildFilterRow(
+            'Mindestbewertung', controller.ratingController, controller),
+      ],
+    );
+  }
+
   Widget buildFilterRow(
-      String label,
-      TextEditingController controller,
-      GameListController filterController
-      ) {
+    String label,
+    TextEditingController controller,
+    GameListController filterController,
+  ) {
     return Row(
       children: [
         Expanded(
@@ -92,6 +71,37 @@ class GameFilterView extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildResultList(BuildContext context) {
+    final controller = Provider.of<GameListController>(context);
+    return Expanded(
+      child: ListView.builder(
+        itemCount: controller.filteredGames.length,
+        itemBuilder: (context, index) {
+          final game = controller.filteredGames[index];
+          return Card(
+            margin: const EdgeInsets.all(8.0),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '${game.name} (${game.yearPublished}) ${game.rating.toStringAsFixed(1)}',
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  const SizedBox(height: 4),
+                  Text('${game.minPlayers}-${game.maxPlayers} Spieler'),
+                  Text('${game.minPlayTime}-${game.maxPlayTime} Minuten'),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }
