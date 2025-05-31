@@ -46,13 +46,6 @@ class GameFilterView extends StatelessWidget {
           controller.durationController,
           controller,
         ),
-        _buildDoubleFieldRow(
-          'Jahr',
-          controller.yearController,
-          'Bewertung',
-          controller.ratingController,
-          controller,
-        ),
       ],
     );
   }
