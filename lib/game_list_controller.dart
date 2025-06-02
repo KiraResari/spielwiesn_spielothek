@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:spielwiesn_spielothek/xml_game_respository.dart';
-import 'game.dart';
-import 'game_repository.dart';
+
+import 'game/csv_game_respository.dart';
+import 'game/game.dart';
+import 'game/game_repository.dart';
 
 class GameListController extends ChangeNotifier {
-  final GameRepository repository = XmlGameRepository('assets/Spieleliste.xml');
+  final GameRepository repository = CsvGameRepository('assets/Spieleliste.csv');
 
   final nameController = TextEditingController();
   final playersController = TextEditingController();
