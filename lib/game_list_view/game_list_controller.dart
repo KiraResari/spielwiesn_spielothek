@@ -10,8 +10,6 @@ class GameListController extends ChangeNotifier {
   final nameController = TextEditingController();
   final playersController = TextEditingController();
   final durationController = TextEditingController();
-  final yearController = TextEditingController();
-  final ratingController = TextEditingController();
 
   List<Game> _games = [];
   List<Game> filteredGames = [];
@@ -31,8 +29,6 @@ class GameListController extends ChangeNotifier {
     nameController.addListener(filterGames);
     playersController.addListener(filterGames);
     durationController.addListener(filterGames);
-    yearController.addListener(filterGames);
-    ratingController.addListener(filterGames);
   }
 
   void filterGames() {
@@ -73,8 +69,6 @@ class GameListController extends ChangeNotifier {
     nameController.dispose();
     playersController.dispose();
     durationController.dispose();
-    yearController.dispose();
-    ratingController.dispose();
     super.dispose();
   }
 }
