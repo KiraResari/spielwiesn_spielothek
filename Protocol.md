@@ -289,5 +289,12 @@
     * Alright, thanks to Chatty, I was able to fix that really quickly
   * Now this basically works, but I see some potential for polishing, so let me get to that
   * Alright, now I also added additional functionality, such as highlighting the filter buttons if filters are active, and an "Alle" option that can be used to select or deselect all filters simultaneously
+  * And to wrap it up, I made it so that the number input filter fields now display numpads and the filter buttons wrap on small screens
+
+* This is as far as I'm getting with this today
+
+* And I think I'm calling this one V1-0-0, since it has all the MVP stuff and more, and I feel we could actually go life with this
+
+* [Time elapsed thus far: 11.75h]
 
 # ⚓
