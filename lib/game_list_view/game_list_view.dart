@@ -84,13 +84,13 @@ class GameFilterView extends StatelessWidget {
   ) {
     return Row(
       children: [
-        _buildExpandedFilterField(
+        _buildNumberFilterField(
           leftTextFieldController,
           leftLabel,
           filterController,
         ),
         const SizedBox(width: 10),
-        _buildExpandedFilterField(
+        _buildNumberFilterField(
           rightTextFieldController,
           rightLabel,
           filterController,
@@ -99,7 +99,7 @@ class GameFilterView extends StatelessWidget {
     );
   }
 
-  Expanded _buildExpandedFilterField(
+  Expanded _buildNumberFilterField(
     TextEditingController textFieldController,
     String label,
     GameListController filterController,
@@ -107,6 +107,7 @@ class GameFilterView extends StatelessWidget {
     return Expanded(
       child: TextField(
         controller: textFieldController,
+        keyboardType: TextInputType.number,
         decoration: InputDecoration(
           labelText: label,
           suffixIcon: IconButton(
@@ -122,7 +123,7 @@ class GameFilterView extends StatelessWidget {
     BuildContext context,
     GameListController controller,
   ) {
-    return Row(
+    return Wrap(
       children: [
         ComplexityFilterButton(controller),
         const SizedBox(width: 4),
