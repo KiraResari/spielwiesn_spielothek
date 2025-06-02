@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'package:csv/csv.dart';
 import 'package:flutter/services.dart';
 
 import 'game.dart';
@@ -16,32 +15,60 @@ class CsvGameRepository implements GameRepository {
   @override
   Future<List<Game>> fetchGames() async {
     final csvString = await rootBundle.loadString(csvPath);
-    final lines = LineSplitter.split(csvString).where((line) => line.trim().isNotEmpty);
 
-    return lines.map<Game>((line) {
-      final values = line.split(',').map((e) => e.trim()).toList();
+    final rows = const CsvToListConverter(
+      fieldDelimiter: ',',
+      eol: '\n',
+      shouldParseNumbers: false,
+    ).convert(csvString);
 
-      return Game(
-        name: values[0],
-        searchAnchors: values[1],
-        copiesOwned: int.tryParse(values[2]) ?? 0,
-        stickerLetter: values[3],
-        stickerType: StickerType.fromName(values[4]),
-        category: GameCategory.fromName(values[5]),
-        materialType: MaterialType.fromName(values[6]),
-        rating: double.tryParse(values[7]) ?? 0.0,
-        yearPublished: int.tryParse(values[8]) ?? 0,
-        minPlayers: int.tryParse(values[9]) ?? 0,
-        maxPlayers: int.tryParse(values[10]) ?? 0,
-        minPlayTime: int.tryParse(values[11]) ?? 0,
-        maxPlayTime: int.tryParse(values[12]) ?? 0,
-        minAge: int.tryParse(values[13]) ?? 0,
-        complexity: double.tryParse(values[14]) ?? 0.0,
-        cooperative: values[15].isNotEmpty,
-        novelty: values[16].isNotEmpty,
-        premium: values[17].isNotEmpty,
-        link: values[18],
-      );
-    }).toList();
+    return rows
+        .where((row) => row.isNotEmpty && row.first.toString().trim().isNotEmpty)
+        .map<Game>((values) => _mapRowToGame(values))
+        .toList();
+  }
+
+  Game _mapRowToGame(List<dynamic> values) {
+    final name = values[0].toString().trim();
+    final searchAnchors = values[1].toString().trim();
+    final copiesOwned = int.tryParse(values[2].toString()) ?? 0;
+    final stickerLetter = values[3]?.toString() ?? "";
+    final stickerType = StickerType.fromName(values[4]?.toString() ?? "");
+    final category = GameCategory.fromName(values[5]?.toString() ?? "");
+    final materialType = MaterialType.fromName(values[6]?.toString() ?? "");
+    final rating = double.tryParse(values[7].toString()) ?? 0.0;
+    final yearPublished = int.tryParse(values[8].toString()) ?? 0;
+    final minPlayers = int.tryParse(values[9].toString()) ?? 0;
+    final maxPlayers = int.tryParse(values[10].toString()) ?? 0;
+    final minPlayTime = int.tryParse(values[11].toString()) ?? 0;
+    final maxPlayTime = int.tryParse(values[12].toString()) ?? 0;
+    final minAge = int.tryParse(values[13].toString()) ?? 0;
+    final complexity = double.tryParse(values[14].toString()) ?? 0.0;
+    final cooperative = values[15]?.toString().isNotEmpty == true;
+    final novelty = values[16]?.toString().isNotEmpty == true;
+    final premium = values[17]?.toString().isNotEmpty == true;
+    final link = values[18].toString().trim();
+
+    return Game(
+      name: name,
+      searchAnchors: searchAnchors,
+      yearPublished: yearPublished,
+      minPlayers: minPlayers,
+      maxPlayers: maxPlayers,
+      minPlayTime: minPlayTime,
+      maxPlayTime: maxPlayTime,
+      rating: rating,
+      copiesOwned: copiesOwned,
+      stickerLetter: stickerLetter,
+      stickerType: stickerType,
+      category: category,
+      materialType: materialType,
+      minAge: minAge,
+      complexity: complexity,
+      cooperative: cooperative,
+      novelty: novelty,
+      premium: premium,
+      link: link,
+    );
   }
 }

@@ -270,5 +270,10 @@
   * The downside is that this would take up more space again
   * But let's try it out and see how it looks
   * I now ended up adding complexity, category and co-op, since I figured the rating would not be intuitive
+  * The search for those is not implemented yet
+
+* Because I found a bug: Games with commas in their names are broken
+
+  * I was now able to fix that by using a proper CSV parser instead of blindly separating by commas
 
 # ⚓
