@@ -263,4 +263,12 @@
   * I now managed to do that by adding an "Additional Search Anchors" column to the G-Drive spreadsheet, which contains words that the search will target, but which won't be displayed in the game's name
   * That works pretty well!
 
+* Okay, what next?
+
+* How about adding complexity and rating as display and search fields?
+
+  * The downside is that this would take up more space again
+  * But let's try it out and see how it looks
+  * I now ended up adding complexity, category and co-op, since I figured the rating would not be intuitive
+
 # ⚓

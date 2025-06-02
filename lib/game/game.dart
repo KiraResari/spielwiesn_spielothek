@@ -1,4 +1,5 @@
 import 'game_category.dart';
+import 'game_complexity_level.dart';
 import 'sticker_type.dart';
 import 'material_type.dart';
 
@@ -45,5 +46,18 @@ class Game {
     required this.link,
   });
 
-  get nameAndSearchAnchors => "$name $searchAnchors";
+  String get nameAndSearchAnchors => "$name $searchAnchors";
+
+  GameComplexityLevel get complexityLevel {
+    if (complexity <= 1) {
+      return GameComplexityLevel.verySimple;
+    } else if (complexity <= 2) {
+      return GameComplexityLevel.simple;
+    } else if (complexity <= 3) {
+      return GameComplexityLevel.moderate;
+    } else if (complexity <= 4) {
+      return GameComplexityLevel.complex;
+    }
+    return GameComplexityLevel.veryComplex;
+  }
 }

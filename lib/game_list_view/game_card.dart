@@ -22,40 +22,69 @@ class GameCard extends StatelessWidget {
               stickerType: game.stickerType,
             ),
             const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    _buildHeadlineText(),
-                    style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  Row(
-                    children: [
-                      Text(_buildPlayerCountText()),
-                      const SizedBox(width: 10),
-                      Text(_buildPlayTimeText()),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            _buildTextElements(),
           ],
         ),
       ),
     );
   }
 
-  String _buildHeadlineText() => game.yearPublished > 0
-      ? '${game.name} (${game.yearPublished})'
-      : game.name;
+  Expanded _buildTextElements() {
+    return Expanded(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildHeadline(),
+          _buildPlayerCountAndPlayTimeRow(),
+          _buildComplexityCategoryAndCoOpRow(),
+        ],
+      ),
+    );
+  }
 
-  String _buildPlayerCountText() => game.minPlayers == game.maxPlayers
-      ? '${game.minPlayers} Spieler'
-      : '${game.minPlayers}-${game.maxPlayers} Spieler';
+  Text _buildHeadline() {
+    String headlineText = game.yearPublished > 0
+        ? '${game.name} (${game.yearPublished})'
+        : game.name;
 
-  String _buildPlayTimeText() => game.minPlayTime == game.maxPlayTime
-      ? '${game.minPlayTime} Minuten'
-      : '${game.minPlayTime}-${game.maxPlayTime} Minuten';
+    return Text(
+      headlineText,
+      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+    );
+  }
+
+  Row _buildPlayerCountAndPlayTimeRow() {
+    String playerCountText = game.minPlayers == game.maxPlayers
+        ? '${game.minPlayers} Spieler'
+        : '${game.minPlayers}-${game.maxPlayers} Spieler';
+
+    String playTimeText = game.minPlayTime == game.maxPlayTime
+        ? '${game.minPlayTime} Minuten'
+        : '${game.minPlayTime}-${game.maxPlayTime} Minuten';
+
+    return Row(
+      children: [
+        Text(playerCountText),
+        const SizedBox(width: 10),
+        Text(playTimeText),
+      ],
+    );
+  }
+
+  Row _buildComplexityCategoryAndCoOpRow() {
+    return Row(
+      children: [
+        _buildComplexityText(),
+        const SizedBox(width: 10),
+        Text(game.category.name),
+        if (game.cooperative) const SizedBox(width: 10),
+        if (game.cooperative) const Text("Co-Op")
+      ],
+    );
+  }
+
+  Widget _buildComplexityText() {
+    TextStyle textStyle = TextStyle(color: game.complexityLevel.displayColor);
+    return Text(style: textStyle, game.complexityLevel.displayName);
+  }
 }
