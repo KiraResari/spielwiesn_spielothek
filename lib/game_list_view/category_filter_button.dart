@@ -8,14 +8,14 @@ class CategoryFilterButton extends StatelessWidget {
 
   const CategoryFilterButton(this.controller, {super.key});
 
+  bool get _isFilterActive =>
+      controller.selectedCategories.length < GameCategory.values.length;
+
   @override
   Widget build(BuildContext context) {
-    final isFilterActive =
-        controller.selectedCategories.length < GameCategory.values.length;
-
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: isFilterActive ? Colors.orange : null,
+        backgroundColor: _isFilterActive ? Colors.orange : null,
       ),
       onPressed: () => _showCategoryDialog(context),
       child: const Text("Kategorie"),
@@ -49,6 +49,28 @@ class CategoryFilterButton extends StatelessWidget {
   }
 
   List<FilterChip> _buildFilterChips(StateSetter setState) {
+    final List<FilterChip> chips = [];
+
+    chips.add(
+      FilterChip(
+        label: const Text("Alle"),
+        selected: !_isFilterActive,
+        selectedColor: Colors.lightGreen,
+        onSelected: (_) {
+          setState(() {
+            if (_isFilterActive) {
+              controller.selectedCategories
+                ..clear()
+                ..addAll(GameCategory.values);
+            } else {
+              controller.selectedCategories.clear();
+            }
+            controller.filterGames();
+          });
+        },
+      ),
+    );
+
     List<GameCategory> selectableGameCategories = [
       GameCategory.family,
       GameCategory.skill,
@@ -58,7 +80,7 @@ class CategoryFilterButton extends StatelessWidget {
       GameCategory.strategy,
       GameCategory.unknown,
     ];
-    return selectableGameCategories.map((category) {
+    chips.addAll(selectableGameCategories.map((category) {
       final isSelected = controller.selectedCategories.contains(category);
       return FilterChip(
         label: Text(category.name),
@@ -69,6 +91,8 @@ class CategoryFilterButton extends StatelessWidget {
           setState(() {});
         },
       );
-    }).toList();
+    }).toList());
+
+    return chips;
   }
 }

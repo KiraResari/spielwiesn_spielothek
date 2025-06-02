@@ -7,13 +7,13 @@ class CoOpFilterButton extends StatelessWidget {
 
   const CoOpFilterButton(this.controller, {super.key});
 
+  bool get _isFilterActive => controller.selectedCoOp.length < 2;
+
   @override
   Widget build(BuildContext context) {
-    final isFilterActive = controller.selectedCoOp.length < 2;
-
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: isFilterActive ? Colors.orange : null,
+        backgroundColor: _isFilterActive ? Colors.orange : null,
       ),
       onPressed: () => _showCoOpDialog(context),
       child: const Text("Co-Op"),
@@ -48,6 +48,23 @@ class CoOpFilterButton extends StatelessWidget {
 
   List<Widget> _buildFilterChips(StateSetter setState) {
     return [
+      FilterChip(
+        label: const Text("Alle"),
+        selected: !_isFilterActive,
+        selectedColor: Colors.lightGreen,
+        onSelected: (_) {
+          setState(() {
+            if (_isFilterActive) {
+              controller.selectedCoOp
+                ..clear()
+                ..addAll([true, false]);
+            } else {
+              controller.selectedCoOp.clear();
+            }
+            controller.filterGames();
+          });
+        },
+      ),
       FilterChip(
         label: const Text("Co-Op"),
         selected: controller.selectedCoOp.contains(true),

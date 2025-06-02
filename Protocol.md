@@ -288,5 +288,6 @@
     * Let's see if I can fix that
     * Alright, thanks to Chatty, I was able to fix that really quickly
   * Now this basically works, but I see some potential for polishing, so let me get to that
+  * Alright, now I also added additional functionality, such as highlighting the filter buttons if filters are active, and an "Alle" option that can be used to select or deselect all filters simultaneously
 
 # ⚓

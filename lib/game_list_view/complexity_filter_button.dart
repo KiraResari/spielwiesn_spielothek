@@ -8,14 +8,15 @@ class ComplexityFilterButton extends StatelessWidget {
 
   const ComplexityFilterButton(this.controller, {super.key});
 
+  bool get _isFilterActive =>
+      controller.selectedComplexityLevels.length <
+      GameComplexityLevel.values.length;
+
   @override
   Widget build(BuildContext context) {
-    final isFilterActive =
-        controller.selectedComplexityLevels.length < GameComplexityLevel.values.length;
-
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-        backgroundColor: isFilterActive ? Colors.orange : null,
+        backgroundColor: _isFilterActive ? Colors.orange : null,
       ),
       onPressed: () => _showComplexityDialog(context),
       child: const Text("Komplexität"),
@@ -49,18 +50,43 @@ class ComplexityFilterButton extends StatelessWidget {
   }
 
   List<FilterChip> _buildFilterChips(StateSetter setState) {
-    return GameComplexityLevel.values.map((level) {
-      final isSelected = controller.selectedComplexityLevels.contains(level);
-      return FilterChip(
-        label: Text(level.displayName),
-        backgroundColor: level.displayColor.withAlpha(50),
-        selectedColor: level.displayColor,
-        selected: isSelected,
+    final List<FilterChip> chips = [];
+
+    chips.add(
+      FilterChip(
+        label: const Text("Alle"),
+        selected: !_isFilterActive,
         onSelected: (_) {
-          controller.toggleComplexity(level);
-          setState(() {});
+          setState(() {
+            if (_isFilterActive) {
+              controller.selectedComplexityLevels
+                ..clear()
+                ..addAll(GameComplexityLevel.values);
+            } else {
+              controller.selectedComplexityLevels.clear();
+            }
+            controller.filterGames();
+          });
         },
-      );
-    }).toList();
+      ),
+    );
+
+    chips.addAll(
+      GameComplexityLevel.values.map((level) {
+        final isSelected = controller.selectedComplexityLevels.contains(level);
+        return FilterChip(
+          label: Text(level.displayName),
+          backgroundColor: level.displayColor.withAlpha(50),
+          selectedColor: level.displayColor,
+          selected: isSelected,
+          onSelected: (_) {
+            controller.toggleComplexity(level);
+            setState(() {});
+          },
+        );
+      }),
+    );
+
+    return chips;
   }
 }
