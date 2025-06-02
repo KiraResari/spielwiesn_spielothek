@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'game/csv_game_respository.dart';
-import 'game/game.dart';
-import 'game/game_repository.dart';
+import '../game/csv_game_respository.dart';
+import '../game/game.dart';
+import '../game/game_repository.dart';
 
 class GameListController extends ChangeNotifier {
   final GameRepository repository = CsvGameRepository('assets/Spieleliste.csv');

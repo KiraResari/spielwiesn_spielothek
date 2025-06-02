@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'game_card.dart';
 import 'game_list_controller.dart';
 
 class GameListView extends StatelessWidget {
@@ -68,49 +69,42 @@ class GameFilterView extends StatelessWidget {
   }
 
   Widget _buildDoubleFieldRow(
-    String label1,
-    TextEditingController controller1,
-    String label2,
-    TextEditingController controller2,
+    String leftLabel,
+    TextEditingController leftTextFieldController,
+    String rightLabel,
+    TextEditingController rightTextFieldController,
     GameListController filterController,
   ) {
     return Row(
       children: [
         _buildExpandedFilterField(
-          controller1,
-          label1,
+          leftTextFieldController,
+          leftLabel,
           filterController,
-          rightPadding: 4.0,
         ),
+        const SizedBox(width: 10),
         _buildExpandedFilterField(
-          controller2,
-          label2,
+          rightTextFieldController,
+          rightLabel,
           filterController,
-          leftPadding: 4.0,
         ),
       ],
     );
   }
 
   Expanded _buildExpandedFilterField(
-    TextEditingController controller1,
-    String label1,
-    GameListController filterController, {
-    double leftPadding = 0.0,
-    double rightPadding = 0.0,
-  }) {
+    TextEditingController textFieldController,
+    String label,
+    GameListController filterController,
+  ) {
     return Expanded(
-      child: Padding(
-        padding: EdgeInsets.only(
-            left: leftPadding, right: rightPadding),
-        child: TextField(
-          controller: controller1,
-          decoration: InputDecoration(
-            labelText: label1,
-            suffixIcon: IconButton(
-              icon: const Icon(Icons.clear),
-              onPressed: () => filterController.clearField(controller1),
-            ),
+      child: TextField(
+        controller: textFieldController,
+        decoration: InputDecoration(
+          labelText: label,
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () => filterController.clearField(textFieldController),
           ),
         ),
       ),
@@ -124,25 +118,7 @@ class GameFilterView extends StatelessWidget {
         itemCount: controller.filteredGames.length,
         itemBuilder: (context, index) {
           final game = controller.filteredGames[index];
-          return Card(
-            margin: const EdgeInsets.all(8.0),
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '${game.name} (${game.yearPublished}) ${game.rating.toStringAsFixed(1)}',
-                    style: const TextStyle(
-                        fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                  const SizedBox(height: 4),
-                  Text('${game.minPlayers}-${game.maxPlayers} Spieler'),
-                  Text('${game.minPlayTime}-${game.maxPlayTime} Minuten'),
-                ],
-              ),
-            ),
-          );
+          return GameCard(game);
         },
       ),
     );

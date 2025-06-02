@@ -116,7 +116,7 @@
 * It took chatty about 5 minutes to generate a response for that
 * The result of that was already pretty good, and with some minor adjustments I had a working app after another 30 minutes
 
-* [Time elapsed thus far: 1.5h]
+* [Time elapsed thus far: 2.5h]
 
 # 31-May-2025
 

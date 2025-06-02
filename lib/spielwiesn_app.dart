@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'game_list_view.dart';
+import 'game_list_view/game_list_view.dart';
 
 class SpielwiesnApp extends StatelessWidget {
   const SpielwiesnApp({super.key});
