@@ -10,7 +10,13 @@ class CategoryFilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFilterActive =
+        controller.selectedCategories.length < GameCategory.values.length;
+
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isFilterActive ? Colors.orange : null,
+      ),
       onPressed: () => _showCategoryDialog(context),
       child: const Text("Kategorie"),
     );
@@ -57,6 +63,7 @@ class CategoryFilterButton extends StatelessWidget {
       return FilterChip(
         label: Text(category.name),
         selected: isSelected,
+        selectedColor: Colors.lightGreen,
         onSelected: (_) {
           controller.toggleCategory(category);
           setState(() {});

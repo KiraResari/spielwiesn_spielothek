@@ -10,7 +10,13 @@ class ComplexityFilterButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isFilterActive =
+        controller.selectedComplexityLevels.length < GameComplexityLevel.values.length;
+
     return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        backgroundColor: isFilterActive ? Colors.orange : null,
+      ),
       onPressed: () => _showComplexityDialog(context),
       child: const Text("Komplexität"),
     );
@@ -52,7 +58,7 @@ class ComplexityFilterButton extends StatelessWidget {
         selected: isSelected,
         onSelected: (_) {
           controller.toggleComplexity(level);
-          setState(() {}); // <- this forces the chip UI to update
+          setState(() {});
         },
       );
     }).toList();
