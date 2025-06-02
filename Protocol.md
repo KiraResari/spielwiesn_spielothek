@@ -276,4 +276,17 @@
 
   * I was now able to fix that by using a proper CSV parser instead of blindly separating by commas
 
+* Now back to the filters for complexity, category and co-op
+
+  * Here, chatty wasn't able to help me because the `DropdownButtonFormField` in Flutter isn't really that good
+  * Maybe I can make it work with this?
+    * https://pub.dev/packages/multi_dropdown/example 
+  * While that works nicely, it has the problem that it overflows
+  * So maybe another approach is needed
+  * I now managed to get something to work using popups
+    * While the filtering works, the state in the popups is not updated
+    * Let's see if I can fix that
+    * Alright, thanks to Chatty, I was able to fix that really quickly
+    * 
+
 # ⚓
