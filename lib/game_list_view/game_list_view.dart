@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../game/game_category.dart';
-import '../game/game_complexity_level.dart';
+import 'category_filter_button.dart';
+import 'co_op_filter_button.dart';
+import 'complexity_filter_button.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
 
@@ -118,142 +119,17 @@ class GameFilterView extends StatelessWidget {
   }
 
   Widget _buildTripleFilterRow(
-      BuildContext context, GameListController controller) {
+    BuildContext context,
+    GameListController controller,
+  ) {
     return Row(
       children: [
-        ElevatedButton(
-          onPressed: () => _showComplexityDialog(context, controller),
-          child: const Text("Komplexität"),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: () => _showCategoryDialog(context, controller),
-          child: const Text("Kategorie"),
-        ),
-        const SizedBox(width: 8),
-        ElevatedButton(
-          onPressed: () => _showCoOpDialog(context, controller),
-          child: const Text("Co-Op"),
-        ),
+        ComplexityFilterButton(controller),
+        const SizedBox(width: 4),
+        CategoryFilterButton(controller),
+        const SizedBox(width: 4),
+        CoOpFilterButton(controller),
       ],
-    );
-  }
-
-  void _showComplexityDialog(
-      BuildContext context, GameListController controller) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text("Komplexität"),
-              content: Wrap(
-                spacing: 8,
-                children: GameComplexityLevel.values.map((level) {
-                  final isSelected =
-                      controller.selectedComplexityLevels.contains(level);
-                  return FilterChip(
-                    label: Text(level.displayName),
-                    backgroundColor: level.displayColor.withAlpha(50),
-                    selectedColor: level.displayColor,
-                    selected: isSelected,
-                    onSelected: (_) {
-                      controller.toggleComplexity(level);
-                      setState(() {}); // <- this forces the chip UI to update
-                    },
-                  );
-                }).toList(),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Fertig"),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _showCategoryDialog(
-      BuildContext context, GameListController controller) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text("Kategorien"),
-              content: Wrap(
-                spacing: 8,
-                children: GameCategory.values.map((category) {
-                  final isSelected =
-                      controller.selectedCategories.contains(category);
-                  return FilterChip(
-                    label: Text(category.name),
-                    selected: isSelected,
-                    onSelected: (_) {
-                      controller.toggleCategory(category);
-                      setState(() {});
-                    },
-                  );
-                }).toList(),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Fertig"),
-                ),
-              ],
-            );
-          },
-        );
-      },
-    );
-  }
-
-  void _showCoOpDialog(BuildContext context, GameListController controller) {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              title: const Text("Co-Op"),
-              content: Wrap(
-                spacing: 8,
-                children: [
-                  FilterChip(
-                    label: const Text("Co-Op"),
-                    selected: controller.selectedCoOp.contains(true),
-                    onSelected: (_) {
-                      controller.toggleCoOp(true);
-                      setState(() {});
-                    },
-                  ),
-                  FilterChip(
-                    label: const Text("Nicht Co-Op"),
-                    selected: controller.selectedCoOp.contains(false),
-                    onSelected: (_) {
-                      controller.toggleCoOp(false);
-                      setState(() {});
-                    },
-                  ),
-                ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(context).pop(),
-                  child: const Text("Fertig"),
-                ),
-              ],
-            );
-          },
-        );
-      },
     );
   }
 

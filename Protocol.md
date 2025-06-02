@@ -287,6 +287,6 @@
     * While the filtering works, the state in the popups is not updated
     * Let's see if I can fix that
     * Alright, thanks to Chatty, I was able to fix that really quickly
-    * 
+  * Now this basically works, but I see some potential for polishing, so let me get to that
 
 # ⚓
