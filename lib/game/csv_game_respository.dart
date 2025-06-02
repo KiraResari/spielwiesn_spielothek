@@ -1,13 +1,12 @@
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/services.dart';
 
 import 'game.dart';
 import 'game_category.dart';
 import 'game_repository.dart';
-import 'sticker_type.dart';
 import 'material_type.dart';
+import 'sticker_type.dart';
 
 class CsvGameRepository implements GameRepository {
   final String csvPath;
@@ -24,23 +23,24 @@ class CsvGameRepository implements GameRepository {
 
       return Game(
         name: values[0],
-        copiesOwned: int.tryParse(values[1]) ?? 0,
-        stickerLetter: values[2],
-        stickerType: StickerType.fromName(values[3]),
-        category: GameCategory.fromName(values[3]),
-        materialType: MaterialType.fromName(values[3]),
-        rating: double.tryParse(values[6]) ?? 0.0,
-        yearPublished: int.tryParse(values[7]) ?? 0,
-        minPlayers: int.tryParse(values[8]) ?? 0,
-        maxPlayers: int.tryParse(values[9]) ?? 0,
-        minPlayTime: int.tryParse(values[10]) ?? 0,
-        maxPlayTime: int.tryParse(values[11]) ?? 0,
-        minAge: int.tryParse(values[12]) ?? 0,
-        complexity: double.tryParse(values[13]) ?? 0.0,
-        cooperative: values[14].isNotEmpty,
-        novelty: values[15].isNotEmpty,
-        premium: values[16].isNotEmpty,
-        link: values[17],
+        searchAnchors: values[1],
+        copiesOwned: int.tryParse(values[2]) ?? 0,
+        stickerLetter: values[3],
+        stickerType: StickerType.fromName(values[4]),
+        category: GameCategory.fromName(values[5]),
+        materialType: MaterialType.fromName(values[6]),
+        rating: double.tryParse(values[7]) ?? 0.0,
+        yearPublished: int.tryParse(values[8]) ?? 0,
+        minPlayers: int.tryParse(values[9]) ?? 0,
+        maxPlayers: int.tryParse(values[10]) ?? 0,
+        minPlayTime: int.tryParse(values[11]) ?? 0,
+        maxPlayTime: int.tryParse(values[12]) ?? 0,
+        minAge: int.tryParse(values[13]) ?? 0,
+        complexity: double.tryParse(values[14]) ?? 0.0,
+        cooperative: values[15].isNotEmpty,
+        novelty: values[16].isNotEmpty,
+        premium: values[17].isNotEmpty,
+        link: values[18],
       );
     }).toList();
   }

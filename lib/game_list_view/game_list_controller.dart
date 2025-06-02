@@ -36,23 +36,31 @@ class GameListController extends ChangeNotifier {
   }
 
   void filterGames() {
-    final name = nameController.text.trim().toLowerCase();
-    final players = int.tryParse(playersController.text.trim());
-    final duration = int.tryParse(durationController.text.trim());
-    final year = int.tryParse(yearController.text.trim());
-    final rating = double.tryParse(ratingController.text.trim());
-
     filteredGames = _games.where((game) {
-      final matchesName = name.isEmpty || game.name.toLowerCase().contains(name);
-      final matchesPlayers = players == null || (players >= game.minPlayers && players <= game.maxPlayers);
-      final matchesDuration = duration == null || (duration >= game.minPlayTime && duration <= game.maxPlayTime);
-      final matchesYear = year == null || year == game.yearPublished;
-      final matchesRating = rating == null || game.rating >= rating;
-
-      return matchesName && matchesPlayers && matchesDuration && matchesYear && matchesRating;
+      return _matchesName(game) &&
+          _matchesPlayers(game) &&
+          _matchesDuration(game);
     }).toList();
 
     notifyListeners();
+  }
+
+  bool _matchesName(Game game) {
+    String name = nameController.text.trim().toLowerCase();
+    return name.isEmpty ||
+        game.nameAndSearchAnchors.toLowerCase().contains(name);
+  }
+
+  bool _matchesPlayers(Game game) {
+    int? players = int.tryParse(playersController.text.trim());
+    return players == null ||
+        (players >= game.minPlayers && players <= game.maxPlayers);
+  }
+
+  bool _matchesDuration(Game game) {
+    int? duration = int.tryParse(durationController.text.trim());
+    return duration == null ||
+        (duration >= game.minPlayTime && duration <= game.maxPlayTime);
   }
 
   void clearField(TextEditingController controller) {

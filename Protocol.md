@@ -251,4 +251,16 @@
 
 * For starters, it would be nice to have Spielwiesn-colors on this
 
+  * I now did this
+
+* Next, it would be great to have a "smart search" that covers for numbers written out (or not) in game names and other common situations that make searching difficult
+
+  * Examples would be:
+    * King of 12 (twelve)
+    * Ierusalem: Anno Domini (Jerusalem)
+    * Set³ (hoch drei)
+    * Krazy Wordz (Crazy Words)
+  * I now managed to do that by adding an "Additional Search Anchors" column to the G-Drive spreadsheet, which contains words that the search will target, but which won't be displayed in the game's name
+  * That works pretty well!
+
 # ⚓

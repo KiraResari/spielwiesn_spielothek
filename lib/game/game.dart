@@ -4,6 +4,7 @@ import 'material_type.dart';
 
 class Game {
   final String name;
+  final String searchAnchors;
   final int copiesOwned;
   final String stickerLetter;
   final StickerType stickerType;
@@ -24,6 +25,7 @@ class Game {
 
   Game({
     required this.name,
+    this.searchAnchors = "",
     required this.copiesOwned,
     required this.stickerLetter,
     required this.stickerType,
@@ -42,4 +44,6 @@ class Game {
     required this.premium,
     required this.link,
   });
+
+  get nameAndSearchAnchors => "$name $searchAnchors";
 }
