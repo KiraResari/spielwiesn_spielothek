@@ -17,14 +17,31 @@ class GameCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${game.name} (${game.yearPublished}) ${game.rating.toStringAsFixed(1)}',
+              _buildHeadlineText(),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
             ),
-            Text('${game.minPlayers}-${game.maxPlayers} Spieler'),
-            Text('${game.minPlayTime}-${game.maxPlayTime} Minuten'),
+            Row(
+              children: [
+                Text(_buildPlayerCountText()),
+                const SizedBox(width: 10),
+                Text(_buildPlayTimeText()),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
+
+  String _buildHeadlineText() => game.yearPublished > 0
+      ? '${game.name} (${game.yearPublished})'
+      : game.name;
+
+  String _buildPlayerCountText() => game.minPlayers == game.maxPlayers
+      ? '${game.minPlayers} Spieler'
+      : '${game.minPlayers}-${game.maxPlayers} Spieler';
+
+  String _buildPlayTimeText() => game.minPlayTime == game.maxPlayTime
+      ? '${game.minPlayTime} Minuten'
+      : '${game.minPlayTime}-${game.maxPlayTime} Minuten';
 }
