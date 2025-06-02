@@ -22,7 +22,10 @@ class GameFilterView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Spielwiesn Spielothek Spiele')),
+      appBar: AppBar(
+        title: const Text('Spielwiesn Spielothek Spiele'),
+        backgroundColor: Colors.orange,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
