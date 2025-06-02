@@ -235,4 +235,11 @@
 
 * [Time elapsed thus far: 5.75h] 
 
+* Okay, I now did some more minor refinements here, and am now ready for the next step
+
+* That is, making it so that the sticker letter and type are displayed in the search results
+
+  * The first attempt already looked pretty good, but the result that Chatty gave me had the sticker type displayed below the sticker, and not inside
+  * Asking chatty to refine this while giving him clear instructions on what I want resulted in him giving me a version that now looks really great!
+
 # ⚓
