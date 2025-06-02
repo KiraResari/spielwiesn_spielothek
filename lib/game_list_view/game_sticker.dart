@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 
-import '../game/inventory_type.dart';
+import '../game/sticker_type.dart';
 
 class GameSticker extends StatelessWidget {
   final String inventoryLetter;
-  final InventoryType inventoryType;
+  final StickerType stickerType;
 
   const GameSticker({
     super.key,
     required this.inventoryLetter,
-    required this.inventoryType,
+    required this.stickerType,
   });
-
-  bool get _showLabel =>
-      inventoryType == InventoryType.cards ||
-      inventoryType == InventoryType.child ||
-      inventoryType == InventoryType.two;
 
   @override
   Widget build(BuildContext context) {
@@ -27,25 +22,27 @@ class GameSticker extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 24,
-            backgroundColor: inventoryType.stickerColor,
+            backgroundColor: stickerType.stickerColor,
           ),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 inventoryLetter,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   height: 1,
+                  color: stickerType.fontColor,
                 ),
               ),
-              if (_showLabel)
+              if (stickerType.displayName.isNotEmpty)
                 Text(
-                  inventoryType.name,
-                  style: const TextStyle(
+                  stickerType.displayName,
+                  style: TextStyle(
                     fontSize: 8,
                     height: 1.1,
+                    color: stickerType.fontColor,
                   ),
                 ),
             ],

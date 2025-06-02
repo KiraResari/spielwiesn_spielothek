@@ -18,8 +18,8 @@ class GameCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             GameSticker(
-              inventoryLetter: game.inventoryLetter,
-              inventoryType: game.inventoryType,
+              inventoryLetter: game.stickerLetter,
+              stickerType: game.stickerType,
             ),
             const SizedBox(width: 12),
             Expanded(

@@ -6,7 +6,7 @@ import 'package:flutter/services.dart';
 import 'game.dart';
 import 'game_category.dart';
 import 'game_repository.dart';
-import 'inventory_type.dart';
+import 'sticker_type.dart';
 import 'material_type.dart';
 
 class CsvGameRepository implements GameRepository {
@@ -25,8 +25,8 @@ class CsvGameRepository implements GameRepository {
       return Game(
         name: values[0],
         copiesOwned: int.tryParse(values[1]) ?? 0,
-        inventoryLetter: values[2],
-        inventoryType: InventoryType.fromName(values[3]),
+        stickerLetter: values[2],
+        stickerType: StickerType.fromName(values[3]),
         category: GameCategory.fromName(values[3]),
         materialType: MaterialType.fromName(values[3]),
         rating: double.tryParse(values[6]) ?? 0.0,

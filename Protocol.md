@@ -241,5 +241,14 @@
 
   * The first attempt already looked pretty good, but the result that Chatty gave me had the sticker type displayed below the sticker, and not inside
   * Asking chatty to refine this while giving him clear instructions on what I want resulted in him giving me a version that now looks really great!
+  * I now did some additional refinement of this, and I think it looks great now!
+
+* With that, I think this is now MVP-complete!
+
+* [Time elapsed thus far: 7h] 
+
+* I still got several hours of time to spend on this today, so let's add a couple of nice to have features
+
+* For starters, it would be nice to have Spielwiesn-colors on this
 
 # ⚓

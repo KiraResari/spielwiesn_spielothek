@@ -1,12 +1,12 @@
 import 'game_category.dart';
-import 'inventory_type.dart';
+import 'sticker_type.dart';
 import 'material_type.dart';
 
 class Game {
   final String name;
   final int copiesOwned;
-  final String inventoryLetter;
-  final InventoryType inventoryType;
+  final String stickerLetter;
+  final StickerType stickerType;
   final GameCategory category;
   final MaterialType materialType;
   final double rating;
@@ -25,8 +25,8 @@ class Game {
   Game({
     required this.name,
     required this.copiesOwned,
-    required this.inventoryLetter,
-    required this.inventoryType,
+    required this.stickerLetter,
+    required this.stickerType,
     required this.category,
     required this.materialType,
     required this.rating,
