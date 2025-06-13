@@ -297,4 +297,13 @@
 
 * [Time elapsed thus far: 11.75h]
 
+# TODO
+
+* Update Notifications
+* Make logo transparent
+* Font white for "Sehr Schwer" card in Komplexität-Dialog
+* Favourites
+* Tests
+* Rating as Approval%
+
 # ⚓
