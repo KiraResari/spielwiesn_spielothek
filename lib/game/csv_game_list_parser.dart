@@ -1,21 +1,12 @@
 import 'package:csv/csv.dart';
-import 'package:flutter/services.dart';
 
 import 'game.dart';
 import 'game_category.dart';
-import 'game_repository.dart';
 import 'material_type.dart';
 import 'sticker_type.dart';
 
-class CsvGameRepository implements GameRepository {
-  final String csvPath;
-
-  CsvGameRepository(this.csvPath);
-
-  @override
-  Future<List<Game>> fetchGames() async {
-    final csvString = await rootBundle.loadString(csvPath);
-
+class CsvGameListParser {
+  List<Game> parseCsv(String csvString) {
     final rows = const CsvToListConverter(
       fieldDelimiter: ',',
       eol: '\n',
@@ -23,7 +14,8 @@ class CsvGameRepository implements GameRepository {
     ).convert(csvString);
 
     return rows
-        .where((row) => row.isNotEmpty && row.first.toString().trim().isNotEmpty)
+        .where(
+            (row) => row.isNotEmpty && row.first.toString().trim().isNotEmpty)
         .map<Game>((values) => _mapRowToGame(values))
         .toList();
   }
@@ -32,7 +24,7 @@ class CsvGameRepository implements GameRepository {
     final name = values[0].toString().trim();
     final searchAnchors = values[1].toString().trim();
     final copiesOwned = int.tryParse(values[2].toString()) ?? 0;
-    final stickerLetter = values[3]?.toString() ?? "";
+    final stickerLetter = _determineStickerLetter(values);
     final stickerType = StickerType.fromName(values[4]?.toString() ?? "");
     final category = GameCategory.fromName(values[5]?.toString() ?? "");
     final materialType = MaterialType.fromName(values[6]?.toString() ?? "");
@@ -70,5 +62,10 @@ class CsvGameRepository implements GameRepository {
       premium: premium,
       link: link,
     );
+  }
+
+  String _determineStickerLetter(List<dynamic> values) {
+    var stickerLetter = values[3]?.toString() ?? "";
+    return stickerLetter.isNotEmpty ? stickerLetter : "?";
   }
 }
