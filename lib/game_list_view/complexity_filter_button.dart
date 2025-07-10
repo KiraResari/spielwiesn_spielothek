@@ -52,41 +52,52 @@ class ComplexityFilterButton extends StatelessWidget {
   List<FilterChip> _buildFilterChips(StateSetter setState) {
     final List<FilterChip> chips = [];
 
-    chips.add(
-      FilterChip(
-        label: const Text("Alle"),
-        selected: !_isFilterActive,
-        onSelected: (_) {
-          setState(() {
-            if (_isFilterActive) {
-              controller.selectedComplexityLevels
-                ..clear()
-                ..addAll(GameComplexityLevel.values);
-            } else {
-              controller.selectedComplexityLevels.clear();
-            }
-            controller.filterGames();
-          });
-        },
-      ),
-    );
+    chips.add(_buildAlleFilterChip(setState));
 
-    chips.addAll(
-      GameComplexityLevel.values.map((level) {
-        final isSelected = controller.selectedComplexityLevels.contains(level);
-        return FilterChip(
-          label: Text(level.displayName),
-          backgroundColor: level.displayColor.withAlpha(50),
-          selectedColor: level.displayColor,
-          selected: isSelected,
-          onSelected: (_) {
-            controller.toggleComplexity(level);
-            setState(() {});
-          },
-        );
-      }),
-    );
+    chips.addAll(GameComplexityLevel.values
+        .map((level) => _buildFilterChipForLevel(level, setState)));
 
     return chips;
+  }
+
+  FilterChip _buildAlleFilterChip(StateSetter setState) {
+    return FilterChip(
+      label: const Text("Alle"),
+      selected: !_isFilterActive,
+      onSelected: (_) {
+        setState(() {
+          if (_isFilterActive) {
+            controller.selectedComplexityLevels
+              ..clear()
+              ..addAll(GameComplexityLevel.values);
+          } else {
+            controller.selectedComplexityLevels.clear();
+          }
+          controller.filterGames();
+        });
+      },
+    );
+  }
+
+  FilterChip _buildFilterChipForLevel(
+    GameComplexityLevel level,
+    StateSetter setState,
+  ) {
+    final isSelected = controller.selectedComplexityLevels.contains(level);
+    Color textColor = isSelected ? level.textColor : Colors.black;
+    return FilterChip(
+      label: Text(
+        level.displayName,
+        style: TextStyle(color: textColor),
+      ),
+      backgroundColor: level.displayColor.withAlpha(50),
+      selectedColor: level.displayColor,
+      checkmarkColor: textColor,
+      selected: isSelected,
+      onSelected: (_) {
+        controller.toggleComplexity(level);
+        setState(() {});
+      },
+    );
   }
 }

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import '../game/csv_game_respository.dart';
+import '../game/csv_game_list_parser.dart';
 import '../game/game.dart';
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
-import '../game/game_repository.dart';
 
 class GameListController extends ChangeNotifier {
-  final GameRepository repository = CsvGameRepository('assets/Spieleliste.csv');
+  final csvPath = "assets/Spieleliste.csv";
+  final CsvGameListParser repository = CsvGameListParser();
 
   final nameController = TextEditingController();
   final playersController = TextEditingController();
@@ -24,7 +25,8 @@ class GameListController extends ChangeNotifier {
   }
 
   Future<void> _init() async {
-    _games = await repository.fetchGames();
+    final csvString = await rootBundle.loadString(csvPath);
+    _games = repository.parseCsv(csvString);
     filteredGames = List.from(_games);
     _setupListeners();
     notifyListeners();

@@ -297,13 +297,26 @@
 
 * [Time elapsed thus far: 11.75h]
 
+# 10-Jul-2025
+
+* Now continuing with this
+* Time for some minor improvements
+* First, I want the Stickerbuchstabe to be displayed as "?" if it was not provided in the source file
+  * A good example for that is the game "Die Trödler aus den Highlands"
+  * Alright, this works now
+* Next, I wanted to make the font for "Sehr Schwer" card in the Komplexität-dialogue white
+  * I now did that
+* This is as far as I'm getting with this today
+
+[Time elapsed thus far: 12.5h]
+
 # TODO
 
 * Update Notifications
-* Make logo transparent
-* Font white for "Sehr Schwer" card in Komplexität-Dialog
 * Favourites
 * Tests
 * Rating as Approval%
+  * Around Inventarbuchstaben-Kreis as Ringsegement
+
 
 # ⚓
