@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../game/csv_game_list_parser.dart';
 import '../game/game.dart';
@@ -13,6 +14,7 @@ class GameListController extends ChangeNotifier {
   static const spielelisteDownloadUrl =
       'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
+  static const cacheKey = 'spielwiesn_spielothek_spieleliste';
 
   final csvGameListParser = CsvGameListParser();
   final nameController = TextEditingController();
@@ -44,14 +46,21 @@ class GameListController extends ChangeNotifier {
   }
 
   Future<String> _getGamesCsvFromEndpointOrFallback() async {
+    final prefs = await SharedPreferences.getInstance();
     try {
       final response = await http.get(Uri.parse(spielelisteDownloadUrl));
 
       if (response.statusCode == 200) {
-        return response.body;
+        final csv = response.body;
+        await prefs.setString(cacheKey, csv);
+        return csv;
       }
     } catch (e) {
       stderr.writeln("Error while trying to download latest game csv: $e");
+    }
+    final cachedCsv = prefs.getString(cacheKey);
+    if (cachedCsv != null && cachedCsv.isNotEmpty) {
+      return cachedCsv;
     }
     return rootBundle.loadString(csvPath);
   }

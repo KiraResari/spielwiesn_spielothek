@@ -321,6 +321,7 @@
   * Next, I want to make it so that on startup, an update is attempted
     * If that fails, the fallback list delivered with the app should be used
   * Looks like this works!
+  * And now I also added caching
 
 # TODO
 
