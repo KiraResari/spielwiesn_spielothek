@@ -329,6 +329,9 @@
   * How to best display that?
   * A banner green across the bottom left corner of the game card might work
   * That works now too! 
+* Okay, next, I found an issue with Umlaute in the game "Arctic Scavengers: Überleben im Jahr 2097"
+  * It is displayed as "Arctic Scavengers: Ãberleben im Jahr 2097"
+  * Alright, I was able to fix that now!
 
 # TODO
 

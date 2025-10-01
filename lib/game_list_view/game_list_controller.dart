@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -51,7 +52,7 @@ class GameListController extends ChangeNotifier {
       final response = await http.get(Uri.parse(spielelisteDownloadUrl));
 
       if (response.statusCode == 200) {
-        final csv = response.body;
+        final csv = utf8.decode(response.bodyBytes);
         await prefs.setString(cacheKey, csv);
         return csv;
       }
