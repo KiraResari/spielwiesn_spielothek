@@ -62,4 +62,6 @@ class Game {
     }
     return GameComplexityLevel.veryComplex;
   }
+
+  String get identifier => "$name$yearPublished$stickerType";
 }

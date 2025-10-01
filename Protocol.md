@@ -344,6 +344,8 @@
   * Those are a bit more tricky, especially as far as caching and display is concerned, but I think I can do it
   * First step is adding a toggle-able button
     * I now managed to do that
+  * Next, caching the faved games between sessions
+    * I now managed to do that
 
 # TODO
 
