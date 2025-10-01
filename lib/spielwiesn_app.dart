@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:upgrader/upgrader.dart';
 
 import 'game_list_view/game_list_view.dart';
 
@@ -12,7 +13,7 @@ class SpielwiesnApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),
-      home: const GameListView(),
+      home: UpgradeAlert(child: const GameListView()),
     );
   }
 }

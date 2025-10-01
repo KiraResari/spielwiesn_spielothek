@@ -313,8 +313,11 @@
 # 1-Okt-2025
 
 * Now continuing with this
+
 * Tonight is the night when I can first show this to the other helpers at large, so I want to make some last improvements
+
 * First, I want to make it so that the list of games is downloaded from online
+
   * I posted the current list of games on http://www.tri-tail.com/Spielwiesn/Spieleliste.csv
     * That way, I can update it myself at will
     * I confirmed that I can download it via GET http://www.tri-tail.com/Spielwiesn/Spieleliste.csv
@@ -322,25 +325,37 @@
     * If that fails, the fallback list delivered with the app should be used
   * Looks like this works!
   * And now I also added caching
+
 * Great, so, what's next?
+
 * I've got a bunch of things on the Todo list, but since I have time pressure right now, I want to focus on the most impactful low-hanging fruits
+
 * I think one of these would be Exclusivspiele
+
   * Because that's both important for the helpers and for the players to know
   * How to best display that?
   * A banner green across the bottom left corner of the game card might work
   * That works now too! 
+
 * Okay, next, I found an issue with Umlaute in the game "Arctic Scavengers: Überleben im Jahr 2097"
+
   * It is displayed as "Arctic Scavengers: Ãberleben im Jahr 2097"
   * Alright, I was able to fix that now!
+
 * Okay, that's great progress! And I think I've taken care of everything that I really needed to do today
+
 * I still got more time though, so let's try to add the Rating
+
   * One idea I had was adding them around the `GameSticker` as a ring segment
   * Another would be to display it as a star rating in the bottom right corner
   * Ah, I think I got something now!
   * I'll do it via a 👍-number in the bottom right corner
   * That looks good now
+
 * Alright, what next?
+
 * Favorites!
+
   * Those are a bit more tricky, especially as far as caching and display is concerned, but I think I can do it
   * First step is adding a toggle-able button
     * I now managed to do that
@@ -348,13 +363,49 @@
     * I now managed to do that
   * Finally, a filter to display only faved games
     * That works now too
+
 * Great! Now I might as well add a filter for exclusive games too
+
   * I now did that too!
+
 * I'm on a roll here!
+
+* The next thing on the Todo list are the update notifications
+
+  * Okay, these are not as simple
+
+  * It appears that there's some sort of version issue with the `upgrader` package
+
+  * I tried getting the app to a newer version of... well... more or less everything, but ran into all sorts of weird issues along the way
+
+  * In the end, I created a new empty flutter project and adjusted the `settings.gradle` and `gradle-wrapper.properties` of my app to the version numbers it has in the new empty flutter project
+
+  * But that didn't work either
+
+  * We are currently at:
+
+    * ````
+      Your project is configured with Android NDK 26.3.11579264, but the following plugin(s) depend on a different Android NDK version:
+      - package_info_plus requires Android NDK 27.0.12077973
+      - shared_preferences_android requires Android NDK 27.0.12077973
+      - url_launcher_android requires Android NDK 27.0.12077973
+      ````
+
+  * Maybe I need to upgrade my flutter version?
+
+    * Currently I am using Flutter Version 3.32.8
+      * I switched to that on `16-Aug-2025`, so that's not too long ago
+
+  * Okay, looks like it works now
+
+    * The fix was really to set `ndkVersion "27.0.12077973"` in the `app/build.gradle`, weird though that seemed
+
+* Anyway, this is as far as I'm getting with this today
+
+[Time elapsed thus far: 17.25h]
 
 # TODO
 
-* Update Notifications
 * Tests
 
 
