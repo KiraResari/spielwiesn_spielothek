@@ -332,14 +332,19 @@
 * Okay, next, I found an issue with Umlaute in the game "Arctic Scavengers: Überleben im Jahr 2097"
   * It is displayed as "Arctic Scavengers: Ãberleben im Jahr 2097"
   * Alright, I was able to fix that now!
+* Okay, that's great progress! And I think I've taken care of everything that I really needed to do today
+* I still got more time though, so let's try to add the Rating
+  * One idea I had was adding them around the `GameSticker` as a ring segment
+  * Another would be to display it as a star rating in the bottom right corner
+  * Ah, I think I got something now!
+  * I'll do it via a 👍-number in the bottom right corner
+  * That looks good now
 
 # TODO
 
 * Update Notifications
 * Favourites
 * Tests
-* Rating as Approval%
-  * Around Inventarbuchstaben-Kreis as Ringsegement
 
 
 # ⚓

@@ -25,13 +25,14 @@ class GameCard extends StatelessWidget {
               ],
             ),
           ),
-          if (game.premium) _buildPremiumBanner(),
+          if (game.premium) _buildPremiumCorner(),
+          if (game.rating > 0) _buildRatingCorner(),
         ],
       ),
     );
   }
 
-  Positioned _buildPremiumBanner() {
+  Positioned _buildPremiumCorner() {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -52,6 +53,14 @@ class GameCard extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Positioned _buildRatingCorner() {
+    return Positioned(
+      bottom: 0,
+      right: 0,
+      child: Text("${game.rating}👍"),
     );
   }
 
