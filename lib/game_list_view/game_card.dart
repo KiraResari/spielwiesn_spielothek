@@ -12,18 +12,44 @@ class GameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            GameSticker(
-              inventoryLetter: game.stickerLetter,
-              stickerType: game.stickerType,
+      child: Stack(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                GameSticker(game),
+                const SizedBox(width: 12),
+                _buildTextElements(),
+              ],
             ),
-            const SizedBox(width: 12),
-            _buildTextElements(),
-          ],
+          ),
+          if (game.premium) _buildPremiumBanner(),
+        ],
+      ),
+    );
+  }
+
+  Positioned _buildPremiumBanner() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: const BoxDecoration(
+          color: Colors.green,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(6),
+          ),
+        ),
+        child: const Text(
+          "Exclusiv",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
         ),
       ),
     );
@@ -78,7 +104,7 @@ class GameCard extends StatelessWidget {
         const SizedBox(width: 10),
         Text(game.category.name),
         if (game.cooperative) const SizedBox(width: 10),
-        if (game.cooperative) const Text("Co-Op")
+        if (game.cooperative) const Text("Co-Op"),
       ],
     );
   }

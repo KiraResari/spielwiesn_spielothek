@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 
+import '../game/game.dart';
 import '../game/sticker_type.dart';
 
 class GameSticker extends StatelessWidget {
-  final String inventoryLetter;
+  final String stickerLetter;
   final StickerType stickerType;
 
-  const GameSticker({
-    super.key,
-    required this.inventoryLetter,
-    required this.stickerType,
-  });
+  GameSticker(Game game, {super.key})
+      : stickerLetter = game.stickerLetter,
+        stickerType = game.stickerType;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class GameSticker extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                inventoryLetter,
+                stickerLetter,
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,

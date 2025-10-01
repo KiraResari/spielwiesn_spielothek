@@ -322,6 +322,13 @@
     * If that fails, the fallback list delivered with the app should be used
   * Looks like this works!
   * And now I also added caching
+* Great, so, what's next?
+* I've got a bunch of things on the Todo list, but since I have time pressure right now, I want to focus on the most impactful low-hanging fruits
+* I think one of these would be Exclusivspiele
+  * Because that's both important for the helpers and for the players to know
+  * How to best display that?
+  * A banner green across the bottom left corner of the game card might work
+  * That works now too! 
 
 # TODO
 
