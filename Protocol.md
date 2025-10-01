@@ -346,6 +346,8 @@
     * I now managed to do that
   * Next, caching the faved games between sessions
     * I now managed to do that
+  * Finally, a filter to display only faved games
+    * That works now too
 
 # TODO
 

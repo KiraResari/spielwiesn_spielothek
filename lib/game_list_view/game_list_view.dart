@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'category_filter_button.dart';
 import 'co_op_filter_button.dart';
 import 'complexity_filter_button.dart';
+import 'favorites_filter_button.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
 
@@ -130,6 +131,8 @@ class GameFilterView extends StatelessWidget {
         CategoryFilterButton(controller),
         const SizedBox(width: 4),
         CoOpFilterButton(controller),
+        const SizedBox(width: 4),
+        FavoritesFilterButton(controller),
       ],
     );
   }

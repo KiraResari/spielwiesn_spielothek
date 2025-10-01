@@ -27,6 +27,7 @@ class GameListController extends ChangeNotifier {
       List.from(GameComplexityLevel.values);
   List<GameCategory> selectedCategories = List.from(GameCategory.values);
   List<bool> selectedCoOp = [true, false];
+  bool showOnlyFavorites = false;
 
   List<Game> _games = [];
   List<Game> filteredGames = [];
@@ -94,6 +95,7 @@ class GameListController extends ChangeNotifier {
       return _matchesName(game) &&
           _matchesPlayers(game) &&
           _matchesDuration(game) &&
+          _matchesFavoriteFilter(game) &&
           selectedComplexityLevels.contains(game.complexityLevel) &&
           selectedCategories.contains(game.category) &&
           selectedCoOp.contains(game.cooperative);
@@ -118,6 +120,13 @@ class GameListController extends ChangeNotifier {
     int? duration = int.tryParse(durationController.text.trim());
     return duration == null ||
         (duration >= game.minPlayTime && duration <= game.maxPlayTime);
+  }
+
+  bool _matchesFavoriteFilter(Game game) {
+    if(showOnlyFavorites && !game.favorite){
+      return false;
+    }
+    return true;
   }
 
   void toggleComplexity(GameComplexityLevel level) {
@@ -158,6 +167,7 @@ class GameListController extends ChangeNotifier {
         ? _favoriteGames.remove(game)
         : _favoriteGames.add(game);
     await _saveFavorites();
+    filterGames();
     notifyListeners();
   }
 
