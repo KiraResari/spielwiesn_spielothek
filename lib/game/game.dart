@@ -24,6 +24,8 @@ class Game {
   final bool premium;
   final String link;
 
+  bool favorite = false;
+
   Game({
     required this.name,
     this.searchAnchors = "",

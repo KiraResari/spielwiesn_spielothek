@@ -135,6 +135,11 @@ class GameListController extends ChangeNotifier {
     filterGames();
   }
 
+  void toggleFavorite(Game game){
+    game.favorite = !game.favorite;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     nameController.dispose();

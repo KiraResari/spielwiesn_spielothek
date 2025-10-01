@@ -339,11 +339,15 @@
   * Ah, I think I got something now!
   * I'll do it via a 👍-number in the bottom right corner
   * That looks good now
+* Alright, what next?
+* Favorites!
+  * Those are a bit more tricky, especially as far as caching and display is concerned, but I think I can do it
+  * First step is adding a toggle-able button
+    * I now managed to do that
 
 # TODO
 
 * Update Notifications
-* Favourites
 * Tests
 
 

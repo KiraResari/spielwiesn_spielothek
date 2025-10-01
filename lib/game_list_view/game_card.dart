@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../game/game.dart';
+import 'game_list_controller.dart';
 import 'game_sticker.dart';
 
 class GameCard extends StatelessWidget {
@@ -22,6 +24,7 @@ class GameCard extends StatelessWidget {
                 GameSticker(game),
                 const SizedBox(width: 12),
                 _buildTextElements(),
+                _buildFavButton(context),
               ],
             ),
           ),
@@ -29,38 +32,6 @@ class GameCard extends StatelessWidget {
           if (game.rating > 0) _buildRatingCorner(),
         ],
       ),
-    );
-  }
-
-  Positioned _buildPremiumCorner() {
-    return Positioned(
-      bottom: 0,
-      left: 0,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-        decoration: const BoxDecoration(
-          color: Colors.green,
-          borderRadius: BorderRadius.only(
-            topRight: Radius.circular(6),
-          ),
-        ),
-        child: const Text(
-          "Exclusiv",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 12,
-          ),
-        ),
-      ),
-    );
-  }
-
-  Positioned _buildRatingCorner() {
-    return Positioned(
-      bottom: 0,
-      right: 0,
-      child: Text("${game.rating}👍"),
     );
   }
 
@@ -121,5 +92,50 @@ class GameCard extends StatelessWidget {
   Widget _buildComplexityText() {
     TextStyle textStyle = TextStyle(color: game.complexityLevel.displayColor);
     return Text(style: textStyle, game.complexityLevel.displayName);
+  }
+
+  Positioned _buildPremiumCorner() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: const BoxDecoration(
+          color: Colors.green,
+          borderRadius: BorderRadius.only(
+            topRight: Radius.circular(6),
+          ),
+        ),
+        child: const Text(
+          "Exclusiv",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFavButton(BuildContext context) {
+    var controller = context.watch<GameListController>();
+    return IconButton(
+      icon: Icon(
+        game.favorite ? Icons.star : Icons.star_border,
+        color: game.favorite ? Colors.amber : Colors.grey,
+      ),
+      onPressed: () {
+        controller.toggleFavorite(game);
+      },
+    );
+  }
+
+  Positioned _buildRatingCorner() {
+    return Positioned(
+      bottom: 0,
+      right: 0,
+      child: Text("${game.rating}👍"),
+    );
   }
 }
