@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 import '../game/csv_game_list_parser.dart';
 import '../game/game.dart';
@@ -7,13 +10,17 @@ import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
 
 class GameListController extends ChangeNotifier {
-  final csvPath = "assets/Spieleliste.csv";
-  final CsvGameListParser repository = CsvGameListParser();
+  static const spielelisteDownloadUrl =
+      'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
+  static const csvPath = "assets/Spieleliste.csv";
 
+  final csvGameListParser = CsvGameListParser();
   final nameController = TextEditingController();
   final playersController = TextEditingController();
   final durationController = TextEditingController();
-  List<GameComplexityLevel> selectedComplexityLevels = List.from(GameComplexityLevel.values);
+
+  List<GameComplexityLevel> selectedComplexityLevels =
+      List.from(GameComplexityLevel.values);
   List<GameCategory> selectedCategories = List.from(GameCategory.values);
   List<bool> selectedCoOp = [true, false];
 
@@ -25,11 +32,28 @@ class GameListController extends ChangeNotifier {
   }
 
   Future<void> _init() async {
-    final csvString = await rootBundle.loadString(csvPath);
-    _games = repository.parseCsv(csvString);
-    filteredGames = List.from(_games);
+    await _populateGamesList();
     _setupListeners();
     notifyListeners();
+  }
+
+  Future<void> _populateGamesList() async {
+    String csvString = await _getGamesCsvFromEndpointOrFallback();
+    _games = csvGameListParser.parseCsv(csvString);
+    filteredGames = List.from(_games);
+  }
+
+  Future<String> _getGamesCsvFromEndpointOrFallback() async {
+    try {
+      final response = await http.get(Uri.parse(spielelisteDownloadUrl));
+
+      if (response.statusCode == 200) {
+        return response.body;
+      }
+    } catch (e) {
+      stderr.writeln("Error while trying to download latest game csv: $e");
+    }
+    return rootBundle.loadString(csvPath);
   }
 
   void _setupListeners() {
@@ -42,7 +66,7 @@ class GameListController extends ChangeNotifier {
     filteredGames = _games.where((game) {
       return _matchesName(game) &&
           _matchesPlayers(game) &&
-          _matchesDuration(game)&&
+          _matchesDuration(game) &&
           selectedComplexityLevels.contains(game.complexityLevel) &&
           selectedCategories.contains(game.category) &&
           selectedCoOp.contains(game.cooperative);

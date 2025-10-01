@@ -310,6 +310,18 @@
 
 [Time elapsed thus far: 12.5h]
 
+# 1-Okt-2025
+
+* Now continuing with this
+* Tonight is the night when I can first show this to the other helpers at large, so I want to make some last improvements
+* First, I want to make it so that the list of games is downloaded from online
+  * I posted the current list of games on http://www.tri-tail.com/Spielwiesn/Spieleliste.csv
+    * That way, I can update it myself at will
+    * I confirmed that I can download it via GET http://www.tri-tail.com/Spielwiesn/Spieleliste.csv
+  * Next, I want to make it so that on startup, an update is attempted
+    * If that fails, the fallback list delivered with the app should be used
+  * Looks like this works!
+
 # TODO
 
 * Update Notifications
