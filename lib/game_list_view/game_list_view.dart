@@ -7,6 +7,7 @@ import 'complexity_filter_button.dart';
 import 'favorites_filter_button.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
+import 'premium_filter_button.dart';
 
 class GameListView extends StatelessWidget {
   const GameListView({Key? key}) : super(key: key);
@@ -131,6 +132,8 @@ class GameFilterView extends StatelessWidget {
         CategoryFilterButton(controller),
         const SizedBox(width: 4),
         CoOpFilterButton(controller),
+        const SizedBox(width: 4),
+        PremiumFilterButton(controller),
         const SizedBox(width: 4),
         FavoritesFilterButton(controller),
       ],

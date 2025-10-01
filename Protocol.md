@@ -348,6 +348,9 @@
     * I now managed to do that
   * Finally, a filter to display only faved games
     * That works now too
+* Great! Now I might as well add a filter for exclusive games too
+  * I now did that too!
+* I'm on a roll here!
 
 # TODO
 
