@@ -52,7 +52,7 @@ class GameFilterView extends StatelessWidget {
         _buildDoubleFieldRow(
           'Spieleranzahl',
           controller.playersController,
-          'Dauer (min)',
+          'Dauer (Minuten)',
           controller.durationController,
           controller,
         ),
