@@ -19,7 +19,7 @@ class GameCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(12.0),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 GameSticker(game),
                 const SizedBox(width: 12),
@@ -29,6 +29,7 @@ class GameCard extends StatelessWidget {
             ),
           ),
           if (game.premium) _buildPremiumCorner(),
+          if (game.novelty) _buildNoveltyCorner(),
           if (game.rating > 0) _buildRatingCorner(),
         ],
       ),
@@ -94,6 +95,19 @@ class GameCard extends StatelessWidget {
     return Text(style: textStyle, game.complexityLevel.displayName);
   }
 
+  Widget _buildFavButton(BuildContext context) {
+    var controller = context.watch<GameListController>();
+    return IconButton(
+      icon: Icon(
+        game.favorite ? Icons.star : Icons.star_border,
+        color: game.favorite ? Colors.amber : Colors.grey,
+      ),
+      onPressed: () {
+        controller.toggleFavorite(game);
+      },
+    );
+  }
+
   Positioned _buildPremiumCorner() {
     return Positioned(
       bottom: 0,
@@ -103,7 +117,8 @@ class GameCard extends StatelessWidget {
         decoration: const BoxDecoration(
           color: Colors.green,
           borderRadius: BorderRadius.only(
-            topRight: Radius.circular(6),
+            topRight: Radius.circular(12),
+            bottomLeft: Radius.circular(12),
           ),
         ),
         child: const Text(
@@ -118,16 +133,28 @@ class GameCard extends StatelessWidget {
     );
   }
 
-  Widget _buildFavButton(BuildContext context) {
-    var controller = context.watch<GameListController>();
-    return IconButton(
-      icon: Icon(
-        game.favorite ? Icons.star : Icons.star_border,
-        color: game.favorite ? Colors.amber : Colors.grey,
+  Positioned _buildNoveltyCorner() {
+    return Positioned(
+      top: 0,
+      left: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        decoration: const BoxDecoration(
+          color: Colors.amber,
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(12),
+            bottomRight: Radius.circular(12),
+          ),
+        ),
+        child: const Text(
+          "Neu",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
       ),
-      onPressed: () {
-        controller.toggleFavorite(game);
-      },
     );
   }
 

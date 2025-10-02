@@ -404,9 +404,17 @@
 
 [Time elapsed thus far: 17.25h]
 
+# 2-Okt-2025
+
+* Now continuing with this
+* One little thing that I can still add that popped into my head was adding a display and filter for new games
+  * The data already supplies that info, so it should be easy to add
+  * I now added the display 
+
 # TODO
 
 * Tests
+* Neuheiten Display & Filter
 
 
 # ⚓
