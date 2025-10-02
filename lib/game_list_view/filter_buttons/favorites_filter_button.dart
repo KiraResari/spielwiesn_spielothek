@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'game_list_controller.dart';
+import '../game_list_controller.dart';
 
 class FavoritesFilterButton extends StatelessWidget {
   final GameListController controller;

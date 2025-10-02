@@ -28,11 +28,12 @@ class GameListController extends ChangeNotifier {
   List<GameCategory> selectedCategories = List.from(GameCategory.values);
   List<bool> selectedCoOp = [true, false];
   List<bool> selectedPremium = [true, false];
+  List<bool> selectedNovelty = [true, false];
   bool showOnlyFavorites = false;
 
   List<Game> _games = [];
+  final List<Game> _favoriteGames = [];
   List<Game> filteredGames = [];
-  List<Game> _favoriteGames = [];
 
   GameListController() {
     _init();
@@ -100,7 +101,8 @@ class GameListController extends ChangeNotifier {
           selectedComplexityLevels.contains(game.complexityLevel) &&
           selectedCategories.contains(game.category) &&
           selectedCoOp.contains(game.cooperative) &&
-          selectedPremium.contains(game.premium);
+          selectedPremium.contains(game.premium) &&
+          selectedNovelty.contains(game.novelty);
     }).toList();
 
     notifyListeners();
@@ -125,7 +127,7 @@ class GameListController extends ChangeNotifier {
   }
 
   bool _matchesFavoriteFilter(Game game) {
-    if(showOnlyFavorites && !game.favorite){
+    if (showOnlyFavorites && !game.favorite) {
       return false;
     }
     return true;
@@ -163,6 +165,15 @@ class GameListController extends ChangeNotifier {
       selectedPremium.remove(value);
     } else {
       selectedPremium.add(value);
+    }
+    filterGames();
+  }
+
+  void toggleNovelty(bool value) {
+    if (selectedNovelty.contains(value)) {
+      selectedNovelty.remove(value);
+    } else {
+      selectedNovelty.add(value);
     }
     filterGames();
   }

@@ -410,6 +410,11 @@
 * One little thing that I can still add that popped into my head was adding a display and filter for new games
   * The data already supplies that info, so it should be easy to add
   * I now added the display 
+  * Great, now to add a filter
+    * And that works now too
+* That will be all for today
+
+[Time elapsed thus far: 17.75h]
 
 # TODO
 

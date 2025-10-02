@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../game/game_category.dart';
-import 'game_list_controller.dart';
+import '../../game/game_category.dart';
+import '../game_list_controller.dart';
 
 class CategoryFilterButton extends StatelessWidget {
   final GameListController controller;

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'category_filter_button.dart';
-import 'co_op_filter_button.dart';
-import 'complexity_filter_button.dart';
-import 'favorites_filter_button.dart';
+import 'filter_buttons/category_filter_button.dart';
+import 'filter_buttons/co_op_filter_button.dart';
+import 'filter_buttons/complexity_filter_button.dart';
+import 'filter_buttons/favorites_filter_button.dart';
+import 'filter_buttons/novelty_filter_button.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
-import 'premium_filter_button.dart';
+import 'filter_buttons/premium_filter_button.dart';
 
 class GameListView extends StatelessWidget {
   const GameListView({Key? key}) : super(key: key);
@@ -134,6 +135,8 @@ class GameFilterView extends StatelessWidget {
         CoOpFilterButton(controller),
         const SizedBox(width: 4),
         PremiumFilterButton(controller),
+        const SizedBox(width: 4),
+        NoveltyFilterButton(controller),
         const SizedBox(width: 4),
         FavoritesFilterButton(controller),
       ],

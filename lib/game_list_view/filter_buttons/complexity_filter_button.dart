@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../game/game_complexity_level.dart';
-import 'game_list_controller.dart';
+import '../../game/game_complexity_level.dart';
+import '../game_list_controller.dart';
 
 class ComplexityFilterButton extends StatelessWidget {
   final GameListController controller;
