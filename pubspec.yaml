@@ -16,6 +16,7 @@ dependencies:
   http: ^1.5.0
   shared_preferences: ^2.5.3
   upgrader: ^12.1.0
+  markdown_widget: ^2.3.2+8
 
 dev_dependencies:
   flutter_test:
@@ -28,6 +29,8 @@ flutter:
   uses-material-design: true
   assets:
     - assets/Spieleliste.csv
+    - assets/Imprint.md
+    - assets/Privacy.md
 
 flutter_launcher_icons:
   android: "launcher_icon"

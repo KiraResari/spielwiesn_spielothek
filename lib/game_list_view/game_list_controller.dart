@@ -15,6 +15,8 @@ class GameListController extends ChangeNotifier {
   static const spielelisteDownloadUrl =
       'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
+  static const imprintPath = "assets/Imprint.md";
+  static const privacyPath = "assets/Privacy.md";
   static const gameListCacheKey = 'spielwiesn_spielothek_spieleliste';
   static const favoritesCacheKey = 'spielwiesn_spielothek_favoriten';
 
@@ -34,6 +36,8 @@ class GameListController extends ChangeNotifier {
   List<Game> _games = [];
   final List<Game> _favoriteGames = [];
   List<Game> filteredGames = [];
+  String _imprint = "Impressum konnte nicht geladen werden";
+  String _privacy = "Datenschutzvereinbarung konnte nicht geladen werden";
 
   GameListController() {
     _init();
@@ -42,6 +46,8 @@ class GameListController extends ChangeNotifier {
   Future<void> _init() async {
     await _populateGamesList();
     await _loadFavorites();
+    _imprint = await rootBundle.loadString(imprintPath);
+    _privacy = await rootBundle.loadString(privacyPath);
     _setupListeners();
     notifyListeners();
   }
@@ -198,6 +204,10 @@ class GameListController extends ChangeNotifier {
     final identifiers = _favoriteGames.map((g) => g.identifier).toList();
     await prefs.setStringList(favoritesCacheKey, identifiers);
   }
+
+  String get imprint => _imprint;
+
+  String get privacy => _privacy;
 
   @override
   void dispose() {

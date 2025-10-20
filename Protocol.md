@@ -404,7 +404,7 @@
 
 [Time elapsed thus far: 17.25h]
 
-# 2-Okt-2025
+# 2-Oct-2025
 
 * Now continuing with this
 * One little thing that I can still add that popped into my head was adding a display and filter for new games
@@ -416,10 +416,19 @@
 
 [Time elapsed thus far: 17.75h]
 
+# 20-Oct-2025
+
+* Now continuing with this
+* I now got the official job to get this into the stores
+* Before I can do that, however, I need to make sure to fulfill all legal requirements
+* Namely, imprint and data privacy agreement
+  * It took a bit of messing around to get it to look nicely, but I think I now got it covered
+
 # TODO
 
+* Impressum
+* Datenschutzerklärung
 * Tests
-* Neuheiten Display & Filter
 
 
 # ⚓

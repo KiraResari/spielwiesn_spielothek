@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:markdown_widget/widget/markdown.dart';
 import 'package:provider/provider.dart';
 
 import 'filter_buttons/category_filter_button.dart';
@@ -25,12 +27,22 @@ class GameListView extends StatelessWidget {
 class GameFilterView extends StatelessWidget {
   const GameFilterView({Key? key}) : super(key: key);
 
+  static const imprintKey = "imprint";
+  static const privacyKey = "privacy";
+  static const imprintTitle = "Impressum";
+  static const privacyTitle = "Datenschutzerklärung";
+  static const imprintText =
+      "Hier steht das Impressum. (Bitte den tatsächlichen Text hier einfügen)";
+  static const privacyText =
+      "Hier steht die Datenschutzerklärung. (Bitte den tatsächlichen Text hier einfügen)";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Spielwiesn Spielothek Spiele'),
+        title: const Text("Spielwiesn Spielothek"),
         backgroundColor: Colors.orange,
+        actions: [_buildPopupMenuButton(context)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -40,6 +52,58 @@ class GameFilterView extends StatelessWidget {
             _buildResultList(context),
           ],
         ),
+      ),
+    );
+  }
+
+  PopupMenuButton<String> _buildPopupMenuButton(BuildContext context) {
+    var controller = Provider.of<GameListController>(context, listen: false);
+    return PopupMenuButton<String>(
+      onSelected: (String value) {
+        if (value == imprintKey) {
+          _showMarkdownDialog(context, imprintTitle, controller.imprint);
+        } else if (value == privacyKey) {
+          _showMarkdownDialog(context, privacyTitle, controller.privacy);
+        }
+      },
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: imprintKey,
+          child: Text(imprintTitle),
+        ),
+        const PopupMenuItem<String>(
+          value: privacyKey,
+          child: Text(privacyTitle),
+        ),
+      ],
+    );
+  }
+
+  void _showMarkdownDialog(
+    BuildContext context,
+    String title,
+    String content,
+  ) async {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: Text(title),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: SingleChildScrollView(
+            child: MarkdownWidget(
+              data: content,
+              shrinkWrap: true,
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Schließen'),
+          ),
+        ],
       ),
     );
   }
