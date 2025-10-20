@@ -424,6 +424,10 @@
 * Namely, imprint and data privacy agreement
   * It took a bit of messing around to get it to look nicely, but I think I now got it covered
 * And I now added some credits too
+* Okay, I think now the app looks releasable
+* This will be all for today
+
+[Time elapsed thus far: 20h]
 
 # TODO
 
