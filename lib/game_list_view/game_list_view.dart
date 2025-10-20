@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:markdown_widget/widget/markdown.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'filter_buttons/category_filter_button.dart';
 import 'filter_buttons/co_op_filter_button.dart';
@@ -29,12 +30,10 @@ class GameFilterView extends StatelessWidget {
 
   static const imprintKey = "imprint";
   static const privacyKey = "privacy";
+  static const creditsKey = "credits";
   static const imprintTitle = "Impressum";
   static const privacyTitle = "Datenschutzerklärung";
-  static const imprintText =
-      "Hier steht das Impressum. (Bitte den tatsächlichen Text hier einfügen)";
-  static const privacyText =
-      "Hier steht die Datenschutzerklärung. (Bitte den tatsächlichen Text hier einfügen)";
+  static const creditsTitle = "Credits";
 
   @override
   Widget build(BuildContext context) {
@@ -64,6 +63,8 @@ class GameFilterView extends StatelessWidget {
           _showMarkdownDialog(context, imprintTitle, controller.imprint);
         } else if (value == privacyKey) {
           _showMarkdownDialog(context, privacyTitle, controller.privacy);
+        } else if (value == creditsKey) {
+          _showCreditsDialog(context);
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -74,6 +75,10 @@ class GameFilterView extends StatelessWidget {
         const PopupMenuItem<String>(
           value: privacyKey,
           child: Text(privacyTitle),
+        ),
+        const PopupMenuItem<String>(
+          value: creditsKey,
+          child: Text(creditsTitle),
         ),
       ],
     );
@@ -106,6 +111,78 @@ class GameFilterView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  void _showCreditsDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => AlertDialog(
+        title: const Text('Credits'),
+        content: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.9,
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const Text(
+                  'Eine App von',
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Kira Resari',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 8),
+                Image.asset(
+                  'assets/tri-tail_logo.png',
+                  width: 120,
+                ),
+                TextButton(
+                  onPressed: () => _launchURL('http://www.tri-tail.com/'),
+                  child: const Text(
+                    'www.tri-tail.com',
+                    style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Im Auftrag der MPA',
+                  style: TextStyle(fontSize: 16),
+                ),
+                const SizedBox(height: 8),
+                Image.asset(
+                  'assets/mpa_logo.png',
+                  width: 120,
+                ),
+                TextButton(
+                  onPressed: () => _launchURL('https://www.mpagmbh.de/'),
+                  child: const Text(
+                    'www.mpagmbh.de',
+                    style: TextStyle(
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Schließen'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _launchURL(String url) {
+    Uri uri = Uri.parse(url);
+    launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Widget _buildFilterSection(BuildContext context) {

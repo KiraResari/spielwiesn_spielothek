@@ -423,11 +423,10 @@
 * Before I can do that, however, I need to make sure to fulfill all legal requirements
 * Namely, imprint and data privacy agreement
   * It took a bit of messing around to get it to look nicely, but I think I now got it covered
+* And I now added some credits too
 
 # TODO
 
-* Impressum
-* Datenschutzerklärung
 * Tests
 
 
