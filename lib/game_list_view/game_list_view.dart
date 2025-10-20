@@ -14,20 +14,6 @@ import 'game_list_controller.dart';
 import 'filter_buttons/premium_filter_button.dart';
 
 class GameListView extends StatelessWidget {
-  const GameListView({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) => GameListController(),
-      child: const GameFilterView(),
-    );
-  }
-}
-
-class GameFilterView extends StatelessWidget {
-  const GameFilterView({Key? key}) : super(key: key);
-
   static const imprintKey = "imprint";
   static const privacyKey = "privacy";
   static const creditsKey = "credits";
@@ -35,8 +21,17 @@ class GameFilterView extends StatelessWidget {
   static const privacyTitle = "Datenschutzerklärung";
   static const creditsTitle = "Credits";
 
+  const GameListView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
+    return ChangeNotifierProvider(
+      create: (_) => GameListController(),
+      builder: (context, child) => _buildMainApp(context),
+    );
+  }
+
+  Widget _buildMainApp(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Spielwiesn Spielothek"),
