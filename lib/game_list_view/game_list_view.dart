@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:markdown_widget/widget/markdown.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
 
+import '../popups/credits_popup.dart';
+import '../popups/markdown_popup.dart';
 import 'filter_buttons/category_filter_button.dart';
 import 'filter_buttons/co_op_filter_button.dart';
 import 'filter_buttons/complexity_filter_button.dart';
 import 'filter_buttons/favorites_filter_button.dart';
 import 'filter_buttons/novelty_filter_button.dart';
+import 'filter_buttons/premium_filter_button.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
-import 'filter_buttons/premium_filter_button.dart';
 
 class GameListView extends StatelessWidget {
   static const imprintKey = "imprint";
@@ -55,11 +54,11 @@ class GameListView extends StatelessWidget {
     return PopupMenuButton<String>(
       onSelected: (String value) {
         if (value == imprintKey) {
-          _showMarkdownDialog(context, imprintTitle, controller.imprint);
+          showMarkdownPopup(context, imprintTitle, controller.imprint);
         } else if (value == privacyKey) {
-          _showMarkdownDialog(context, privacyTitle, controller.privacy);
+          showMarkdownPopup(context, privacyTitle, controller.privacy);
         } else if (value == creditsKey) {
-          _showCreditsDialog(context);
+          showCreditsPopup(context);
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -77,107 +76,6 @@ class GameListView extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  void _showMarkdownDialog(
-    BuildContext context,
-    String title,
-    String content,
-  ) async {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: Text(title),
-        content: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          height: MediaQuery.of(context).size.height * 0.7,
-          child: SingleChildScrollView(
-            child: MarkdownWidget(
-              data: content,
-              shrinkWrap: true,
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Schließen'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _showCreditsDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Credits'),
-        content: SizedBox(
-          width: MediaQuery.of(context).size.width * 0.9,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Text(
-                  'Eine App von',
-                  style: TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 4),
-                const Text(
-                  'Kira Resari',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 8),
-                Image.asset(
-                  'assets/tri-tail_logo.png',
-                  width: 120,
-                ),
-                TextButton(
-                  onPressed: () => _launchURL('http://www.tri-tail.com/'),
-                  child: const Text(
-                    'www.tri-tail.com',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                const Text(
-                  'Im Auftrag der MPA',
-                  style: TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: 8),
-                Image.asset(
-                  'assets/mpa_logo.png',
-                  width: 120,
-                ),
-                TextButton(
-                  onPressed: () => _launchURL('https://www.mpagmbh.de/'),
-                  child: const Text(
-                    'www.mpagmbh.de',
-                    style: TextStyle(
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('Schließen'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _launchURL(String url) {
-    Uri uri = Uri.parse(url);
-    launchUrl(uri, mode: LaunchMode.externalApplication);
   }
 
   Widget _buildFilterSection(BuildContext context) {
