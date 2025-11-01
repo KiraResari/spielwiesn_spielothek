@@ -429,6 +429,80 @@
 
 [Time elapsed thus far: 20h]
 
+# 22-Oct-2025
+
+* Okay, today I'll try to get the process of releasing the app on android started
+
+* Apparently, that requires signing my app, which makes sense
+
+  * How to do that?
+
+  * Chatty suggested using this command for that:
+
+    * ````
+      keytool -genkey -v -keystore release-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias spielothek
+      ````
+
+  * ...but where?
+
+  * The Android Studio Console?
+
+  * Okay, looks like that worked
+
+* Okay, next, trying to build the app bundle
+
+  * That keeps failing
+
+  * Currently, what fails is the `bundleRelease` task, where apparently the reading of the properties fails
+
+    * ````
+      Build file 'G:\projects\Flutter\spielwiesn_spielothek\android\app\build.gradle' line: 58
+      
+      * What went wrong:
+      A problem occurred evaluating project ':app'.
+      > path may not be null or empty string. path='null'
+      
+      * Try:
+      > Run with --stacktrace option to get the stack trace.
+      > Run with --info or --debug option to get more log output.
+      > Run with --scan to get full insights.
+      > Get more help at https://help.gradle.org.
+      
+      BUILD FAILED in 1s
+      ````
+
+    * It seems it can't read the properties
+
+    * But I'm confident I have them all in the right place...
+
+    * That's weird
+
+    * Okay, I now used `flutter build appbundle` directly in the Android Studio console, and it worked
+
+    * Weird, but okay
+
+  * So now I have an `app-release.aab` file
+
+* The next step is going to be creating a Google Play developer account
+
+  * Alright, I now did this, and the obligatory verification is now in progress
+
+  * Let's see if I can proceed while this is still ongoing
+
+  * Alright, I think I managed to get it as far as possible now
+
+  * The current status being:
+
+    * > Google is verifying your identity
+      >
+      > Documents were uploaded so that Google can verify your identity. The account  owner will receive an email when the verification is complete. This may  take a few days.
+
+  * In hindsight, I could probably have started this process earlier, but oh well...
+
+* So this is as far as I'm getting with this now
+
+[Time elapsed thus far: 23.25h (20h development + 3.25h deployment)]
+
 # TODO
 
 * Tests
