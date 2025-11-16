@@ -13,7 +13,9 @@ import '../game/game_complexity_level.dart';
 
 class GameListController extends ChangeNotifier {
   static const spielelisteDownloadUrl =
-      'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
+      // 'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
+      // 'https://spielwiesn.dmpaul.de/Spieleliste.csv';
+      'Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
   static const imprintPath = "assets/Imprint.md";
   static const privacyPath = "assets/Privacy.md";
@@ -54,6 +56,11 @@ class GameListController extends ChangeNotifier {
 
   Future<void> _populateGamesList() async {
     String csvString = await _getGamesCsv();
+    // Zeilenenden normalisieren und mögliches UTF-8 BOM entfernen
+    if (csvString.startsWith("\uFEFF")) {
+      csvString = csvString.substring(1);
+    }
+    csvString = csvString.replaceAll('\r\n', '\n');
     _games = csvGameListParser.parseCsv(csvString);
     filteredGames = List.from(_games);
   }

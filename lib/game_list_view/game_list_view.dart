@@ -12,7 +12,7 @@ import 'filter_buttons/premium_filter_button.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
 
-class GameListView extends StatelessWidget {
+class GameListView extends StatefulWidget {
   static const imprintKey = "imprint";
   static const privacyKey = "privacy";
   static const creditsKey = "credits";
@@ -21,6 +21,13 @@ class GameListView extends StatelessWidget {
   static const creditsTitle = "Credits";
 
   const GameListView({Key? key}) : super(key: key);
+
+  @override
+  State<GameListView> createState() => _GameListViewState();
+}
+
+class _GameListViewState extends State<GameListView> {
+  bool _showFilters = true; // Standard: Filter sind eingeblendet
 
   @override
   Widget build(BuildContext context) {
@@ -53,26 +60,26 @@ class GameListView extends StatelessWidget {
     var controller = Provider.of<GameListController>(context, listen: false);
     return PopupMenuButton<String>(
       onSelected: (String value) {
-        if (value == imprintKey) {
-          showMarkdownPopup(context, imprintTitle, controller.imprint);
-        } else if (value == privacyKey) {
-          showMarkdownPopup(context, privacyTitle, controller.privacy);
-        } else if (value == creditsKey) {
+        if (value == GameListView.imprintKey) {
+          showMarkdownPopup(context, GameListView.imprintTitle, controller.imprint);
+        } else if (value == GameListView.privacyKey) {
+          showMarkdownPopup(context, GameListView.privacyTitle, controller.privacy);
+        } else if (value == GameListView.creditsKey) {
           showCreditsPopup(context);
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         const PopupMenuItem<String>(
-          value: imprintKey,
-          child: Text(imprintTitle),
+          value: GameListView.imprintKey,
+          child: Text(GameListView.imprintTitle),
         ),
         const PopupMenuItem<String>(
-          value: privacyKey,
-          child: Text(privacyTitle),
+          value: GameListView.privacyKey,
+          child: Text(GameListView.privacyTitle),
         ),
         const PopupMenuItem<String>(
-          value: creditsKey,
-          child: Text(creditsTitle),
+          value: GameListView.creditsKey,
+          child: Text(GameListView.creditsTitle),
         ),
       ],
     );
@@ -83,14 +90,17 @@ class GameListView extends StatelessWidget {
     return Column(
       children: [
         _buildFullWidthField('Name', controller.nameController, controller),
-        _buildDoubleFieldRow(
-          'Spieleranzahl',
-          controller.playersController,
-          'Dauer (Minuten)',
-          controller.durationController,
-          controller,
-        ),
-        _buildTripleFilterRow(context, controller),
+        if (_showFilters) ...[
+          _buildDoubleFieldRow(
+            'Spieleranzahl',
+            controller.playersController,
+            'Dauer (Minuten)',
+            controller.durationController,
+            controller,
+          ),
+          const SizedBox(height: 12),
+          _buildTripleFilterRow(context, controller),
+        ],
       ],
     );
   }
@@ -100,15 +110,30 @@ class GameListView extends StatelessWidget {
     TextEditingController controller,
     GameListController filterController,
   ) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: () => filterController.clearField(controller),
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () => filterController.clearField(controller),
+              ),
+            ),
+          ),
         ),
-      ),
+        IconButton(
+          icon: Icon(_showFilters ? Icons.expand_less : Icons.expand_more),
+          onPressed: () {
+            setState(() {
+              _showFilters = !_showFilters;
+            });
+          },
+          tooltip: _showFilters ? 'Filter ausblenden' : 'Filter einblenden',
+        ),
+      ],
     );
   }
 
@@ -161,17 +186,14 @@ class GameListView extends StatelessWidget {
     GameListController controller,
   ) {
     return Wrap(
+      spacing: 8,
+      runSpacing: 8,
       children: [
         ComplexityFilterButton(controller),
-        const SizedBox(width: 4),
         CategoryFilterButton(controller),
-        const SizedBox(width: 4),
         CoOpFilterButton(controller),
-        const SizedBox(width: 4),
         PremiumFilterButton(controller),
-        const SizedBox(width: 4),
         NoveltyFilterButton(controller),
-        const SizedBox(width: 4),
         FavoritesFilterButton(controller),
       ],
     );
