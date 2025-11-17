@@ -13,9 +13,7 @@ import '../game/game_complexity_level.dart';
 
 class GameListController extends ChangeNotifier {
   static const spielelisteDownloadUrl =
-      // 'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
-      // 'https://spielwiesn.dmpaul.de/Spieleliste.csv';
-      'Spieleliste.csv';
+      'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
   static const imprintPath = "assets/Imprint.md";
   static const privacyPath = "assets/Privacy.md";
@@ -34,6 +32,7 @@ class GameListController extends ChangeNotifier {
   List<bool> selectedPremium = [true, false];
   List<bool> selectedNovelty = [true, false];
   bool showOnlyFavorites = false;
+  bool showFilters = true;
 
   List<Game> _games = [];
   final List<Game> _favoriteGames = [];
@@ -56,13 +55,16 @@ class GameListController extends ChangeNotifier {
 
   Future<void> _populateGamesList() async {
     String csvString = await _getGamesCsv();
-    // Zeilenenden normalisieren und mögliches UTF-8 BOM entfernen
-    if (csvString.startsWith("\uFEFF")) {
-      csvString = csvString.substring(1);
-    }
-    csvString = csvString.replaceAll('\r\n', '\n');
+    csvString = _sanitizeCsv(csvString);
     _games = csvGameListParser.parseCsv(csvString);
     filteredGames = List.from(_games);
+  }
+
+  String _sanitizeCsv(String csv) {
+    if (csv.startsWith('\uFEFF')) {
+      csv = csv.substring(1);
+    }
+    return csv.replaceAll('\r\n', '\n');
   }
 
   Future<String> _getGamesCsv() async {
@@ -194,6 +196,11 @@ class GameListController extends ChangeNotifier {
   void clearField(TextEditingController controller) {
     controller.clear();
     filterGames();
+  }
+
+  void toggleFilters() {
+    showFilters = !showFilters;
+    notifyListeners();
   }
 
   Future<void> toggleFavorite(Game game) async {

@@ -42,9 +42,7 @@ class GameCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildHeadline(),
-          const SizedBox(height: 3),
           _buildPlayerCountAndPlayTimeRow(),
-          const SizedBox(height: 3),
           _buildComplexityCategoryAndCoOpRow(),
         ],
       ),

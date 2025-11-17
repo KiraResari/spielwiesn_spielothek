@@ -12,7 +12,7 @@ import 'filter_buttons/premium_filter_button.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
 
-class GameListView extends StatefulWidget {
+class GameListView extends StatelessWidget {
   static const imprintKey = "imprint";
   static const privacyKey = "privacy";
   static const creditsKey = "credits";
@@ -21,14 +21,6 @@ class GameListView extends StatefulWidget {
   static const creditsTitle = "Credits";
 
   const GameListView({Key? key}) : super(key: key);
-
-  @override
-  State<GameListView> createState() => _GameListViewState();
-}
-
-class _GameListViewState extends State<GameListView> {
-  bool _showFilters = true; // Standard: Filter sind eingeblendet
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -90,7 +82,7 @@ class _GameListViewState extends State<GameListView> {
     return Column(
       children: [
         _buildFullWidthField('Name', controller.nameController, controller),
-        if (_showFilters) ...[
+        if (controller.showFilters) ...[
           _buildDoubleFieldRow(
             'Spieleranzahl',
             controller.playersController,
@@ -125,13 +117,9 @@ class _GameListViewState extends State<GameListView> {
           ),
         ),
         IconButton(
-          icon: Icon(_showFilters ? Icons.expand_less : Icons.expand_more),
-          onPressed: () {
-            setState(() {
-              _showFilters = !_showFilters;
-            });
-          },
-          tooltip: _showFilters ? 'Filter ausblenden' : 'Filter einblenden',
+          icon: Icon(filterController.showFilters ? Icons.expand_less : Icons.expand_more),
+          onPressed: () => filterController.toggleFilters(),
+          tooltip: filterController.showFilters ? 'Filter ausblenden' : 'Filter einblenden',
         ),
       ],
     );
