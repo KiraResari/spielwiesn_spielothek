@@ -92,6 +92,7 @@ class GameListView extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           _buildTripleFilterRow(context, controller),
+          const SizedBox(height: 12),
         ],
       ],
     );
