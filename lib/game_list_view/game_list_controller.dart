@@ -32,6 +32,7 @@ class GameListController extends ChangeNotifier {
   List<bool> selectedPremium = [true, false];
   List<bool> selectedNovelty = [true, false];
   bool showOnlyFavorites = false;
+  bool showFilters = true;
 
   List<Game> _games = [];
   final List<Game> _favoriteGames = [];
@@ -54,6 +55,7 @@ class GameListController extends ChangeNotifier {
 
   Future<void> _populateGamesList() async {
     String csvString = await _getGamesCsv();
+    csvString = _sanitizeCsv(csvString);
     _games = csvGameListParser.parseCsv(csvString);
     filteredGames = List.from(_games);
   }
@@ -78,10 +80,11 @@ class GameListController extends ChangeNotifier {
     return rootBundle.loadString(csvPath);
   }
 
-  void _setupListeners() {
-    nameController.addListener(filterGames);
-    playersController.addListener(filterGames);
-    durationController.addListener(filterGames);
+  String _sanitizeCsv(String csv) {
+    if (csv.startsWith('\uFEFF')) {
+      csv = csv.substring(1);
+    }
+    return csv.replaceAll('\r\n', '\n');
   }
 
   Future<void> _loadFavorites() async {
@@ -96,6 +99,12 @@ class GameListController extends ChangeNotifier {
         }
       }
     }
+  }
+
+  void _setupListeners() {
+    nameController.addListener(filterGames);
+    playersController.addListener(filterGames);
+    durationController.addListener(filterGames);
   }
 
   void filterGames() {
@@ -187,6 +196,11 @@ class GameListController extends ChangeNotifier {
   void clearField(TextEditingController controller) {
     controller.clear();
     filterGames();
+  }
+
+  void toggleFilters() {
+    showFilters = !showFilters;
+    notifyListeners();
   }
 
   Future<void> toggleFavorite(Game game) async {

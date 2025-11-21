@@ -21,7 +21,6 @@ class GameListView extends StatelessWidget {
   static const creditsTitle = "Credits";
 
   const GameListView({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -82,33 +81,48 @@ class GameListView extends StatelessWidget {
     final controller = Provider.of<GameListController>(context);
     return Column(
       children: [
-        _buildFullWidthField('Name', controller.nameController, controller),
-        _buildDoubleFieldRow(
-          'Spieleranzahl',
-          controller.playersController,
-          'Dauer (Minuten)',
-          controller.durationController,
-          controller,
-        ),
-        _buildTripleFilterRow(context, controller),
+        _buildSearchBar('Name', controller.nameController, controller),
+        if (controller.showFilters) ...[
+          _buildDoubleFieldRow(
+            'Spieleranzahl',
+            controller.playersController,
+            'Dauer (Minuten)',
+            controller.durationController,
+            controller,
+          ),
+          const SizedBox(height: 12),
+          _buildTripleFilterRow(context, controller),
+          const SizedBox(height: 12),
+        ],
       ],
     );
   }
 
-  Widget _buildFullWidthField(
+  Widget _buildSearchBar(
     String label,
     TextEditingController controller,
     GameListController filterController,
   ) {
-    return TextField(
-      controller: controller,
-      decoration: InputDecoration(
-        labelText: label,
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: () => filterController.clearField(controller),
+    return Row(
+      children: [
+        Expanded(
+          child: TextField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+              suffixIcon: IconButton(
+                icon: const Icon(Icons.clear),
+                onPressed: () => filterController.clearField(controller),
+              ),
+            ),
+          ),
         ),
-      ),
+        IconButton(
+          icon: Icon(filterController.showFilters ? Icons.expand_less : Icons.expand_more),
+          onPressed: () => filterController.toggleFilters(),
+          tooltip: filterController.showFilters ? 'Filter ausblenden' : 'Filter einblenden',
+        ),
+      ],
     );
   }
 
@@ -161,17 +175,14 @@ class GameListView extends StatelessWidget {
     GameListController controller,
   ) {
     return Wrap(
+      spacing: 8,
+      runSpacing: 8,
       children: [
         ComplexityFilterButton(controller),
-        const SizedBox(width: 4),
         CategoryFilterButton(controller),
-        const SizedBox(width: 4),
         CoOpFilterButton(controller),
-        const SizedBox(width: 4),
         PremiumFilterButton(controller),
-        const SizedBox(width: 4),
         NoveltyFilterButton(controller),
-        const SizedBox(width: 4),
         FavoritesFilterButton(controller),
       ],
     );
