@@ -52,26 +52,26 @@ class GameListView extends StatelessWidget {
     var controller = Provider.of<GameListController>(context, listen: false);
     return PopupMenuButton<String>(
       onSelected: (String value) {
-        if (value == GameListView.imprintKey) {
-          showMarkdownPopup(context, GameListView.imprintTitle, controller.imprint);
-        } else if (value == GameListView.privacyKey) {
-          showMarkdownPopup(context, GameListView.privacyTitle, controller.privacy);
-        } else if (value == GameListView.creditsKey) {
+        if (value == imprintKey) {
+          showMarkdownPopup(context, imprintTitle, controller.imprint);
+        } else if (value == privacyKey) {
+          showMarkdownPopup(context, privacyTitle, controller.privacy);
+        } else if (value == creditsKey) {
           showCreditsPopup(context);
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
         const PopupMenuItem<String>(
-          value: GameListView.imprintKey,
-          child: Text(GameListView.imprintTitle),
+          value: imprintKey,
+          child: Text(imprintTitle),
         ),
         const PopupMenuItem<String>(
-          value: GameListView.privacyKey,
-          child: Text(GameListView.privacyTitle),
+          value: privacyKey,
+          child: Text(privacyTitle),
         ),
         const PopupMenuItem<String>(
-          value: GameListView.creditsKey,
-          child: Text(GameListView.creditsTitle),
+          value: creditsKey,
+          child: Text(creditsTitle),
         ),
       ],
     );
@@ -81,7 +81,7 @@ class GameListView extends StatelessWidget {
     final controller = Provider.of<GameListController>(context);
     return Column(
       children: [
-        _buildFullWidthField('Name', controller.nameController, controller),
+        _buildSearchBar('Name', controller.nameController, controller),
         if (controller.showFilters) ...[
           _buildDoubleFieldRow(
             'Spieleranzahl',
@@ -97,7 +97,7 @@ class GameListView extends StatelessWidget {
     );
   }
 
-  Widget _buildFullWidthField(
+  Widget _buildSearchBar(
     String label,
     TextEditingController controller,
     GameListController filterController,

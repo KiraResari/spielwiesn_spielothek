@@ -60,13 +60,6 @@ class GameListController extends ChangeNotifier {
     filteredGames = List.from(_games);
   }
 
-  String _sanitizeCsv(String csv) {
-    if (csv.startsWith('\uFEFF')) {
-      csv = csv.substring(1);
-    }
-    return csv.replaceAll('\r\n', '\n');
-  }
-
   Future<String> _getGamesCsv() async {
     final prefs = await SharedPreferences.getInstance();
     try {
@@ -87,10 +80,11 @@ class GameListController extends ChangeNotifier {
     return rootBundle.loadString(csvPath);
   }
 
-  void _setupListeners() {
-    nameController.addListener(filterGames);
-    playersController.addListener(filterGames);
-    durationController.addListener(filterGames);
+  String _sanitizeCsv(String csv) {
+    if (csv.startsWith('\uFEFF')) {
+      csv = csv.substring(1);
+    }
+    return csv.replaceAll('\r\n', '\n');
   }
 
   Future<void> _loadFavorites() async {
@@ -105,6 +99,12 @@ class GameListController extends ChangeNotifier {
         }
       }
     }
+  }
+
+  void _setupListeners() {
+    nameController.addListener(filterGames);
+    playersController.addListener(filterGames);
+    durationController.addListener(filterGames);
   }
 
   void filterGames() {
