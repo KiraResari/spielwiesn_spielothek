@@ -76,38 +76,31 @@ class GameListView extends StatelessWidget {
 
   Widget _buildFilterSection(BuildContext context) {
     final controller = Provider.of<GameListController>(context);
-    return Card(
-      elevation: 1,
-      margin: EdgeInsets.zero,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          children: [
-            _buildSearchBar('Name', controller.nameController, controller),
-            const SizedBox(height: 8),
-            AnimatedCrossFade(
-              duration: const Duration(milliseconds: 200),
-              crossFadeState: controller.showFilters
-                  ? CrossFadeState.showSecond
-                  : CrossFadeState.showFirst,
-              firstChild: const SizedBox.shrink(),
-              secondChild: Column(
-                children: [
-                  _buildDoubleFieldRow(
-                    'Spieleranzahl',
-                    controller.playersController,
-                    'Dauer (Minuten)',
-                    controller.durationController,
-                    controller,
-                  ),
-                ],
+    return Column(
+      children: [
+        _buildSearchBar('Name', controller.nameController, controller),
+        const SizedBox(height: 8),
+        AnimatedCrossFade(
+          duration: const Duration(milliseconds: 200),
+          crossFadeState: controller.showFilters
+              ? CrossFadeState.showSecond
+              : CrossFadeState.showFirst,
+          firstChild: const SizedBox.shrink(),
+          secondChild: Column(
+            children: [
+              _buildDoubleFieldRow(
+                'Spieleranzahl',
+                controller.playersController,
+                'Dauer (Minuten)',
+                controller.durationController,
+                controller,
               ),
-            ),
-            const SizedBox(height: 12),
-            _buildFilterRow(context, controller),
-          ],
+            ],
+          ),
         ),
-      ),
+        const SizedBox(height: 12),
+        _buildFilterRow(context, controller),
+      ],
     );
   }
 
@@ -133,10 +126,9 @@ class GameListView extends StatelessWidget {
           spacing: 8,
           runSpacing: 8,
           children: [
-            ElevatedButton.icon(
+            _buildFilterButtonWithBadge(
+              count: filterCount,
               onPressed: () => _showFilterPopup(context, controller),
-              icon: const Icon(Icons.tune),
-              label: const Text('Filter bearbeiten'),
             ),
             if (controller.hasActiveFilters)
               OutlinedButton.icon(
@@ -145,27 +137,6 @@ class GameListView extends StatelessWidget {
                 label: const Text('Zurücksetzen'),
               ),
           ],
-        ),
-        const SizedBox(height: 8),
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 150),
-          child: pills.isEmpty
-              ? Text(
-                  'Keine aktiven Filter',
-                  style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
-                )
-              : Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: pills
-                      .map(
-                        (pill) => InputChip(
-                          label: Text(pill.label),
-                          onDeleted: () => controller.removeFilterPill(pill),
-                        ),
-                      )
-                      .toList(),
-                ),
         ),
       ],
     );
@@ -372,6 +343,42 @@ class GameListView extends StatelessWidget {
         onSelected: onFavoritesToggle,
       ),
     ];
+  }
+
+  Widget _buildFilterButtonWithBadge({
+    required int count,
+    required VoidCallback onPressed,
+  }) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        ElevatedButton.icon(
+          onPressed: onPressed,
+          icon: const Icon(Icons.tune),
+          label: const Text('Filter hinzufügen'),
+        ),
+        if (count > 0)
+          Positioned(
+            right: -6,
+            top: -6,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.redAccent,
+                borderRadius: BorderRadius.circular(999),
+              ),
+              child: Text(
+                '$count',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+      ],
+    );
   }
 
   Widget _buildSearchBar(
