@@ -9,7 +9,7 @@ class SpielwiesnApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Board Game Finder',
+      title: 'Spielwiesn Spielothek',
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),

@@ -63,7 +63,7 @@ android {
         release {
             keyAlias keyProperties.getProperty('keyAlias')
             keyPassword keyProperties.getProperty('keyPassword')
-            storeFile file(keyProperties.getProperty('storeFile'))
+            storeFile keyProperties.getProperty('storeFile') != null ? file(keyProperties.getProperty('storeFile')) : null
             storePassword keyProperties.getProperty('storePassword')
         }
     }

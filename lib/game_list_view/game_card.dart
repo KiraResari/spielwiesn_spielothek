@@ -60,7 +60,7 @@ class GameCard extends StatelessWidget {
     );
   }
 
-  Row _buildPlayerCountAndPlayTimeRow() {
+  Widget _buildPlayerCountAndPlayTimeRow() {
     String playerCountText = game.minPlayers == game.maxPlayers
         ? '${game.minPlayers} Spieler'
         : '${game.minPlayers}-${game.maxPlayers} Spieler';
@@ -69,22 +69,23 @@ class GameCard extends StatelessWidget {
         ? '${game.minPlayTime} Minuten'
         : '${game.minPlayTime}-${game.maxPlayTime} Minuten';
 
-    return Row(
+    return Wrap(
+      spacing: 6,
+      runSpacing: 0,
       children: [
         Text(playerCountText),
-        const SizedBox(width: 10),
         Text(playTimeText),
       ],
     );
   }
 
-  Row _buildComplexityCategoryAndCoOpRow() {
-    return Row(
+  Widget _buildComplexityCategoryAndCoOpRow() {
+    return Wrap(
+      spacing: 6,
+      runSpacing: 0,
       children: [
         _buildComplexityText(),
-        const SizedBox(width: 10),
         Text(game.category.name),
-        if (game.cooperative) const SizedBox(width: 10),
         if (game.cooperative) const Text("Co-Op"),
       ],
     );
