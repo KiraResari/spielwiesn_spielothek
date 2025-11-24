@@ -151,104 +151,148 @@ class GameListView extends StatelessWidget {
     var localNovelty = controller.selectedNovelty.contains(true);
     var localFavorites = controller.showOnlyFavorites;
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Filter bearbeiten'),
-          content: SingleChildScrollView(
-            child: StatefulBuilder(builder: (context, setState) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _buildSectionTitle('Kategorie'),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _buildCategoryChips(
-                      localCategories,
-                      (category) {
-                        setState(() {
-                          if (localCategories.contains(category)) {
-                            localCategories.remove(category);
-                          } else {
-                            localCategories.add(category);
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildSectionTitle('Komplexität'),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _buildComplexityChips(
-                      localComplexities,
-                      (level) {
-                        setState(() {
-                          if (localComplexities.contains(level)) {
-                            localComplexities.remove(level);
-                          } else {
-                            localComplexities.add(level);
-                          }
-                        });
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildSectionTitle('Sonstiges'),
-                  Wrap(
-                    spacing: 8,
-                    runSpacing: 8,
-                    children: _buildMiscChips(
-                      coopSelected: localCoop,
-                      exklusivSelected: localExklusiv,
-                      noveltySelected: localNovelty,
-                      favoritesSelected: localFavorites,
-                      onCoopToggle: (selected) {
-                        setState(() {
-                          localCoop = selected;
-                        });
-                      },
-                      onExklusivToggle: (selected) {
-                        setState(() {
-                          localExklusiv = selected;
-                        });
-                      },
-                      onNoveltyToggle: (selected) {
-                        setState(() {
-                          localNovelty = selected;
-                        });
-                      },
-                      onFavoritesToggle: (selected) {
-                        setState(() {
-                          localFavorites = selected;
-                        });
-                      },
-                    ),
-                  ),
-                ],
-              );
-            }),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                controller.applyFilterSelections(
-                  categories: localCategories,
-                  complexities: localComplexities,
-                  coopOnly: localCoop,
-                  exklusivOnly: localExklusiv,
-                  noveltyOnly: localNovelty,
-                  favoritesOnly: localFavorites,
-                );
-                Navigator.of(context).pop();
-              },
-              child: const Text('Fertig'),
-            ),
-          ],
+        return DraggableScrollableSheet(
+          initialChildSize: 0.85,
+          minChildSize: 0.5,
+          maxChildSize: 0.95,
+          builder: (context, scrollController) {
+            return Container(
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+                child: StatefulBuilder(builder: (context, setState) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            'Filter bearbeiten',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            icon: const Icon(Icons.close),
+                            onPressed: () => Navigator.of(context).pop(),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Expanded(
+                        child: SingleChildScrollView(
+                          controller: scrollController,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildSectionTitle('Kategorie'),
+                              const SizedBox(height: 10),
+                              Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: _buildCategoryChips(
+                                  localCategories,
+                                  (category) {
+                                    setState(() {
+                                      if (localCategories.contains(category)) {
+                                        localCategories.remove(category);
+                                      } else {
+                                        localCategories.add(category);
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              _buildSectionTitle('Komplexität'),
+                              const SizedBox(height: 10),
+                              Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: _buildComplexityChips(
+                                  localComplexities,
+                                  (level) {
+                                    setState(() {
+                                      if (localComplexities.contains(level)) {
+                                        localComplexities.remove(level);
+                                      } else {
+                                        localComplexities.add(level);
+                                      }
+                                    });
+                                  },
+                                ),
+                              ),
+                              const SizedBox(height: 20),
+                              _buildSectionTitle('Sonstiges'),
+                              const SizedBox(height: 10),
+                              Wrap(
+                                spacing: 10,
+                                runSpacing: 10,
+                                children: _buildMiscChips(
+                                  coopSelected: localCoop,
+                                  exklusivSelected: localExklusiv,
+                                  noveltySelected: localNovelty,
+                                  favoritesSelected: localFavorites,
+                                  onCoopToggle: (selected) {
+                                    setState(() {
+                                      localCoop = selected;
+                                    });
+                                  },
+                                  onExklusivToggle: (selected) {
+                                    setState(() {
+                                      localExklusiv = selected;
+                                    });
+                                  },
+                                  onNoveltyToggle: (selected) {
+                                    setState(() {
+                                      localNovelty = selected;
+                                    });
+                                  },
+                                  onFavoritesToggle: (selected) {
+                                    setState(() {
+                                      localFavorites = selected;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            controller.applyFilterSelections(
+                              categories: localCategories,
+                              complexities: localComplexities,
+                              coopOnly: localCoop,
+                              exklusivOnly: localExklusiv,
+                              noveltyOnly: localNovelty,
+                              favoritesOnly: localFavorites,
+                            );
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('Übernehmen'),
+                        ),
+                      ),
+                    ],
+                  );
+                }),
+              ),
+            );
+          },
         );
       },
     );
