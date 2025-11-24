@@ -21,7 +21,7 @@ class Game {
   final double complexity;
   final bool cooperative;
   final bool novelty;
-  final bool premium;
+  final bool exklusiv;
   final String link;
 
   bool favorite = false;
@@ -44,7 +44,7 @@ class Game {
     required this.complexity,
     required this.cooperative,
     required this.novelty,
-    required this.premium,
+    required this.exklusiv,
     required this.link,
   });
 
