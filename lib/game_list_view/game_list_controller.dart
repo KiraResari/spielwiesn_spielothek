@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
@@ -32,6 +34,9 @@ class GameListController extends ChangeNotifier {
   final nameController = TextEditingController();
   final playersController = TextEditingController();
   final durationController = TextEditingController();
+  static const filterDebounceDuration = Duration(milliseconds: 200);
+  static const int pageSize = 50;
+  Timer? _filterDebounce;
 
   List<GameComplexityLevel> selectedComplexityLevels = [];
   List<GameCategory> selectedCategories = [];
@@ -44,6 +49,8 @@ class GameListController extends ChangeNotifier {
   List<Game> _games = [];
   final List<Game> _favoriteGames = [];
   List<Game> filteredGames = [];
+  List<Game> visibleGames = [];
+  int _visibleCount = 0;
   String _imprint = "Impressum konnte nicht geladen werden";
   String _privacy = "Datenschutzvereinbarung konnte nicht geladen werden";
 
@@ -63,8 +70,9 @@ class GameListController extends ChangeNotifier {
   Future<void> _populateGamesList() async {
     String csvString = await _getGamesCsv();
     csvString = _sanitizeCsv(csvString);
-    _games = csvGameListParser.parseCsv(csvString);
+    _games = await compute(_parseGames, csvString);
     filteredGames = List.from(_games);
+    _resetVisibleGames();
   }
 
   Future<String> _getGamesCsv() async {
@@ -109,31 +117,59 @@ class GameListController extends ChangeNotifier {
   }
 
   void _setupListeners() {
-    nameController.addListener(filterGames);
-    playersController.addListener(filterGames);
-    durationController.addListener(filterGames);
+    nameController.addListener(_scheduleFilter);
+    playersController.addListener(_scheduleFilter);
+    durationController.addListener(_scheduleFilter);
   }
 
   void filterGames() {
     filteredGames = _games.where((game) {
+      if (showOnlyFavorites && !game.favorite) return false;
+      if (selectedCoOp.isNotEmpty && !selectedCoOp.contains(game.cooperative)) {
+        return false;
+      }
+      if (selectedExklusiv.isNotEmpty && !selectedExklusiv.contains(game.exklusiv)) {
+        return false;
+      }
+      if (selectedNovelty.isNotEmpty && !selectedNovelty.contains(game.novelty)) {
+        return false;
+      }
       return _matchesName(game) &&
           _matchesPlayers(game) &&
           _matchesDuration(game) &&
-          _matchesFavoriteFilter(game) &&
           _matchesComplexity(game) &&
-          _matchesCategory(game) &&
-          _matchesBool(selectedCoOp, game.cooperative) &&
-          _matchesBool(selectedExklusiv, game.exklusiv) &&
-          _matchesBool(selectedNovelty, game.novelty);
+          _matchesCategory(game);
     }).toList();
+    _resetVisibleGames();
+    notifyListeners();
+  }
 
+  void _scheduleFilter() {
+    _filterDebounce?.cancel();
+    _filterDebounce = Timer(filterDebounceDuration, filterGames);
+  }
+
+  void _resetVisibleGames() {
+    _visibleCount = filteredGames.length < pageSize
+        ? filteredGames.length
+        : pageSize;
+    visibleGames = filteredGames.take(_visibleCount).toList();
+  }
+
+  void loadMore() {
+    if (_visibleCount >= filteredGames.length) return;
+    final nextCount = (_visibleCount + pageSize) > filteredGames.length
+        ? filteredGames.length
+        : (_visibleCount + pageSize);
+    visibleGames = filteredGames.take(nextCount).toList();
+    _visibleCount = nextCount;
     notifyListeners();
   }
 
   bool _matchesName(Game game) {
     String name = nameController.text.trim().toLowerCase();
     return name.isEmpty ||
-        game.nameAndSearchAnchors.toLowerCase().contains(name);
+        game.searchableLower.contains(name);
   }
 
   bool _matchesPlayers(Game game) {
@@ -146,13 +182,6 @@ class GameListController extends ChangeNotifier {
     int? duration = int.tryParse(durationController.text.trim());
     return duration == null ||
         (duration >= game.minPlayTime && duration <= game.maxPlayTime);
-  }
-
-  bool _matchesFavoriteFilter(Game game) {
-    if (showOnlyFavorites && !game.favorite) {
-      return false;
-    }
-    return true;
   }
 
   bool _matchesCategory(Game game) =>
@@ -217,6 +246,23 @@ class GameListController extends ChangeNotifier {
   }
 
   bool get hasActiveFilters => activeFilterPills.isNotEmpty;
+
+  void applyFilterSelections({
+    required List<GameCategory> categories,
+    required List<GameComplexityLevel> complexities,
+    required bool coopOnly,
+    required bool exklusivOnly,
+    required bool noveltyOnly,
+    required bool favoritesOnly,
+  }) {
+    selectedCategories = List.from(categories);
+    selectedComplexityLevels = List.from(complexities);
+    selectedCoOp = coopOnly ? [true] : [];
+    selectedExklusiv = exklusivOnly ? [true] : [];
+    selectedNovelty = noveltyOnly ? [true] : [];
+    showOnlyFavorites = favoritesOnly;
+    filterGames();
+  }
 
   void removeFilterPill(_FilterPill pill) {
     switch (pill.type) {
@@ -350,9 +396,15 @@ class GameListController extends ChangeNotifier {
 
   @override
   void dispose() {
+    _filterDebounce?.cancel();
     nameController.dispose();
     playersController.dispose();
     durationController.dispose();
     super.dispose();
   }
+}
+
+List<Game> _parseGames(String csvString) {
+  final parser = CsvGameListParser();
+  return parser.parseCsv(csvString);
 }

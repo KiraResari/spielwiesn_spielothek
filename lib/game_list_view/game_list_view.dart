@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../popups/credits_popup.dart';
 import '../popups/markdown_popup.dart';
+import '../game/game.dart';
 import 'game_card.dart';
 import 'game_list_controller.dart';
 import '../game/game_category.dart';
@@ -171,6 +172,14 @@ class GameListView extends StatelessWidget {
   }
 
   void _showFilterPopup(BuildContext context, GameListController controller) {
+    var localCategories = List<GameCategory>.from(controller.selectedCategories);
+    var localComplexities =
+        List<GameComplexityLevel>.from(controller.selectedComplexityLevels);
+    var localCoop = controller.selectedCoOp.contains(true);
+    var localExklusiv = controller.selectedExklusiv.contains(true);
+    var localNovelty = controller.selectedNovelty.contains(true);
+    var localFavorites = controller.showOnlyFavorites;
+
     showDialog(
       context: context,
       builder: (context) {
@@ -186,21 +195,68 @@ class GameListView extends StatelessWidget {
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: _buildCategoryChips(controller, setState),
+                    children: _buildCategoryChips(
+                      localCategories,
+                      (category) {
+                        setState(() {
+                          if (localCategories.contains(category)) {
+                            localCategories.remove(category);
+                          } else {
+                            localCategories.add(category);
+                          }
+                        });
+                      },
+                    ),
                   ),
                   const SizedBox(height: 16),
                   _buildSectionTitle('Komplexität'),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: _buildComplexityChips(controller, setState),
+                    children: _buildComplexityChips(
+                      localComplexities,
+                      (level) {
+                        setState(() {
+                          if (localComplexities.contains(level)) {
+                            localComplexities.remove(level);
+                          } else {
+                            localComplexities.add(level);
+                          }
+                        });
+                      },
+                    ),
                   ),
                   const SizedBox(height: 16),
                   _buildSectionTitle('Sonstiges'),
                   Wrap(
                     spacing: 8,
                     runSpacing: 8,
-                    children: _buildMiscChips(controller, setState),
+                    children: _buildMiscChips(
+                      coopSelected: localCoop,
+                      exklusivSelected: localExklusiv,
+                      noveltySelected: localNovelty,
+                      favoritesSelected: localFavorites,
+                      onCoopToggle: (selected) {
+                        setState(() {
+                          localCoop = selected;
+                        });
+                      },
+                      onExklusivToggle: (selected) {
+                        setState(() {
+                          localExklusiv = selected;
+                        });
+                      },
+                      onNoveltyToggle: (selected) {
+                        setState(() {
+                          localNovelty = selected;
+                        });
+                      },
+                      onFavoritesToggle: (selected) {
+                        setState(() {
+                          localFavorites = selected;
+                        });
+                      },
+                    ),
                   ),
                 ],
               );
@@ -208,7 +264,17 @@ class GameListView extends StatelessWidget {
           ),
           actions: [
             TextButton(
-              onPressed: () => Navigator.of(context).pop(),
+              onPressed: () {
+                controller.applyFilterSelections(
+                  categories: localCategories,
+                  complexities: localComplexities,
+                  coopOnly: localCoop,
+                  exklusivOnly: localExklusiv,
+                  noveltyOnly: localNovelty,
+                  favoritesOnly: localFavorites,
+                );
+                Navigator.of(context).pop();
+              },
               child: const Text('Fertig'),
             ),
           ],
@@ -225,8 +291,8 @@ class GameListView extends StatelessWidget {
   }
 
   List<Widget> _buildCategoryChips(
-    GameListController controller,
-    StateSetter setState,
+    List<GameCategory> selectedCategories,
+    void Function(GameCategory category) onToggle,
   ) {
     List<GameCategory> selectableGameCategories = [
       GameCategory.family,
@@ -239,25 +305,24 @@ class GameListView extends StatelessWidget {
     ];
 
     return selectableGameCategories.map((category) {
-      final isSelected = controller.selectedCategories.contains(category);
+      final isSelected = selectedCategories.contains(category);
       return FilterChip(
         label: Text(category.name),
         selected: isSelected,
         selectedColor: Colors.lightGreen,
         onSelected: (_) {
-          controller.toggleCategory(category);
-          setState(() {});
+          onToggle(category);
         },
       );
     }).toList();
   }
 
   List<Widget> _buildComplexityChips(
-    GameListController controller,
-    StateSetter setState,
+    List<GameComplexityLevel> selectedComplexityLevels,
+    void Function(GameComplexityLevel level) onToggle,
   ) {
     return GameComplexityLevel.values.map((level) {
-      final isSelected = controller.selectedComplexityLevels.contains(level);
+      final isSelected = selectedComplexityLevels.contains(level);
       Color textColor = isSelected ? level.textColor : Colors.black;
       return FilterChip(
         label: Text(
@@ -269,53 +334,42 @@ class GameListView extends StatelessWidget {
         checkmarkColor: textColor,
         selected: isSelected,
         onSelected: (_) {
-          controller.toggleComplexity(level);
-          setState(() {});
+          onToggle(level);
         },
       );
     }).toList();
   }
 
-  List<Widget> _buildMiscChips(
-    GameListController controller,
-    StateSetter setState,
-  ) {
+  List<Widget> _buildMiscChips({
+    required bool coopSelected,
+    required bool exklusivSelected,
+    required bool noveltySelected,
+    required bool favoritesSelected,
+    required ValueChanged<bool> onCoopToggle,
+    required ValueChanged<bool> onExklusivToggle,
+    required ValueChanged<bool> onNoveltyToggle,
+    required ValueChanged<bool> onFavoritesToggle,
+  }) {
     return [
       FilterChip(
         label: const Text('Kooperativ'),
-        selected: controller.selectedCoOp.contains(true),
-        onSelected: (selected) {
-          controller.selectedCoOp = selected ? [true] : [];
-          controller.filterGames();
-          setState(() {});
-        },
+        selected: coopSelected,
+        onSelected: onCoopToggle,
       ),
       FilterChip(
         label: const Text('Exklusiv'),
-        selected: controller.selectedExklusiv.contains(true),
-        onSelected: (selected) {
-          controller.selectedExklusiv = selected ? [true] : [];
-          controller.filterGames();
-          setState(() {});
-        },
+        selected: exklusivSelected,
+        onSelected: onExklusivToggle,
       ),
       FilterChip(
         label: const Text('Neuheit'),
-        selected: controller.selectedNovelty.contains(true),
-        onSelected: (selected) {
-          controller.selectedNovelty = selected ? [true] : [];
-          controller.filterGames();
-          setState(() {});
-        },
+        selected: noveltySelected,
+        onSelected: onNoveltyToggle,
       ),
       FilterChip(
         label: const Text('Favoriten'),
-        selected: controller.showOnlyFavorites,
-        onSelected: (selected) {
-          controller.showOnlyFavorites = selected;
-          controller.filterGames();
-          setState(() {});
-        },
+        selected: favoritesSelected,
+        onSelected: onFavoritesToggle,
       ),
     ];
   }
@@ -393,14 +447,30 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildResultList(BuildContext context) {
-    final controller = Provider.of<GameListController>(context);
+    final controller = Provider.of<GameListController>(context, listen: false);
     return Expanded(
-      child: ListView.builder(
-        itemCount: controller.filteredGames.length,
-        itemBuilder: (context, index) {
-          final game = controller.filteredGames[index];
-          return GameCard(game);
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification.metrics.extentAfter < 200) {
+            controller.loadMore();
+          }
+          return false;
         },
+        child: Selector<GameListController, List<Game>>(
+          selector: (_, c) => c.visibleGames,
+          builder: (context, games, _) {
+            return ListView.builder(
+              itemCount: games.length,
+              itemBuilder: (context, index) {
+                final game = games[index];
+                return GameCard(
+                  game,
+                  key: ValueKey(game.identifier),
+                );
+              },
+            );
+          },
+        ),
       ),
     );
   }

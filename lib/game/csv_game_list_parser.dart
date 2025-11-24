@@ -40,6 +40,7 @@ class CsvGameListParser {
     final novelty = values[16]?.toString().isNotEmpty == true;
     final exklusiv = values[17]?.toString().isNotEmpty == true;
     final link = values[18].toString().trim();
+    final searchableLower = "$name $searchAnchors".toLowerCase();
 
     return Game(
       name: name,
@@ -61,6 +62,7 @@ class CsvGameListParser {
       novelty: novelty,
       exklusiv: exklusiv,
       link: link,
+      searchableLower: searchableLower,
     );
   }
 

@@ -23,6 +23,7 @@ class Game {
   final bool novelty;
   final bool exklusiv;
   final String link;
+  final String searchableLower;
 
   bool favorite = false;
 
@@ -46,6 +47,7 @@ class Game {
     required this.novelty,
     required this.exklusiv,
     required this.link,
+    required this.searchableLower,
   });
 
   String get nameAndSearchAnchors => "$name $searchAnchors";
