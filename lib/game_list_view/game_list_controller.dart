@@ -21,7 +21,7 @@ class _FilterPill {
 }
 
 class GameListController extends ChangeNotifier {
-  static const spielelisteDownloadUrl =
+    static const spielelisteDownloadUrl =
       'Spieleliste.csv';
       // 'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
@@ -198,7 +198,6 @@ class GameListController extends ChangeNotifier {
   List<_FilterPill> get activeFilterPills {
     final List<_FilterPill> pills = [];
 
-    // Categories (one pill per selected category when not all are selected)
     if (selectedCategories.isNotEmpty &&
         selectedCategories.length < GameCategory.values.length) {
       for (var c in selectedCategories) {
@@ -206,7 +205,6 @@ class GameListController extends ChangeNotifier {
       }
     }
 
-    // Complexity levels
     if (selectedComplexityLevels.isNotEmpty &&
         selectedComplexityLevels.length < GameComplexityLevel.values.length) {
       for (var l in selectedComplexityLevels) {
@@ -214,7 +212,6 @@ class GameListController extends ChangeNotifier {
       }
     }
 
-    // Co-Op / Premium / Novelty (boolean multi-select) - show pills for selected specific values if reduced
     if (selectedCoOp.contains(true)) {
       pills.add(_FilterPill('co_op', 'true', 'Koop'));
     }
@@ -227,12 +224,10 @@ class GameListController extends ChangeNotifier {
       pills.add(_FilterPill('novelty', 'true', 'Neuheit'));
     }
 
-    // Favorites
     if (showOnlyFavorites) {
       pills.add(_FilterPill('favorite', 'Favoriten', 'Favoriten'));
     }
 
-    // Players and duration
     if (playersController.text.trim().isNotEmpty) {
       final value = playersController.text.trim();
       pills.add(_FilterPill('players', value, 'Spieler: $value'));
