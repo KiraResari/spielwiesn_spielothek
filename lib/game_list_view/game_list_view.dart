@@ -38,6 +38,7 @@ class GameListView extends StatelessWidget {
         child: Column(
           children: [
             _buildFilterSection(context),
+            const SizedBox(height: 16),
             _buildResultList(context),
           ],
         ),
@@ -76,29 +77,33 @@ class GameListView extends StatelessWidget {
 
   Widget _buildFilterSection(BuildContext context) {
     final controller = Provider.of<GameListController>(context);
+    final filterCount = controller.activeFilterPills.length;
     return Column(
       children: [
-        _buildSearchBar('Name', controller.nameController, controller),
-        const SizedBox(height: 8),
-        AnimatedCrossFade(
-          duration: const Duration(milliseconds: 200),
-          crossFadeState: controller.showFilters
-              ? CrossFadeState.showSecond
-              : CrossFadeState.showFirst,
-          firstChild: const SizedBox.shrink(),
-          secondChild: Column(
-            children: [
-              _buildDoubleFieldRow(
-                'Spieleranzahl',
-                controller.playersController,
-                'Dauer (Minuten)',
-                controller.durationController,
-                controller,
+        Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: controller.nameController,
+                decoration: InputDecoration(
+                  labelText: 'Name',
+                  suffixIcon: IconButton(
+                    icon: const Icon(Icons.clear),
+                    onPressed: () => controller.clearField(controller.nameController),
+                  ),
+                ),
               ),
-            ],
-          ),
+            ),
+            const SizedBox(width: 8),
+            _buildFilterButtonWithBadge(
+              count: filterCount,
+              onPressed: () => _showFilterPopup(context, controller),
+              label: 'Filter',
+            ),
+          ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: 8),
+        const SizedBox(height: 8),
         _buildFilterRow(context, controller),
       ],
     );
@@ -108,36 +113,19 @@ class GameListView extends StatelessWidget {
     final theme = Theme.of(context);
     final pills = controller.activeFilterPills;
     final filterCount = pills.length;
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Row(
       children: [
-        Row(
-          children: [
-            Text(
-              filterCount > 0 ? 'Filter ($filterCount)' : 'Filter',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const Spacer(),
-            Text('${controller.filteredGames.length} Treffer'),
-          ],
+        Text(
+          '${controller.filteredGames.length} Treffer',
+          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
-        const SizedBox(height: 8),
-        Wrap(
-          spacing: 8,
-          runSpacing: 8,
-          children: [
-            _buildFilterButtonWithBadge(
-              count: filterCount,
-              onPressed: () => _showFilterPopup(context, controller),
-            ),
-            if (controller.hasActiveFilters)
-              OutlinedButton.icon(
-                onPressed: () => controller.clearAllFilters(),
-                icon: const Icon(Icons.refresh),
-                label: const Text('Zurücksetzen'),
-              ),
-          ],
-        ),
+        const Spacer(),
+        if (controller.hasActiveFilters)
+          OutlinedButton.icon(
+            onPressed: () => controller.clearAllFilters(),
+            icon: const Icon(Icons.refresh),
+            label: const Text('Filter zurücksetzen'),
+          ),
       ],
     );
   }
@@ -195,21 +183,26 @@ class GameListView extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              _buildSectionTitle('Grunddaten'),
+                              const SizedBox(height: 10),
+                              _buildDoubleFieldRow(
+                                'Spieleranzahl',
+                                controller.playersController,
+                                'Dauer (Minuten)',
+                                controller.durationController,
+                                controller,
+                              ),
+                              const SizedBox(height: 20),
                               _buildSectionTitle('Kategorie'),
                               const SizedBox(height: 10),
                               Wrap(
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: _buildCategoryChips(
-                                  localCategories,
+                                  controller.selectedCategories,
                                   (category) {
-                                    setState(() {
-                                      if (localCategories.contains(category)) {
-                                        localCategories.remove(category);
-                                      } else {
-                                        localCategories.add(category);
-                                      }
-                                    });
+                                    controller.toggleCategory(category);
+                                    setState(() {});
                                   },
                                 ),
                               ),
@@ -220,15 +213,10 @@ class GameListView extends StatelessWidget {
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: _buildComplexityChips(
-                                  localComplexities,
+                                  controller.selectedComplexityLevels,
                                   (level) {
-                                    setState(() {
-                                      if (localComplexities.contains(level)) {
-                                        localComplexities.remove(level);
-                                      } else {
-                                        localComplexities.add(level);
-                                      }
-                                    });
+                                    controller.toggleComplexity(level);
+                                    setState(() {});
                                   },
                                 ),
                               ),
@@ -239,52 +227,34 @@ class GameListView extends StatelessWidget {
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: _buildMiscChips(
-                                  coopSelected: localCoop,
-                                  exklusivSelected: localExklusiv,
-                                  noveltySelected: localNovelty,
-                                  favoritesSelected: localFavorites,
+                                  coopSelected: controller.selectedCoOp.contains(true),
+                                  exklusivSelected: controller.selectedExklusiv.contains(true),
+                                  noveltySelected: controller.selectedNovelty.contains(true),
+                                  favoritesSelected: controller.showOnlyFavorites,
                                   onCoopToggle: (selected) {
-                                    setState(() {
-                                      localCoop = selected;
-                                    });
+                                    controller.selectedCoOp = selected ? [true] : [];
+                                    controller.filterGames();
+                                    setState(() {});
                                   },
                                   onExklusivToggle: (selected) {
-                                    setState(() {
-                                      localExklusiv = selected;
-                                    });
+                                    controller.selectedExklusiv = selected ? [true] : [];
+                                    controller.filterGames();
+                                    setState(() {});
                                   },
                                   onNoveltyToggle: (selected) {
-                                    setState(() {
-                                      localNovelty = selected;
-                                    });
+                                    controller.selectedNovelty = selected ? [true] : [];
+                                    controller.filterGames();
+                                    setState(() {});
                                   },
                                   onFavoritesToggle: (selected) {
-                                    setState(() {
-                                      localFavorites = selected;
-                                    });
+                                    controller.showOnlyFavorites = selected;
+                                    controller.filterGames();
+                                    setState(() {});
                                   },
                                 ),
                               ),
                             ],
                           ),
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      SizedBox(
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            controller.applyFilterSelections(
-                              categories: localCategories,
-                              complexities: localComplexities,
-                              coopOnly: localCoop,
-                              exklusivOnly: localExklusiv,
-                              noveltyOnly: localNovelty,
-                              favoritesOnly: localFavorites,
-                            );
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('Übernehmen'),
                         ),
                       ),
                     ],
@@ -392,6 +362,7 @@ class GameListView extends StatelessWidget {
   Widget _buildFilterButtonWithBadge({
     required int count,
     required VoidCallback onPressed,
+    String label = 'Filter hinzufügen',
   }) {
     return Stack(
       clipBehavior: Clip.none,
@@ -399,7 +370,7 @@ class GameListView extends StatelessWidget {
         ElevatedButton.icon(
           onPressed: onPressed,
           icon: const Icon(Icons.tune),
-          label: const Text('Filter hinzufügen'),
+          label: Text(label),
         ),
         if (count > 0)
           Positioned(
@@ -421,34 +392,6 @@ class GameListView extends StatelessWidget {
               ),
             ),
           ),
-      ],
-    );
-  }
-
-  Widget _buildSearchBar(
-    String label,
-    TextEditingController controller,
-    GameListController filterController,
-  ) {
-    return Row(
-      children: [
-        Expanded(
-          child: TextField(
-            controller: controller,
-            decoration: InputDecoration(
-              labelText: label,
-              suffixIcon: IconButton(
-                icon: const Icon(Icons.clear),
-                onPressed: () => filterController.clearField(controller),
-              ),
-            ),
-          ),
-        ),
-        IconButton(
-          icon: Icon(filterController.showFilters ? Icons.expand_less : Icons.expand_more),
-          onPressed: () => filterController.toggleFilters(),
-          tooltip: filterController.showFilters ? 'Filter ausblenden' : 'Filter einblenden',
-        ),
       ],
     );
   }

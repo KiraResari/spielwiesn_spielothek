@@ -11,6 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  cupertino_icons: ^1.0.8
   provider: ^6.1.2
   csv: ^6.0.0
   http: ^1.5.0

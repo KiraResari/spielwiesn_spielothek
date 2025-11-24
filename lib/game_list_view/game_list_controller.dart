@@ -22,8 +22,7 @@ class _FilterPill {
 
 class GameListController extends ChangeNotifier {
     static const spielelisteDownloadUrl =
-      'Spieleliste.csv';
-      // 'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
+      'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
   static const imprintPath = "assets/Imprint.md";
   static const privacyPath = "assets/Privacy.md";
