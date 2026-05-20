@@ -12,16 +12,10 @@ import '../game/csv_game_list_parser.dart';
 import '../game/game.dart';
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
-
-class _FilterPill {
-  final String type;
-  final String value;
-  final String label;
-  _FilterPill(this.type, this.value, this.label);
-}
+import 'game_filter.dart';
 
 class GameListController extends ChangeNotifier {
-    static const spielelisteDownloadUrl =
+  static const spielelisteDownloadUrl =
       'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
   static const imprintPath = "assets/Imprint.md";
@@ -127,10 +121,12 @@ class GameListController extends ChangeNotifier {
       if (selectedCoOp.isNotEmpty && !selectedCoOp.contains(game.cooperative)) {
         return false;
       }
-      if (selectedExklusiv.isNotEmpty && !selectedExklusiv.contains(game.exklusiv)) {
+      if (selectedExklusiv.isNotEmpty &&
+          !selectedExklusiv.contains(game.exklusiv)) {
         return false;
       }
-      if (selectedNovelty.isNotEmpty && !selectedNovelty.contains(game.novelty)) {
+      if (selectedNovelty.isNotEmpty &&
+          !selectedNovelty.contains(game.novelty)) {
         return false;
       }
       return _matchesName(game) &&
@@ -149,9 +145,8 @@ class GameListController extends ChangeNotifier {
   }
 
   void _resetVisibleGames() {
-    _visibleCount = filteredGames.length < pageSize
-        ? filteredGames.length
-        : pageSize;
+    _visibleCount =
+        filteredGames.length < pageSize ? filteredGames.length : pageSize;
     visibleGames = filteredGames.take(_visibleCount).toList();
   }
 
@@ -167,8 +162,7 @@ class GameListController extends ChangeNotifier {
 
   bool _matchesName(Game game) {
     String name = nameController.text.trim().toLowerCase();
-    return name.isEmpty ||
-        game.searchableLower.contains(name);
+    return name.isEmpty || game.searchableLower.contains(name);
   }
 
   bool _matchesPlayers(Game game) {
@@ -184,62 +178,60 @@ class GameListController extends ChangeNotifier {
   }
 
   bool _matchesCategory(Game game) =>
-      selectedCategories.isEmpty ||
-      selectedCategories.contains(game.category);
+      selectedCategories.isEmpty || selectedCategories.contains(game.category);
 
   bool _matchesComplexity(Game game) =>
       selectedComplexityLevels.isEmpty ||
       selectedComplexityLevels.contains(game.complexityLevel);
 
-  bool _matchesBool(List<bool> selectedValues, bool value) =>
-      selectedValues.isEmpty || selectedValues.contains(value);
-
-  List<_FilterPill> get activeFilterPills {
-    final List<_FilterPill> pills = [];
+  List<GameFilter> get activeFilters {
+    List<GameFilter> activeFilters = [];
 
     if (selectedCategories.isNotEmpty &&
         selectedCategories.length < GameCategory.values.length) {
       for (var c in selectedCategories) {
-        pills.add(_FilterPill('category', c.name, 'Kategorie: ${c.name}'));
+        activeFilters
+            .add(GameFilter('category', c.name, 'Kategorie: ${c.name}'));
       }
     }
 
     if (selectedComplexityLevels.isNotEmpty &&
         selectedComplexityLevels.length < GameComplexityLevel.values.length) {
       for (var l in selectedComplexityLevels) {
-        pills.add(_FilterPill('complexity', l.displayName, 'Komplexität: ${l.displayName}'));
+        activeFilters.add(GameFilter(
+            'complexity', l.displayName, 'Komplexität: ${l.displayName}'));
       }
     }
 
     if (selectedCoOp.contains(true)) {
-      pills.add(_FilterPill('co_op', 'true', 'Koop'));
+      activeFilters.add(GameFilter('co_op', 'true', 'Koop'));
     }
 
     if (selectedExklusiv.contains(true)) {
-      pills.add(_FilterPill('exklusiv', 'true', 'Exklusiv'));
+      activeFilters.add(GameFilter('exklusiv', 'true', 'Exklusiv'));
     }
 
     if (selectedNovelty.contains(true)) {
-      pills.add(_FilterPill('novelty', 'true', 'Neuheit'));
+      activeFilters.add(GameFilter('novelty', 'true', 'Neuheit'));
     }
 
     if (showOnlyFavorites) {
-      pills.add(_FilterPill('favorite', 'Favoriten', 'Favoriten'));
+      activeFilters.add(GameFilter('favorite', 'Favoriten', 'Favoriten'));
     }
 
     if (playersController.text.trim().isNotEmpty) {
       final value = playersController.text.trim();
-      pills.add(_FilterPill('players', value, 'Spieler: $value'));
+      activeFilters.add(GameFilter('players', value, 'Spieler: $value'));
     }
     if (durationController.text.trim().isNotEmpty) {
       final value = durationController.text.trim();
-      pills.add(_FilterPill('duration', value, 'Dauer: ${value} min'));
+      activeFilters.add(GameFilter('duration', value, 'Dauer: ${value} min'));
     }
 
-    return pills;
+    return activeFilters;
   }
 
-  bool get hasActiveFilters => activeFilterPills.isNotEmpty;
+  bool get hasActiveFilters => activeFilters.isNotEmpty;
 
   void applyFilterSelections({
     required List<GameCategory> categories,
@@ -258,32 +250,34 @@ class GameListController extends ChangeNotifier {
     filterGames();
   }
 
-  void removeFilterPill(_FilterPill pill) {
-    switch (pill.type) {
+  void removeFilter(GameFilter filter) {
+    switch (filter.type) {
       case 'category':
-        final match = GameCategory.values
-            .firstWhere((c) => c.name == pill.value, orElse: () => GameCategory.unknown);
+        final match = GameCategory.values.firstWhere(
+            (c) => c.name == filter.value,
+            orElse: () => GameCategory.unknown);
         if (selectedCategories.contains(match)) {
           selectedCategories.remove(match);
         }
         break;
       case 'complexity':
-        final match = GameComplexityLevel.values
-            .firstWhere((l) => l.displayName == pill.value, orElse: () => GameComplexityLevel.simple);
+        final match = GameComplexityLevel.values.firstWhere(
+            (l) => l.displayName == filter.value,
+            orElse: () => GameComplexityLevel.simple);
         if (selectedComplexityLevels.contains(match)) {
           selectedComplexityLevels.remove(match);
         }
         break;
       case 'co_op':
-        final b = pill.value.toLowerCase() == 'true';
+        final b = filter.value.toLowerCase() == 'true';
         if (selectedCoOp.contains(b)) selectedCoOp.remove(b);
         break;
       case 'exklusiv':
-        final b = pill.value.toLowerCase() == 'true';
+        final b = filter.value.toLowerCase() == 'true';
         if (selectedExklusiv.contains(b)) selectedExklusiv.remove(b);
         break;
       case 'novelty':
-        final b = pill.value.toLowerCase() == 'true';
+        final b = filter.value.toLowerCase() == 'true';
         if (selectedNovelty.contains(b)) selectedNovelty.remove(b);
         break;
       case 'favorite':

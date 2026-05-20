@@ -17,7 +17,8 @@ class GameListView extends StatelessWidget {
   static const privacyTitle = "Datenschutzerklärung";
   static const creditsTitle = "Credits";
 
-  const GameListView({Key? key}) : super(key: key);
+  const GameListView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
@@ -77,7 +78,7 @@ class GameListView extends StatelessWidget {
 
   Widget _buildFilterSection(BuildContext context) {
     final controller = Provider.of<GameListController>(context);
-    final filterCount = controller.activeFilterPills.length;
+    final filterCount = controller.activeFilters.length;
     return Column(
       children: [
         Row(
@@ -89,7 +90,8 @@ class GameListView extends StatelessWidget {
                   labelText: 'Name',
                   suffixIcon: IconButton(
                     icon: const Icon(Icons.clear),
-                    onPressed: () => controller.clearField(controller.nameController),
+                    onPressed: () =>
+                        controller.clearField(controller.nameController),
                   ),
                 ),
               ),
@@ -104,23 +106,31 @@ class GameListView extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         const SizedBox(height: 8),
-        _buildFilterRow(context, controller),
+        _buildFilterRow(context),
       ],
     );
   }
 
-  Widget _buildFilterRow(BuildContext context, GameListController controller) {
-    final theme = Theme.of(context);
-    final pills = controller.activeFilterPills;
-    final filterCount = pills.length;
-    return Row(
+  Widget _buildFilterRow(BuildContext context) {
+    ThemeData theme = Theme.of(context);
+    GameListController controller = context.read<GameListController>();
+    bool areFiltersActive =
+        context.watch<GameListController>().hasActiveFilters;
+    bool isSearchFieldFilled =
+        context.watch<GameListController>().nameController.text.isNotEmpty;
+    int filteredGamesCount =
+        context.watch<GameListController>().filteredGames.length;
+    return Wrap(
       children: [
         Text(
-          '${controller.filteredGames.length} Treffer',
-          style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+          areFiltersActive || isSearchFieldFilled
+              ? "$filteredGamesCount Treffer zu den aktiven Filtern"
+              : "Wir haben insgesamt $filteredGamesCount Spiele",
+          style:
+              theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
         ),
         const Spacer(),
-        if (controller.hasActiveFilters)
+        if (areFiltersActive)
           OutlinedButton.icon(
             onPressed: () => controller.clearAllFilters(),
             icon: const Icon(Icons.refresh),
@@ -131,14 +141,6 @@ class GameListView extends StatelessWidget {
   }
 
   void _showFilterPopup(BuildContext context, GameListController controller) {
-    var localCategories = List<GameCategory>.from(controller.selectedCategories);
-    var localComplexities =
-        List<GameComplexityLevel>.from(controller.selectedComplexityLevels);
-    var localCoop = controller.selectedCoOp.contains(true);
-    var localExklusiv = controller.selectedExklusiv.contains(true);
-    var localNovelty = controller.selectedNovelty.contains(true);
-    var localFavorites = controller.showOnlyFavorites;
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -227,22 +229,29 @@ class GameListView extends StatelessWidget {
                                 spacing: 10,
                                 runSpacing: 10,
                                 children: _buildMiscChips(
-                                  coopSelected: controller.selectedCoOp.contains(true),
-                                  exklusivSelected: controller.selectedExklusiv.contains(true),
-                                  noveltySelected: controller.selectedNovelty.contains(true),
-                                  favoritesSelected: controller.showOnlyFavorites,
+                                  coopSelected:
+                                      controller.selectedCoOp.contains(true),
+                                  exklusivSelected: controller.selectedExklusiv
+                                      .contains(true),
+                                  noveltySelected:
+                                      controller.selectedNovelty.contains(true),
+                                  favoritesSelected:
+                                      controller.showOnlyFavorites,
                                   onCoopToggle: (selected) {
-                                    controller.selectedCoOp = selected ? [true] : [];
+                                    controller.selectedCoOp =
+                                        selected ? [true] : [];
                                     controller.filterGames();
                                     setState(() {});
                                   },
                                   onExklusivToggle: (selected) {
-                                    controller.selectedExklusiv = selected ? [true] : [];
+                                    controller.selectedExklusiv =
+                                        selected ? [true] : [];
                                     controller.filterGames();
                                     setState(() {});
                                   },
                                   onNoveltyToggle: (selected) {
-                                    controller.selectedNovelty = selected ? [true] : [];
+                                    controller.selectedNovelty =
+                                        selected ? [true] : [];
                                     controller.filterGames();
                                     setState(() {});
                                   },
