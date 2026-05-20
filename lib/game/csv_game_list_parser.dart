@@ -38,8 +38,9 @@ class CsvGameListParser {
     final complexity = double.tryParse(values[14].toString()) ?? 0.0;
     final cooperative = values[15]?.toString().isNotEmpty == true;
     final novelty = values[16]?.toString().isNotEmpty == true;
-    final premium = values[17]?.toString().isNotEmpty == true;
+    final exklusiv = values[17]?.toString().isNotEmpty == true;
     final link = values[18].toString().trim();
+    final searchableLower = "$name $searchAnchors".toLowerCase();
 
     return Game(
       name: name,
@@ -59,8 +60,9 @@ class CsvGameListParser {
       complexity: complexity,
       cooperative: cooperative,
       novelty: novelty,
-      premium: premium,
+      exklusiv: exklusiv,
       link: link,
+      searchableLower: searchableLower,
     );
   }
 

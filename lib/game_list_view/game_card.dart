@@ -28,7 +28,7 @@ class GameCard extends StatelessWidget {
               ],
             ),
           ),
-          if (game.premium) _buildPremiumCorner(),
+          if (game.exklusiv) _buildExklusivCorner(),
           if (game.novelty) _buildNoveltyCorner(),
           if (game.rating > 0) _buildRatingCorner(),
         ],
@@ -109,7 +109,7 @@ class GameCard extends StatelessWidget {
     );
   }
 
-  Positioned _buildPremiumCorner() {
+  Positioned _buildExklusivCorner() {
     return Positioned(
       bottom: 0,
       left: 0,
@@ -123,7 +123,7 @@ class GameCard extends StatelessWidget {
           ),
         ),
         child: const Text(
-          "Exclusiv",
+          "Exklusiv",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

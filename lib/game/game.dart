@@ -21,8 +21,9 @@ class Game {
   final double complexity;
   final bool cooperative;
   final bool novelty;
-  final bool premium;
+  final bool exklusiv;
   final String link;
+  final String searchableLower;
 
   bool favorite = false;
 
@@ -44,8 +45,9 @@ class Game {
     required this.complexity,
     required this.cooperative,
     required this.novelty,
-    required this.premium,
+    required this.exklusiv,
     required this.link,
+    required this.searchableLower,
   });
 
   String get nameAndSearchAnchors => "$name $searchAnchors";

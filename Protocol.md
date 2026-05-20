@@ -223,7 +223,7 @@
       14: Complexity => complexity (new double field)
       15: Cooperative flag => cooperative (new boolean field, that should be true if there's any value in that column, and false if the column is empty)
       16: Novelty flag => novelty (new boolean field, that should be true if there's any value in that column, and false if the column is empty)
-      17: Premium flag => premium (new boolean field, that should be true if there's any value in that column, and false if the column is empty)
+17: Exklusiv flag => exklusiv (boolean field, true if there's any value in that column, false if the column is empty)
       18: Link => link (new string field)
       ````
 
