@@ -4,17 +4,18 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
+import '../getIt.dart';
+import '../utils/shared_preferences_wrapper.dart';
 import 'csv_game_list_parser.dart';
 import 'game.dart';
 
-class GameRepository{
+class GameRepository {
   static const spielelisteDownloadUrl =
       'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
-  static const gameListCacheKey = 'spielwiesn_spielothek_spieleliste';
-  static const favoritesCacheKey = 'spielwiesn_spielothek_favoriten';
   static const csvPath = "assets/Spieleliste.csv";
+
+  final sharedPreferencesWrapper = getIt.get<SharedPreferencesWrapper>();
 
   List<Game> _games = [];
   final List<Game> _favoriteGames = [];
@@ -32,6 +33,26 @@ class GameRepository{
     _games = await compute(_parseGames, csvString);
   }
 
+  Future<String> _getGamesCsv() async {
+    try {
+      http.Response response =
+          await http.get(Uri.parse(spielelisteDownloadUrl));
+
+      if (response.statusCode == 200) {
+        String csv = utf8.decode(response.bodyBytes);
+        await sharedPreferencesWrapper.setGamesCsv(csv);
+        return csv;
+      }
+    } catch (e) {
+      stderr.writeln("Error while trying to download latest game csv: $e");
+    }
+    String? cachedCsv = await sharedPreferencesWrapper.gamesCsv;
+    if (cachedCsv != null && cachedCsv.isNotEmpty) {
+      return cachedCsv;
+    }
+    return rootBundle.loadString(csvPath);
+  }
+
   String _sanitizeCsv(String csv) {
     if (csv.startsWith('\uFEFF')) {
       csv = csv.substring(1);
@@ -44,29 +65,8 @@ class GameRepository{
     return parser.parseCsv(csvString);
   }
 
-  Future<String> _getGamesCsv() async {
-    final prefs = await SharedPreferences.getInstance();
-    try {
-      final response = await http.get(Uri.parse(spielelisteDownloadUrl));
-
-      if (response.statusCode == 200) {
-        final csv = utf8.decode(response.bodyBytes);
-        await prefs.setString(gameListCacheKey, csv);
-        return csv;
-      }
-    } catch (e) {
-      stderr.writeln("Error while trying to download latest game csv: $e");
-    }
-    final cachedCsv = prefs.getString(gameListCacheKey);
-    if (cachedCsv != null && cachedCsv.isNotEmpty) {
-      return cachedCsv;
-    }
-    return rootBundle.loadString(csvPath);
-  }
-
   Future<void> _loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cachedFavIds = prefs.getStringList(favoritesCacheKey) ?? [];
+    List<String> cachedFavIds = await sharedPreferencesWrapper.favIds;
     _favoriteGames.clear();
     for (String cachedFavId in cachedFavIds) {
       for (Game game in _games) {
@@ -87,8 +87,7 @@ class GameRepository{
   }
 
   Future<void> _saveFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final identifiers = _favoriteGames.map((g) => g.identifier).toList();
-    await prefs.setStringList(favoritesCacheKey, identifiers);
+    List<String> identifiers = _favoriteGames.map((g) => g.identifier).toList();
+    await sharedPreferencesWrapper.setFavIds(identifiers);
   }
 }
