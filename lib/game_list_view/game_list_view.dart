@@ -38,7 +38,6 @@ class GameListView extends StatelessWidget {
         child: Column(
           children: [
             _buildFilterSection(context),
-            const SizedBox(height: 16),
             _buildResultList(context),
           ],
         ),
@@ -76,38 +75,74 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildFilterSection(BuildContext context) {
-    int filterCount = context.watch<GameListController>().activeFilters.length;
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _buildSearchField(context),
-            ),
-            const SizedBox(width: 8),
-            _buildFilterButton(
-              count: filterCount,
-              onPressed: () => _showFilterPopup(context),
-              label: 'Filter',
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
+        _buildSearchFieldAndFilterButtonRow(context),
         const SizedBox(height: 8),
         _buildResultCountAndFilterResetButtonBlock(context),
       ],
     );
   }
 
-  TextField _buildSearchField(BuildContext context) {
+  Row _buildSearchFieldAndFilterButtonRow(BuildContext context) {
+    return Row(
+      children: [
+        _buildSearchField(context),
+        const SizedBox(width: 8),
+        _buildFilterButton(context),
+      ],
+    );
+  }
+
+  Widget _buildSearchField(BuildContext context) {
     GameListController controller = context.read<GameListController>();
-    return TextField(
-      controller: controller.nameController,
-      decoration: InputDecoration(
-        labelText: 'Name',
-        suffixIcon: IconButton(
-          icon: const Icon(Icons.clear),
-          onPressed: () => controller.clearField(controller.nameController),
+    return Expanded(
+      child: TextField(
+        controller: controller.nameController,
+        decoration: InputDecoration(
+          labelText: 'Name',
+          suffixIcon: IconButton(
+            icon: const Icon(Icons.clear),
+            onPressed: () => controller.clearField(controller.nameController),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildFilterButton(BuildContext context) {
+    int filterCount = context.watch<GameListController>().activeFilters.length;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () => _showFilterPopup(context),
+          icon: const Icon(Icons.tune),
+          label: Text("Filter"),
+        ),
+        if (filterCount > 0) _buildActiveFilterCountBubble(filterCount),
+      ],
+    );
+  }
+
+  Positioned _buildActiveFilterCountBubble(int filterCount) {
+    return Positioned(
+      right: -6,
+      top: -6,
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.redAccent,
+          borderRadius: BorderRadius.circular(999),
+        ),
+        child: Text(
+          '$filterCount',
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );
@@ -159,45 +194,8 @@ class GameListView extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterButton({
-    required int count,
-    required VoidCallback onPressed,
-    String label = 'Filter hinzufügen',
-  }) {
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        ElevatedButton.icon(
-          onPressed: onPressed,
-          icon: const Icon(Icons.tune),
-          label: Text(label),
-        ),
-        if (count > 0)
-          Positioned(
-            right: -6,
-            top: -6,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.redAccent,
-                borderRadius: BorderRadius.circular(999),
-              ),
-              child: Text(
-                '$count',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-      ],
-    );
-  }
-
   Widget _buildResultList(BuildContext context) {
-    final controller = Provider.of<GameListController>(context, listen: false);
+    GameListController controller = context.read<GameListController>();
     return Expanded(
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
@@ -206,22 +204,26 @@ class GameListView extends StatelessWidget {
           }
           return false;
         },
-        child: Selector<GameListController, List<Game>>(
-          selector: (_, c) => c.visibleGames,
-          builder: (context, games, _) {
-            return ListView.builder(
-              itemCount: games.length,
-              itemBuilder: (context, index) {
-                final game = games[index];
-                return GameCard(
-                  game,
-                  key: ValueKey(game.identifier),
-                );
-              },
+        child: _buildGameListSelector(),
+      ),
+    );
+  }
+
+  Selector<GameListController, List<Game>> _buildGameListSelector() {
+    return Selector<GameListController, List<Game>>(
+      selector: (_, controller) => controller.visibleGames,
+      builder: (context, games, _) {
+        return ListView.builder(
+          itemCount: games.length,
+          itemBuilder: (context, index) {
+            Game game = games[index];
+            return GameCard(
+              game,
+              key: ValueKey(game.identifier),
             );
           },
-        ),
-      ),
+        );
+      },
     );
   }
 }
