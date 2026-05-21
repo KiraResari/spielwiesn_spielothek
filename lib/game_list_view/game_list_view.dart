@@ -12,9 +12,11 @@ class GameListView extends StatelessWidget {
   static const imprintKey = "imprint";
   static const privacyKey = "privacy";
   static const creditsKey = "credits";
+  static const licencesKey = "licenses";
   static const imprintTitle = "Impressum";
   static const privacyTitle = "Datenschutzerklärung";
   static const creditsTitle = "Credits";
+  static const licencesTitle = "Lizenzen";
 
   const GameListView({super.key});
 
@@ -31,7 +33,7 @@ class GameListView extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Spielwiesn Spielothek"),
         backgroundColor: Colors.orange,
-        actions: [_buildPopupMenuButton(context)],
+        actions: [_buildMenuButton(context)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -45,16 +47,23 @@ class GameListView extends StatelessWidget {
     );
   }
 
-  PopupMenuButton<String> _buildPopupMenuButton(BuildContext context) {
+  PopupMenuButton<String> _buildMenuButton(BuildContext context) {
     var controller = Provider.of<GameListController>(context, listen: false);
     return PopupMenuButton<String>(
       onSelected: (String value) {
-        if (value == imprintKey) {
-          showMarkdownPopup(context, imprintTitle, controller.imprint);
-        } else if (value == privacyKey) {
-          showMarkdownPopup(context, privacyTitle, controller.privacy);
-        } else if (value == creditsKey) {
-          showCreditsPopup(context);
+        switch (value) {
+          case imprintKey:
+            showMarkdownPopup(context, imprintTitle, controller.imprint);
+            break;
+          case privacyKey:
+            showMarkdownPopup(context, privacyTitle, controller.privacy);
+            break;
+          case creditsKey:
+            showCreditsPopup(context);
+            break;
+          case licencesKey:
+            showLicensePage(context: context);
+            break;
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -69,6 +78,10 @@ class GameListView extends StatelessWidget {
         const PopupMenuItem<String>(
           value: creditsKey,
           child: Text(creditsTitle),
+        ),
+        const PopupMenuItem<String>(
+          value: licencesKey,
+          child: Text(licencesTitle),
         ),
       ],
     );
