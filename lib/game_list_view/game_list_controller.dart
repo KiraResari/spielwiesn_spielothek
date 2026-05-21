@@ -225,7 +225,7 @@ class GameListController extends ChangeNotifier {
     }
     if (durationController.text.trim().isNotEmpty) {
       final value = durationController.text.trim();
-      activeFilters.add(GameFilter('duration', value, 'Dauer: ${value} min'));
+      activeFilters.add(GameFilter('duration', value, 'Dauer: $value min'));
     }
 
     return activeFilters;

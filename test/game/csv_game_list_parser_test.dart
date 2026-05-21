@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:spielwiesn_spielothek/game/csv_game_list_parser.dart';
 import 'package:spielwiesn_spielothek/game/game.dart';
 
-main (){
+void main (){
   TestWidgetsFlutterBinding.ensureInitialized();
 
   test("parsing full Spieleliste should work",
