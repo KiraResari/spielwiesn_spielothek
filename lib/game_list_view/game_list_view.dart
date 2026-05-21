@@ -153,6 +153,7 @@ class GameListView extends StatelessWidget {
     bool areFiltersActive =
         context.watch<GameListController>().hasActiveFilters;
     return Wrap(
+      alignment: WrapAlignment.center,
       children: [
         _buildResultText(context),
         const Spacer(),
@@ -168,18 +169,30 @@ class GameListView extends StatelessWidget {
 
   Text _buildResultText(BuildContext context) {
     ThemeData theme = Theme.of(context);
+    String resultText = _determineResultText(context);
+    return Text(
+      resultText,
+      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
+    );
+  }
+
+  String _determineResultText(BuildContext context) {
     bool areFiltersActive =
         context.watch<GameListController>().hasActiveFilters;
     bool isSearchFieldFilled =
         context.watch<GameListController>().nameController.text.isNotEmpty;
     int filteredGamesCount =
         context.watch<GameListController>().filteredGames.length;
-    return Text(
-      areFiltersActive || isSearchFieldFilled
-          ? "$filteredGamesCount Treffer zu den aktiven Filtern"
-          : "Wir haben insgesamt $filteredGamesCount Spiele",
-      style: theme.textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-    );
+    if (areFiltersActive || isSearchFieldFilled) {
+      if (filteredGamesCount == 0) {
+        return "Keine Treffer zu den aktiven Filtern";
+      }
+      return "$filteredGamesCount Treffer zu den aktiven Filtern";
+    }
+    if (filteredGamesCount == 0) {
+      return "Spiele werden geladen...";
+    }
+    return "Wir haben insgesamt $filteredGamesCount Spiele";
   }
 
   void _showFilterPopup(BuildContext context) {

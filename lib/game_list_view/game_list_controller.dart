@@ -1,32 +1,25 @@
 import 'dart:async';
-import 'dart:convert';
-import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../game/csv_game_list_parser.dart';
 import '../game/game.dart';
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
+import '../getIt.dart';
 import 'game_filter.dart';
+import '../game/game_repository.dart';
 
 class GameListController extends ChangeNotifier {
-  static const spielelisteDownloadUrl =
-      'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
-  static const csvPath = "assets/Spieleliste.csv";
   static const imprintPath = "assets/Imprint.md";
   static const privacyPath = "assets/Privacy.md";
-  static const gameListCacheKey = 'spielwiesn_spielothek_spieleliste';
-  static const favoritesCacheKey = 'spielwiesn_spielothek_favoriten';
 
   final csvGameListParser = CsvGameListParser();
   final nameController = TextEditingController();
   final playersController = TextEditingController();
   final durationController = TextEditingController();
+  final GameRepository gameRepository = getIt.get<GameRepository>();
   static const filterDebounceDuration = Duration(milliseconds: 200);
   static const int pageSize = 50;
   Timer? _filterDebounce;
@@ -39,8 +32,6 @@ class GameListController extends ChangeNotifier {
   bool showOnlyFavorites = false;
   bool showFilters = true;
 
-  List<Game> _games = [];
-  final List<Game> _favoriteGames = [];
   List<Game> filteredGames = [];
   List<Game> visibleGames = [];
   int _visibleCount = 0;
@@ -52,61 +43,13 @@ class GameListController extends ChangeNotifier {
   }
 
   Future<void> _init() async {
-    await _populateGamesList();
-    await _loadFavorites();
     _imprint = await rootBundle.loadString(imprintPath);
     _privacy = await rootBundle.loadString(privacyPath);
+    await gameRepository.initialize();
+    filteredGames = List.from(gameRepository.games);
     _setupListeners();
-    notifyListeners();
-  }
-
-  Future<void> _populateGamesList() async {
-    String csvString = await _getGamesCsv();
-    csvString = _sanitizeCsv(csvString);
-    _games = await compute(_parseGames, csvString);
-    filteredGames = List.from(_games);
     _resetVisibleGames();
-  }
-
-  Future<String> _getGamesCsv() async {
-    final prefs = await SharedPreferences.getInstance();
-    try {
-      final response = await http.get(Uri.parse(spielelisteDownloadUrl));
-
-      if (response.statusCode == 200) {
-        final csv = utf8.decode(response.bodyBytes);
-        await prefs.setString(gameListCacheKey, csv);
-        return csv;
-      }
-    } catch (e) {
-      stderr.writeln("Error while trying to download latest game csv: $e");
-    }
-    final cachedCsv = prefs.getString(gameListCacheKey);
-    if (cachedCsv != null && cachedCsv.isNotEmpty) {
-      return cachedCsv;
-    }
-    return rootBundle.loadString(csvPath);
-  }
-
-  String _sanitizeCsv(String csv) {
-    if (csv.startsWith('\uFEFF')) {
-      csv = csv.substring(1);
-    }
-    return csv.replaceAll('\r\n', '\n');
-  }
-
-  Future<void> _loadFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final cachedFavIds = prefs.getStringList(favoritesCacheKey) ?? [];
-    _favoriteGames.clear();
-    for (String cachedFavId in cachedFavIds) {
-      for (Game game in _games) {
-        if (game.identifier == cachedFavId) {
-          game.favorite = true;
-          _favoriteGames.add(game);
-        }
-      }
-    }
+    notifyListeners();
   }
 
   void _setupListeners() {
@@ -116,7 +59,7 @@ class GameListController extends ChangeNotifier {
   }
 
   void filterGames() {
-    filteredGames = _games.where((game) {
+    filteredGames = gameRepository.games.where((game) {
       if (showOnlyFavorites && !game.favorite) return false;
       if (selectedCoOp.isNotEmpty && !selectedCoOp.contains(game.cooperative)) {
         return false;
@@ -363,19 +306,9 @@ class GameListController extends ChangeNotifier {
   }
 
   Future<void> toggleFavorite(Game game) async {
-    game.favorite = !game.favorite;
-    _favoriteGames.contains(game)
-        ? _favoriteGames.remove(game)
-        : _favoriteGames.add(game);
-    await _saveFavorites();
+    await gameRepository.toggleFavorite(game);
     filterGames();
     notifyListeners();
-  }
-
-  Future<void> _saveFavorites() async {
-    final prefs = await SharedPreferences.getInstance();
-    final identifiers = _favoriteGames.map((g) => g.identifier).toList();
-    await prefs.setStringList(favoritesCacheKey, identifiers);
   }
 
   String get imprint => _imprint;
@@ -390,9 +323,4 @@ class GameListController extends ChangeNotifier {
     durationController.dispose();
     super.dispose();
   }
-}
-
-List<Game> _parseGames(String csvString) {
-  final parser = CsvGameListParser();
-  return parser.parseCsv(csvString);
 }
