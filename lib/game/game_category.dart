@@ -17,4 +17,14 @@ enum GameCategory {
       orElse: () => unknown,
     );
   }
+
+  static  List<GameCategory> get filterOrder => [
+    GameCategory.family,
+    GameCategory.strategy,
+    GameCategory.skill,
+    GameCategory.party,
+    GameCategory.quiz,
+    GameCategory.mystery,
+    GameCategory.unknown,
+  ];
 }
