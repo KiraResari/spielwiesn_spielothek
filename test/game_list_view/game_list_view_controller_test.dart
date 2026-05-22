@@ -14,7 +14,6 @@ import '../mocks/game_csv_client_mock.dart';
 import '../mocks/shared_preferences_wrapper_mock.dart';
 
 void main() {
-
   late GameListViewController controller;
 
   setUp(() async {
@@ -119,4 +118,96 @@ void main() {
     List<Game> games = controller.filteredGames;
     expect(games.length, equals(TestSpieleliste.fiveMinuteGamesCount));
   });
+
+  test("activeFilterCount should be correct", () {
+    controller.selectedComplexityLevels = [
+      GameComplexityLevel.veryComplex,
+      GameComplexityLevel.simple,
+    ];
+    controller.durationController.text = "5";
+    controller.showOnlyFavorites = true;
+
+    int activeFilterCount = controller.activeFilterCount;
+
+    expect(activeFilterCount, equals(4));
+  });
+
+  test(
+    "activeFilterCount should not count complexity or category if all options are set",
+    () {
+      controller.selectedComplexityLevels = GameComplexityLevel.values;
+      controller.selectedCategories = GameCategory.values;
+
+      int activeFilterCount = controller.activeFilterCount;
+
+      expect(activeFilterCount, equals(0));
+    },
+  );
+
+  test("hasActiveFilters should be false if no filters are set", () {
+    bool hasActiveFilters = controller.hasActiveFilters;
+
+    expect(hasActiveFilters, isFalse);
+  });
+
+  test("hasActiveFilters should be true if at least one filter is set", () {
+    controller.showOnlyFavorites = true;
+
+    bool hasActiveFilters = controller.hasActiveFilters;
+
+    expect(hasActiveFilters, isTrue);
+  });
+
+  test("clearAllFilters should disable all filters", () {
+    controller.durationController.text = "5";
+    controller.showOnlyFavorites = true;
+
+    controller.clearAllFilters();
+
+    bool hasActiveFilters = controller.hasActiveFilters;
+    expect(hasActiveFilters, isFalse);
+  });
+
+  test(
+    "toggleComplexity should add complexity level to filters if it's not selected",
+    () {
+      var complexityLevel = GameComplexityLevel.moderate;
+      controller.toggleComplexity(complexityLevel);
+
+      expect(controller.selectedComplexityLevels, contains(complexityLevel));
+    },
+  );
+
+  test(
+    "toggleComplexity should remove complexity level from filters if it's already selected",
+    () {
+      var complexityLevel = GameComplexityLevel.moderate;
+      controller.selectedComplexityLevels = [complexityLevel];
+      controller.toggleComplexity(complexityLevel);
+
+      expect(
+        controller.selectedComplexityLevels,
+        isNot(contains(complexityLevel)),
+      );
+    },
+  );
+
+  test("toggleCategory should add category to filters if it's not selected",
+      () {
+    var category = GameCategory.strategy;
+    controller.toggleCategory(category);
+
+    expect(controller.selectedCategories, contains(category));
+  });
+
+  test(
+    "toggleCategory should remove category  from filters if it's already selected",
+    () {
+      var category = GameCategory.strategy;
+      controller.selectedCategories = [category];
+      controller.toggleCategory(category);
+
+      expect(controller.selectedCategories, isNot(contains(category)));
+    },
+  );
 }

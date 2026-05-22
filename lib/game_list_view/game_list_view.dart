@@ -124,7 +124,7 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildFilterButton(BuildContext context) {
-    int filterCount = context.watch<GameListViewController>().activeFilters.length;
+    int filterCount = context.watch<GameListViewController>().activeFilterCount;
 
     return Stack(
       clipBehavior: Clip.none,

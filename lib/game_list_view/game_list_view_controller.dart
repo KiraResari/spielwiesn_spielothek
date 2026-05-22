@@ -8,7 +8,6 @@ import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
 import '../game/game_repository.dart';
 import '../getIt.dart';
-import 'game_filter.dart';
 
 class GameListViewController extends ChangeNotifier {
   static const imprintPath = "assets/Imprint.md";
@@ -117,71 +116,26 @@ class GameListViewController extends ChangeNotifier {
       selectedComplexityLevels.isEmpty ||
       selectedComplexityLevels.contains(game.complexityLevel);
 
-  List<GameFilter> get activeFilters {
-    List<GameFilter> activeFilters = [];
-
+  int get activeFilterCount {
+    int count = 0;
     if (selectedCategories.isNotEmpty &&
         selectedCategories.length < GameCategory.values.length) {
-      for (var c in selectedCategories) {
-        activeFilters
-            .add(GameFilter('category', c.name, 'Kategorie: ${c.name}'));
-      }
+      count += selectedCategories.length;
     }
-
     if (selectedComplexityLevels.isNotEmpty &&
         selectedComplexityLevels.length < GameComplexityLevel.values.length) {
-      for (var l in selectedComplexityLevels) {
-        activeFilters.add(GameFilter(
-            'complexity', l.displayName, 'Komplexität: ${l.displayName}'));
-      }
+      count += selectedComplexityLevels.length;
     }
-
-    if (selectedCoOp.contains(true)) {
-      activeFilters.add(GameFilter('co_op', 'true', 'Koop'));
-    }
-
-    if (selectedExclusive.contains(true)) {
-      activeFilters.add(GameFilter('exklusiv', 'true', 'Exklusiv'));
-    }
-
-    if (selectedNovelty.contains(true)) {
-      activeFilters.add(GameFilter('novelty', 'true', 'Neuheit'));
-    }
-
-    if (showOnlyFavorites) {
-      activeFilters.add(GameFilter('favorite', 'Favoriten', 'Favoriten'));
-    }
-
-    if (playersController.text.trim().isNotEmpty) {
-      final value = playersController.text.trim();
-      activeFilters.add(GameFilter('players', value, 'Spieler: $value'));
-    }
-    if (durationController.text.trim().isNotEmpty) {
-      final value = durationController.text.trim();
-      activeFilters.add(GameFilter('duration', value, 'Dauer: $value min'));
-    }
-
-    return activeFilters;
+    if (selectedCoOp.contains(true)) count++;
+    if (selectedExclusive.contains(true)) count++;
+    if (selectedNovelty.contains(true)) count++;
+    if (showOnlyFavorites) count++;
+    if (playersController.text.trim().isNotEmpty) count++;
+    if (durationController.text.trim().isNotEmpty) count++;
+    return count;
   }
 
-  bool get hasActiveFilters => activeFilters.isNotEmpty;
-
-  void applyFilterSelections({
-    required List<GameCategory> categories,
-    required List<GameComplexityLevel> complexities,
-    required bool coopOnly,
-    required bool exklusivOnly,
-    required bool noveltyOnly,
-    required bool favoritesOnly,
-  }) {
-    selectedCategories = List.from(categories);
-    selectedComplexityLevels = List.from(complexities);
-    selectedCoOp = coopOnly ? [true] : [];
-    selectedExclusive = exklusivOnly ? [true] : [];
-    selectedNovelty = noveltyOnly ? [true] : [];
-    showOnlyFavorites = favoritesOnly;
-    applyFilters();
-  }
+  bool get hasActiveFilters => activeFilterCount > 0;
 
   void clearAllFilters() {
     selectedComplexityLevels = [];
@@ -214,41 +168,9 @@ class GameListViewController extends ChangeNotifier {
     applyFilters();
   }
 
-  void toggleCoOp(bool value) {
-    if (selectedCoOp.contains(value)) {
-      selectedCoOp.remove(value);
-    } else {
-      selectedCoOp.add(value);
-    }
-    applyFilters();
-  }
-
-  void toggleExklusiv(bool value) {
-    if (selectedExclusive.contains(value)) {
-      selectedExclusive.remove(value);
-    } else {
-      selectedExclusive.add(value);
-    }
-    applyFilters();
-  }
-
-  void toggleNovelty(bool value) {
-    if (selectedNovelty.contains(value)) {
-      selectedNovelty.remove(value);
-    } else {
-      selectedNovelty.add(value);
-    }
-    applyFilters();
-  }
-
   void clearField(TextEditingController controller) {
     controller.clear();
     applyFilters();
-  }
-
-  void toggleFilters() {
-    showFilters = !showFilters;
-    notifyListeners();
   }
 
   Future<void> toggleFavorite(Game game) async {
