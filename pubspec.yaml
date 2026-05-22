@@ -32,8 +32,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/Spieleliste.csv
-    - assets/Imprint.md
-    - assets/Privacy.md
     - assets/tri-tail_logo.png
     - assets/mpa_logo.png
 

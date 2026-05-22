@@ -7,7 +7,7 @@ class ExklusivFilterButton extends StatelessWidget {
 
   const ExklusivFilterButton(this.controller, {super.key});
 
-  bool get _isFilterActive => controller.selectedExklusiv.length < 2;
+  bool get _isFilterActive => controller.selectedExclusive.length < 2;
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +55,11 @@ class ExklusivFilterButton extends StatelessWidget {
         onSelected: (_) {
           setState(() {
             if (_isFilterActive) {
-              controller.selectedExklusiv
+              controller.selectedExclusive
                 ..clear()
                 ..addAll([true, false]);
             } else {
-              controller.selectedExklusiv.clear();
+              controller.selectedExclusive.clear();
             }
             controller.filterGames();
           });
@@ -67,7 +67,7 @@ class ExklusivFilterButton extends StatelessWidget {
       ),
       FilterChip(
         label: const Text("Exklusiv"),
-        selected: controller.selectedExklusiv.contains(true),
+        selected: controller.selectedExclusive.contains(true),
         selectedColor: Colors.lightGreen,
         onSelected: (_) {
           controller.toggleExklusiv(true);
@@ -76,7 +76,7 @@ class ExklusivFilterButton extends StatelessWidget {
       ),
       FilterChip(
         label: const Text("Nicht Exklusiv"),
-        selected: controller.selectedExklusiv.contains(false),
+        selected: controller.selectedExclusive.contains(false),
         selectedColor: Colors.lightGreen,
         onSelected: (_) {
           controller.toggleExklusiv(false);

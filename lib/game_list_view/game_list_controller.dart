@@ -1,15 +1,14 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 import '../game/csv_game_list_parser.dart';
 import '../game/game.dart';
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
+import '../game/game_repository.dart';
 import '../getIt.dart';
 import 'game_filter.dart';
-import '../game/game_repository.dart';
 
 class GameListController extends ChangeNotifier {
   static const imprintPath = "assets/Imprint.md";
@@ -19,7 +18,7 @@ class GameListController extends ChangeNotifier {
   final nameController = TextEditingController();
   final playersController = TextEditingController();
   final durationController = TextEditingController();
-  final GameRepository gameRepository = getIt.get<GameRepository>();
+  final gameRepository = getIt<GameRepository>();
   static const filterDebounceDuration = Duration(milliseconds: 200);
   static const int pageSize = 50;
   Timer? _filterDebounce;
@@ -27,7 +26,7 @@ class GameListController extends ChangeNotifier {
   List<GameComplexityLevel> selectedComplexityLevels = [];
   List<GameCategory> selectedCategories = [];
   List<bool> selectedCoOp = [];
-  List<bool> selectedExklusiv = [];
+  List<bool> selectedExclusive = [];
   List<bool> selectedNovelty = [];
   bool showOnlyFavorites = false;
   bool showFilters = true;
@@ -35,17 +34,8 @@ class GameListController extends ChangeNotifier {
   List<Game> filteredGames = [];
   List<Game> visibleGames = [];
   int _visibleCount = 0;
-  String _imprint = "Impressum konnte nicht geladen werden";
-  String _privacy = "Datenschutzvereinbarung konnte nicht geladen werden";
 
   GameListController() {
-    _init();
-  }
-
-  Future<void> _init() async {
-    _imprint = await rootBundle.loadString(imprintPath);
-    _privacy = await rootBundle.loadString(privacyPath);
-    await gameRepository.initialize();
     filteredGames = List.from(gameRepository.games);
     _setupListeners();
     _resetVisibleGames();
@@ -64,8 +54,8 @@ class GameListController extends ChangeNotifier {
       if (selectedCoOp.isNotEmpty && !selectedCoOp.contains(game.cooperative)) {
         return false;
       }
-      if (selectedExklusiv.isNotEmpty &&
-          !selectedExklusiv.contains(game.exklusiv)) {
+      if (selectedExclusive.isNotEmpty &&
+          !selectedExclusive.contains(game.exklusiv)) {
         return false;
       }
       if (selectedNovelty.isNotEmpty &&
@@ -150,7 +140,7 @@ class GameListController extends ChangeNotifier {
       activeFilters.add(GameFilter('co_op', 'true', 'Koop'));
     }
 
-    if (selectedExklusiv.contains(true)) {
+    if (selectedExclusive.contains(true)) {
       activeFilters.add(GameFilter('exklusiv', 'true', 'Exklusiv'));
     }
 
@@ -187,7 +177,7 @@ class GameListController extends ChangeNotifier {
     selectedCategories = List.from(categories);
     selectedComplexityLevels = List.from(complexities);
     selectedCoOp = coopOnly ? [true] : [];
-    selectedExklusiv = exklusivOnly ? [true] : [];
+    selectedExclusive = exklusivOnly ? [true] : [];
     selectedNovelty = noveltyOnly ? [true] : [];
     showOnlyFavorites = favoritesOnly;
     filterGames();
@@ -217,7 +207,7 @@ class GameListController extends ChangeNotifier {
         break;
       case 'exklusiv':
         final b = filter.value.toLowerCase() == 'true';
-        if (selectedExklusiv.contains(b)) selectedExklusiv.remove(b);
+        if (selectedExclusive.contains(b)) selectedExclusive.remove(b);
         break;
       case 'novelty':
         final b = filter.value.toLowerCase() == 'true';
@@ -241,7 +231,7 @@ class GameListController extends ChangeNotifier {
     selectedComplexityLevels = [];
     selectedCategories = [];
     selectedCoOp = [];
-    selectedExklusiv = [];
+    selectedExclusive = [];
     selectedNovelty = [];
     showOnlyFavorites = false;
     playersController.clear();
@@ -278,10 +268,10 @@ class GameListController extends ChangeNotifier {
   }
 
   void toggleExklusiv(bool value) {
-    if (selectedExklusiv.contains(value)) {
-      selectedExklusiv.remove(value);
+    if (selectedExclusive.contains(value)) {
+      selectedExclusive.remove(value);
     } else {
-      selectedExklusiv.add(value);
+      selectedExclusive.add(value);
     }
     filterGames();
   }
@@ -310,10 +300,6 @@ class GameListController extends ChangeNotifier {
     filterGames();
     notifyListeners();
   }
-
-  String get imprint => _imprint;
-
-  String get privacy => _privacy;
 
   @override
   void dispose() {

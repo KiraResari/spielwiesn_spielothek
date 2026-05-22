@@ -263,9 +263,9 @@ class FilterPopup extends StatelessWidget {
   FilterChip _buildExklusivChip(StateSetter setState) {
     return FilterChip(
       label: const Text('Exklusiv'),
-      selected: controller.selectedExklusiv.contains(true),
+      selected: controller.selectedExclusive.contains(true),
       onSelected: (selected) {
-        controller.selectedExklusiv = selected ? [true] : [];
+        controller.selectedExclusive = selected ? [true] : [];
         controller.filterGames();
         setState(() {});
       },

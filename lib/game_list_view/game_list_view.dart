@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../constants/legal_info.dart';
 import '../popups/credits_popup.dart';
 import '../popups/markdown_popup.dart';
 import '../game/game.dart';
@@ -48,15 +49,14 @@ class GameListView extends StatelessWidget {
   }
 
   PopupMenuButton<String> _buildMenuButton(BuildContext context) {
-    var controller = Provider.of<GameListController>(context, listen: false);
     return PopupMenuButton<String>(
       onSelected: (String value) {
         switch (value) {
           case imprintKey:
-            showMarkdownPopup(context, imprintTitle, controller.imprint);
+            showMarkdownPopup(context, imprintTitle, LegalInfo.imprint);
             break;
           case privacyKey:
-            showMarkdownPopup(context, privacyTitle, controller.privacy);
+            showMarkdownPopup(context, privacyTitle, LegalInfo.privacyAgreement);
             break;
           case creditsKey:
             showCreditsPopup(context);
