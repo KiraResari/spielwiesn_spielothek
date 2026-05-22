@@ -6,6 +6,7 @@ import 'package:spielwiesn_spielothek/game/game_repository.dart';
 import 'package:spielwiesn_spielothek/getIt.dart';
 import 'package:spielwiesn_spielothek/utils/shared_preferences_wrapper.dart';
 
+import '../assets/test_spieleliste.dart';
 import '../mocks/game_csv_client_mock.dart';
 import '../mocks/shared_preferences_wrapper_mock.dart';
 
@@ -25,7 +26,7 @@ void main() {
   test("games should return correct game count", () {
     List<Game> games = repository.games;
 
-    expect(games.length, equals(1813));
+    expect(games.length, equals(TestSpieleliste.gamesCount));
   });
 
   test("toggleFavorite should mark game as favourite", () async {

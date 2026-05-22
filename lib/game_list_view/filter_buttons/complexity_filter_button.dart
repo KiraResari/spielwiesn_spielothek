@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../game/game_complexity_level.dart';
-import '../game_list_controller.dart';
+import '../game_list_view_controller.dart';
 
 class ComplexityFilterButton extends StatelessWidget {
-  final GameListController controller;
+  final GameListViewController controller;
 
   const ComplexityFilterButton(this.controller, {super.key});
 
@@ -73,7 +73,7 @@ class ComplexityFilterButton extends StatelessWidget {
           } else {
             controller.selectedComplexityLevels.clear();
           }
-          controller.filterGames();
+          controller.applyFilters();
         });
       },
     );

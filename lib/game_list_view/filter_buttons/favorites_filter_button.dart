@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../game_list_controller.dart';
+import '../game_list_view_controller.dart';
 
 class FavoritesFilterButton extends StatelessWidget {
-  final GameListController controller;
+  final GameListViewController controller;
 
   const FavoritesFilterButton(this.controller, {super.key});
 
@@ -26,6 +26,6 @@ class FavoritesFilterButton extends StatelessWidget {
 
   void toggleFavoriteFiltering() {
     controller.showOnlyFavorites = !controller.showOnlyFavorites;
-    controller.filterGames();
+    controller.applyFilters();
   }
 }

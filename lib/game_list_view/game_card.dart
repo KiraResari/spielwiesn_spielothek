@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../game/game.dart';
-import 'game_list_controller.dart';
+import 'game_list_view_controller.dart';
 import 'game_sticker.dart';
 
 class GameCard extends StatelessWidget {
@@ -97,7 +97,7 @@ class GameCard extends StatelessWidget {
   }
 
   Widget _buildFavButton(BuildContext context) {
-    var controller = context.watch<GameListController>();
+    var controller = context.watch<GameListViewController>();
     return IconButton(
       icon: Icon(
         game.favorite ? Icons.star : Icons.star_border,

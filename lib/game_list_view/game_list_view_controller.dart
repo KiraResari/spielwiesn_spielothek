@@ -10,7 +10,7 @@ import '../game/game_repository.dart';
 import '../getIt.dart';
 import 'game_filter.dart';
 
-class GameListController extends ChangeNotifier {
+class GameListViewController extends ChangeNotifier {
   static const imprintPath = "assets/Imprint.md";
   static const privacyPath = "assets/Privacy.md";
 
@@ -35,7 +35,7 @@ class GameListController extends ChangeNotifier {
   List<Game> visibleGames = [];
   int _visibleCount = 0;
 
-  GameListController() {
+  GameListViewController() {
     filteredGames = List.from(gameRepository.games);
     _setupListeners();
     _resetVisibleGames();
@@ -48,7 +48,7 @@ class GameListController extends ChangeNotifier {
     durationController.addListener(_scheduleFilter);
   }
 
-  void filterGames() {
+  void applyFilters() {
     filteredGames = gameRepository.games.where((game) {
       if (showOnlyFavorites && !game.favorite) return false;
       if (selectedCoOp.isNotEmpty && !selectedCoOp.contains(game.cooperative)) {
@@ -74,7 +74,7 @@ class GameListController extends ChangeNotifier {
 
   void _scheduleFilter() {
     _filterDebounce?.cancel();
-    _filterDebounce = Timer(filterDebounceDuration, filterGames);
+    _filterDebounce = Timer(filterDebounceDuration, applyFilters);
   }
 
   void _resetVisibleGames() {
@@ -180,51 +180,7 @@ class GameListController extends ChangeNotifier {
     selectedExclusive = exklusivOnly ? [true] : [];
     selectedNovelty = noveltyOnly ? [true] : [];
     showOnlyFavorites = favoritesOnly;
-    filterGames();
-  }
-
-  void removeFilter(GameFilter filter) {
-    switch (filter.type) {
-      case 'category':
-        final match = GameCategory.values.firstWhere(
-            (c) => c.name == filter.value,
-            orElse: () => GameCategory.unknown);
-        if (selectedCategories.contains(match)) {
-          selectedCategories.remove(match);
-        }
-        break;
-      case 'complexity':
-        final match = GameComplexityLevel.values.firstWhere(
-            (l) => l.displayName == filter.value,
-            orElse: () => GameComplexityLevel.simple);
-        if (selectedComplexityLevels.contains(match)) {
-          selectedComplexityLevels.remove(match);
-        }
-        break;
-      case 'co_op':
-        final b = filter.value.toLowerCase() == 'true';
-        if (selectedCoOp.contains(b)) selectedCoOp.remove(b);
-        break;
-      case 'exklusiv':
-        final b = filter.value.toLowerCase() == 'true';
-        if (selectedExclusive.contains(b)) selectedExclusive.remove(b);
-        break;
-      case 'novelty':
-        final b = filter.value.toLowerCase() == 'true';
-        if (selectedNovelty.contains(b)) selectedNovelty.remove(b);
-        break;
-      case 'favorite':
-        showOnlyFavorites = false;
-        break;
-      case 'players':
-        playersController.clear();
-        break;
-      case 'duration':
-        durationController.clear();
-        break;
-    }
-    filterGames();
-    notifyListeners();
+    applyFilters();
   }
 
   void clearAllFilters() {
@@ -236,7 +192,7 @@ class GameListController extends ChangeNotifier {
     showOnlyFavorites = false;
     playersController.clear();
     durationController.clear();
-    filterGames();
+    applyFilters();
     notifyListeners();
   }
 
@@ -246,7 +202,7 @@ class GameListController extends ChangeNotifier {
     } else {
       selectedComplexityLevels.add(level);
     }
-    filterGames();
+    applyFilters();
   }
 
   void toggleCategory(GameCategory category) {
@@ -255,7 +211,7 @@ class GameListController extends ChangeNotifier {
     } else {
       selectedCategories.add(category);
     }
-    filterGames();
+    applyFilters();
   }
 
   void toggleCoOp(bool value) {
@@ -264,7 +220,7 @@ class GameListController extends ChangeNotifier {
     } else {
       selectedCoOp.add(value);
     }
-    filterGames();
+    applyFilters();
   }
 
   void toggleExklusiv(bool value) {
@@ -273,7 +229,7 @@ class GameListController extends ChangeNotifier {
     } else {
       selectedExclusive.add(value);
     }
-    filterGames();
+    applyFilters();
   }
 
   void toggleNovelty(bool value) {
@@ -282,12 +238,12 @@ class GameListController extends ChangeNotifier {
     } else {
       selectedNovelty.add(value);
     }
-    filterGames();
+    applyFilters();
   }
 
   void clearField(TextEditingController controller) {
     controller.clear();
-    filterGames();
+    applyFilters();
   }
 
   void toggleFilters() {
@@ -297,7 +253,7 @@ class GameListController extends ChangeNotifier {
 
   Future<void> toggleFavorite(Game game) async {
     await gameRepository.toggleFavorite(game);
-    filterGames();
+    applyFilters();
     notifyListeners();
   }
 

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import '../../game/game_category.dart';
-import '../game_list_controller.dart';
+import '../game_list_view_controller.dart';
 
 class CategoryFilterButton extends StatelessWidget {
-  final GameListController controller;
+  final GameListViewController controller;
 
   const CategoryFilterButton(this.controller, {super.key});
 
@@ -65,7 +65,7 @@ class CategoryFilterButton extends StatelessWidget {
             } else {
               controller.selectedCategories.clear();
             }
-            controller.filterGames();
+            controller.applyFilters();
           });
         },
       ),

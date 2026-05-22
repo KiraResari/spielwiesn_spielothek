@@ -4,12 +4,12 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:spielwiesn_spielothek/game/csv_game_list_parser.dart';
 import 'package:spielwiesn_spielothek/game/game.dart';
 
-import '../assets/test_file_paths.dart';
+import '../assets/test_spieleliste.dart';
 
 void main() {
   test("parsing full Spieleliste should work", () async {
     var repository = CsvGameListParser();
-    String csvString = await File(TestFilePaths.testCsvPath).readAsString();
+    String csvString = await File(TestSpieleliste.csvPath).readAsString();
 
     List<Game> games = repository.parseCsv(csvString);
 

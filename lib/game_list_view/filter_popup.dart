@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
-import 'game_list_controller.dart';
+import 'game_list_view_controller.dart';
 
 class FilterPopup extends StatelessWidget {
-  final GameListController controller;
+  final GameListViewController controller;
 
   const FilterPopup({super.key, required this.controller});
 
@@ -242,7 +242,7 @@ class FilterPopup extends StatelessWidget {
       selected: controller.showOnlyFavorites,
       onSelected: (selected) {
         controller.showOnlyFavorites = selected;
-        controller.filterGames();
+        controller.applyFilters();
         setState(() {});
       },
     );
@@ -254,7 +254,7 @@ class FilterPopup extends StatelessWidget {
       selected: controller.selectedNovelty.contains(true),
       onSelected: (selected) {
         controller.selectedNovelty = selected ? [true] : [];
-        controller.filterGames();
+        controller.applyFilters();
         setState(() {});
       },
     );
@@ -266,7 +266,7 @@ class FilterPopup extends StatelessWidget {
       selected: controller.selectedExclusive.contains(true),
       onSelected: (selected) {
         controller.selectedExclusive = selected ? [true] : [];
-        controller.filterGames();
+        controller.applyFilters();
         setState(() {});
       },
     );
@@ -278,7 +278,7 @@ class FilterPopup extends StatelessWidget {
       selected: controller.selectedCoOp.contains(true),
       onSelected: (selected) {
         controller.selectedCoOp = selected ? [true] : [];
-        controller.filterGames();
+        controller.applyFilters();
         setState(() {});
       },
     );

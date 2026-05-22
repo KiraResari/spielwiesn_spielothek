@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../game_list_controller.dart';
+import '../game_list_view_controller.dart';
 
 class CoOpFilterButton extends StatelessWidget {
-  final GameListController controller;
+  final GameListViewController controller;
 
   const CoOpFilterButton(this.controller, {super.key});
 
@@ -61,7 +61,7 @@ class CoOpFilterButton extends StatelessWidget {
             } else {
               controller.selectedCoOp.clear();
             }
-            controller.filterGames();
+            controller.applyFilters();
           });
         },
       ),

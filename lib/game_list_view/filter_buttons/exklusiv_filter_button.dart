@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../game_list_controller.dart';
+import '../game_list_view_controller.dart';
 
 class ExklusivFilterButton extends StatelessWidget {
-  final GameListController controller;
+  final GameListViewController controller;
 
   const ExklusivFilterButton(this.controller, {super.key});
 
@@ -61,7 +61,7 @@ class ExklusivFilterButton extends StatelessWidget {
             } else {
               controller.selectedExclusive.clear();
             }
-            controller.filterGames();
+            controller.applyFilters();
           });
         },
       ),

@@ -7,7 +7,7 @@ import '../popups/markdown_popup.dart';
 import '../game/game.dart';
 import 'filter_popup.dart';
 import 'game_card.dart';
-import 'game_list_controller.dart';
+import 'game_list_view_controller.dart';
 
 class GameListView extends StatelessWidget {
   static const imprintKey = "imprint";
@@ -24,7 +24,7 @@ class GameListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => GameListController(),
+      create: (_) => GameListViewController(),
       builder: (context, child) => _buildMainApp(context),
     );
   }
@@ -108,7 +108,7 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildSearchField(BuildContext context) {
-    GameListController controller = context.read<GameListController>();
+    GameListViewController controller = context.read<GameListViewController>();
     return Expanded(
       child: TextField(
         controller: controller.nameController,
@@ -124,7 +124,7 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildFilterButton(BuildContext context) {
-    int filterCount = context.watch<GameListController>().activeFilters.length;
+    int filterCount = context.watch<GameListViewController>().activeFilters.length;
 
     return Stack(
       clipBehavior: Clip.none,
@@ -162,9 +162,9 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildResultCountAndFilterResetButtonBlock(BuildContext context) {
-    GameListController controller = context.read<GameListController>();
+    GameListViewController controller = context.read<GameListViewController>();
     bool areFiltersActive =
-        context.watch<GameListController>().hasActiveFilters;
+        context.watch<GameListViewController>().hasActiveFilters;
     return Wrap(
       alignment: WrapAlignment.center,
       children: [
@@ -191,11 +191,11 @@ class GameListView extends StatelessWidget {
 
   String _determineResultText(BuildContext context) {
     bool areFiltersActive =
-        context.watch<GameListController>().hasActiveFilters;
+        context.watch<GameListViewController>().hasActiveFilters;
     bool isSearchFieldFilled =
-        context.watch<GameListController>().nameController.text.isNotEmpty;
+        context.watch<GameListViewController>().nameController.text.isNotEmpty;
     int filteredGamesCount =
-        context.watch<GameListController>().filteredGames.length;
+        context.watch<GameListViewController>().filteredGames.length;
     if (areFiltersActive || isSearchFieldFilled) {
       if (filteredGamesCount == 0) {
         return "Keine Treffer zu den aktiven Filtern";
@@ -209,7 +209,7 @@ class GameListView extends StatelessWidget {
   }
 
   void _showFilterPopup(BuildContext context) {
-    GameListController controller = context.read<GameListController>();
+    GameListViewController controller = context.read<GameListViewController>();
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -221,7 +221,7 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildResultList(BuildContext context) {
-    GameListController controller = context.read<GameListController>();
+    GameListViewController controller = context.read<GameListViewController>();
     return Expanded(
       child: NotificationListener<ScrollNotification>(
         onNotification: (notification) {
@@ -235,8 +235,8 @@ class GameListView extends StatelessWidget {
     );
   }
 
-  Selector<GameListController, List<Game>> _buildGameListSelector() {
-    return Selector<GameListController, List<Game>>(
+  Selector<GameListViewController, List<Game>> _buildGameListSelector() {
+    return Selector<GameListViewController, List<Game>>(
       selector: (_, controller) => controller.visibleGames,
       builder: (context, games, _) {
         return ListView.builder(
