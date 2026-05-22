@@ -80,12 +80,11 @@ void main() {
     expect(games.length, equals(TestSpieleliste.noveltyGamesCount));
   });
 
-  test("filtering for favorites should only return favorite games", () {
+  test("filtering for favorites should only return favorite games", () async {
     Game game = controller.filteredGames.first;
-    game.favorite = true;
     controller.showOnlyFavorites = true;
 
-    controller.applyFilters();
+    await controller.toggleFavorite(game);
 
     List<Game> games = controller.filteredGames;
     expect(games.length, equals(1));
@@ -210,4 +209,14 @@ void main() {
       expect(controller.selectedCategories, isNot(contains(category)));
     },
   );
+
+  test("clearField should disable selected filter field", () {
+    controller.durationController.text = "5";
+    controller.applyFilters();
+
+    controller.clearField(controller.durationController);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
 }
