@@ -27,4 +27,37 @@ void main() {
 
     expect(games.length, equals(1813));
   });
+
+  test("toggleFavorite should mark game as favourite", () async {
+    List<Game> games = repository.games;
+    Game targetGame = games.first;
+
+    await repository.toggleFavorite(targetGame);
+
+    expect(targetGame.favorite, isTrue);
+  });
+
+  test("toggleFavorite twice should unmark game as favourite", () async {
+    List<Game> games = repository.games;
+    Game targetGame = games.first;
+
+    await repository.toggleFavorite(targetGame);
+    await repository.toggleFavorite(targetGame);
+
+    expect(targetGame.favorite, isFalse);
+  });
+
+  test("favourites should be saved between sessions", () async {
+    List<Game> games = repository.games;
+    Game targetGame = games.first;
+
+    await repository.toggleFavorite(targetGame);
+
+    var newRepository = GameRepository();
+    await newRepository.initialize();
+    List<Game> newGames = repository.games;
+    Game newGame =
+        newGames.firstWhere((game) => game.identifier == targetGame.identifier);
+    expect(newGame.favorite, isTrue);
+  });
 }
