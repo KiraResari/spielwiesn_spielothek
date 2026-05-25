@@ -1,0 +1,1 @@
+class UpdateFailedException extends Error {}

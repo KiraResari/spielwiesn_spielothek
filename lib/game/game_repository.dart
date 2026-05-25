@@ -51,4 +51,11 @@ class GameRepository {
     List<String> identifiers = _favoriteGames.map((g) => g.identifier).toList();
     await _sharedPreferencesWrapper.setFavIds(identifiers);
   }
+
+  Future<void> updateSource() async {
+    String csvString = await _client.updateFromSource();
+    csvString = _sanitizeCsv(csvString);
+    _games = await compute(_parser.parseCsv, csvString);
+    await _loadFavorites();
+  }
 }

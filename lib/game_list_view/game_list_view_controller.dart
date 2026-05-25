@@ -14,16 +14,22 @@ import '../spielwiesn_context.dart';
 class GameListViewController extends ChangeNotifier {
   static const imprintPath = "assets/Imprint.md";
   static const privacyPath = "assets/Privacy.md";
+  static const updateSuccessMessage = "Spieleliste aktualisiert";
+  static const updateFailedMessage =
+      "Fehler beim Aktualisieren der Spieleliste";
+  static const filterDebounceDuration = Duration(milliseconds: 200);
+  static const int pageSize = 50;
 
   final csvGameListParser = CsvGameListParser();
   final nameController = TextEditingController();
   final playersController = TextEditingController();
   final durationController = TextEditingController();
   final gameRepository = getIt<GameRepository>();
-  static const filterDebounceDuration = Duration(milliseconds: 200);
-  static const int pageSize = 50;
-  Timer? _filterDebounce;
 
+  final void Function(String message) showSnackBar;
+  final void Function(String message) showErrorSnackBar;
+
+  Timer? _filterDebounce;
   List<GameComplexityLevel> selectedComplexityLevels = [];
   List<GameCategory> selectedCategories = [];
   List<StickerType> selectedStickerTypes = [];
@@ -33,12 +39,16 @@ class GameListViewController extends ChangeNotifier {
   List<bool> selectedNovelty = [];
   bool showOnlyFavorites = false;
   bool showFilters = true;
+  bool _isUpdating = false;
 
   List<Game> filteredGames = [];
   List<Game> visibleGames = [];
   int _visibleCount = 0;
 
-  GameListViewController() {
+  GameListViewController({
+    required this.showSnackBar,
+    required this.showErrorSnackBar,
+  }) {
     filteredGames = List.from(gameRepository.games);
     _setupListeners();
     _resetVisibleGames();
@@ -169,7 +179,6 @@ class GameListViewController extends ChangeNotifier {
     playersController.clear();
     durationController.clear();
     applyFilters();
-    notifyListeners();
   }
 
   void toggleComplexity(GameComplexityLevel level) {
@@ -216,6 +225,25 @@ class GameListViewController extends ChangeNotifier {
   Future<void> toggleFavorite(Game game) async {
     await gameRepository.toggleFavorite(game);
     applyFilters();
+  }
+
+  Future<void> updateSource() async {
+    try {
+      isUpdating = true;
+      await gameRepository.updateSource();
+      applyFilters();
+      showSnackBar(updateSuccessMessage);
+    } catch (e) {
+      talker.error("Error while trying to update games", e);
+      showErrorSnackBar(updateFailedMessage);
+    }
+    isUpdating = false;
+  }
+
+  bool get isUpdating => _isUpdating;
+
+  set isUpdating(bool targetValue) {
+    _isUpdating = targetValue;
     notifyListeners();
   }
 
