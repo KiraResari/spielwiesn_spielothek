@@ -20,4 +20,17 @@ enum GameMaterialType {
       orElse: () => unknown,
     );
   }
+
+  static  List<GameMaterialType> get filterOrder => [
+    GameMaterialType.board,
+    GameMaterialType.tableau,
+    GameMaterialType.cards,
+    GameMaterialType.dice,
+    GameMaterialType.tiles,
+    GameMaterialType.material,
+    GameMaterialType.storybook,
+    GameMaterialType.app,
+  ];
+
+  String get nameAndEmoji => "$name $emoji";
 }

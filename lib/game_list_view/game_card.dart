@@ -44,7 +44,7 @@ class GameCard extends StatelessWidget {
         children: [
           _buildHeadline(),
           _buildPlayerCountAndPlayTimeRow(),
-          _buildComplexityCategoryAndCoOpRow(),
+          _buildAdditionalPropertiesDisplay(),
         ],
       ),
     );
@@ -80,7 +80,7 @@ class GameCard extends StatelessWidget {
     );
   }
 
-  Widget _buildComplexityCategoryAndCoOpRow() {
+  Widget _buildAdditionalPropertiesDisplay() {
     return Wrap(
       spacing: 6,
       runSpacing: 0,
@@ -89,7 +89,7 @@ class GameCard extends StatelessWidget {
         Text(game.category.name),
         if (game.cooperative) const Text("Co-Op"),
         if (game.materialType != GameMaterialType.unknown)
-          Text("${game.materialType.name} ${game.materialType.emoji}")
+          Text(game.materialType.nameAndEmoji)
       ],
     );
   }

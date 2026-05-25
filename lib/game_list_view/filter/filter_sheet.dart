@@ -4,6 +4,7 @@ import '../game_list_view_controller.dart';
 import 'base_data_filter_block.dart';
 import 'category_filter_block.dart';
 import 'complexity_filter_block.dart';
+import 'material_type_filter_block.dart';
 import 'misc_filter_block.dart';
 import 'sticker_type_filter_block.dart';
 
@@ -80,6 +81,8 @@ class FilterSheet extends StatelessWidget {
             CategoryFilterBlock(controller: controller, setState: setState),
             const SizedBox(height: 20),
             ComplexityFilterBlock(controller: controller, setState: setState),
+            const SizedBox(height: 20),
+            MaterialTypeFilterBlock(controller: controller, setState: setState),
             const SizedBox(height: 20),
             StickerTypeFilterBlock(controller: controller, setState: setState),
             const SizedBox(height: 20),
