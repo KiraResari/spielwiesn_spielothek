@@ -14,7 +14,9 @@ class GameListView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) => GameListViewController(
-          showSnackBar: (message) => _showSnackBar(context, message)),
+        showSnackBar: (message) => _showSnackBar(context, message),
+        showErrorSnackBar: (message) => _showErrorSnackBar(context, message),
+      ),
       builder: (context, child) => _buildMainApp(context),
     );
   }
@@ -230,7 +232,19 @@ class GameListView extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(message),
-        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(color: colorScheme.onErrorContainer),
+        ),
+        backgroundColor: colorScheme.errorContainer,
       ),
     );
   }

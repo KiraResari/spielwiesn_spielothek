@@ -15,7 +15,8 @@ class GameListViewController extends ChangeNotifier {
   static const imprintPath = "assets/Imprint.md";
   static const privacyPath = "assets/Privacy.md";
   static const updateSuccessMessage = "Spieleliste aktualisiert";
-  static const updateFailedMessage = "Fehler beim aktualisieren der Spieleliste";
+  static const updateFailedMessage =
+      "Fehler beim Aktualisieren der Spieleliste";
   static const filterDebounceDuration = Duration(milliseconds: 200);
   static const int pageSize = 50;
 
@@ -26,6 +27,7 @@ class GameListViewController extends ChangeNotifier {
   final gameRepository = getIt<GameRepository>();
 
   final void Function(String message) showSnackBar;
+  final void Function(String message) showErrorSnackBar;
 
   Timer? _filterDebounce;
   List<GameComplexityLevel> selectedComplexityLevels = [];
@@ -43,7 +45,10 @@ class GameListViewController extends ChangeNotifier {
   List<Game> visibleGames = [];
   int _visibleCount = 0;
 
-  GameListViewController({required this.showSnackBar}) {
+  GameListViewController({
+    required this.showSnackBar,
+    required this.showErrorSnackBar,
+  }) {
     filteredGames = List.from(gameRepository.games);
     _setupListeners();
     _resetVisibleGames();
@@ -227,16 +232,16 @@ class GameListViewController extends ChangeNotifier {
       isUpdating = true;
       await gameRepository.updateSource();
       applyFilters();
-      isUpdating = false;
       showSnackBar(updateSuccessMessage);
     } catch (_) {
-      showSnackBar(updateFailedMessage);
+      showErrorSnackBar(updateFailedMessage);
     }
+    isUpdating = false;
   }
 
   bool get isUpdating => _isUpdating;
 
-  set isUpdating(bool targetValue){
+  set isUpdating(bool targetValue) {
     _isUpdating = targetValue;
     notifyListeners();
   }

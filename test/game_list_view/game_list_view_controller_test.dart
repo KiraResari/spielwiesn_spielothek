@@ -39,7 +39,9 @@ void main() {
     await repository.initialize();
     getIt.registerSingleton(repository);
     controller = GameListViewController(
-        showSnackBar: (message) => showSnackBar(message));
+      showSnackBar: (message) => showSnackBar(message),
+      showErrorSnackBar: (message) => showSnackBar(message),
+    );
   });
 
   test("applyFilters should not change game count if no filters are set", () {
