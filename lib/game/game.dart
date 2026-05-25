@@ -1,7 +1,7 @@
 import 'game_category.dart';
 import 'game_complexity_level.dart';
 import 'sticker_type.dart';
-import 'material_type.dart';
+import 'game_material_type.dart';
 
 class Game {
   final String name;
@@ -10,7 +10,7 @@ class Game {
   final String stickerLetter;
   final StickerType stickerType;
   final GameCategory category;
-  final MaterialType materialType;
+  final GameMaterialType materialType;
   final double rating;
   final int yearPublished;
   final int minPlayers;

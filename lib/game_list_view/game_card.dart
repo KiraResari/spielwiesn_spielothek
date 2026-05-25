@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../game/game.dart';
+import '../game/game_material_type.dart';
 import 'game_list_view_controller.dart';
 import 'game_sticker.dart';
 
@@ -87,6 +88,8 @@ class GameCard extends StatelessWidget {
         _buildComplexityText(),
         Text(game.category.name),
         if (game.cooperative) const Text("Co-Op"),
+        if (game.materialType != GameMaterialType.unknown)
+          Text("${game.materialType.name} ${game.materialType.emoji}")
       ],
     );
   }
