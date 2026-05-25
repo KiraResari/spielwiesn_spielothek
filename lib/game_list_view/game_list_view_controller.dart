@@ -60,6 +60,7 @@ class GameListViewController extends ChangeNotifier {
     nameController.addListener(_scheduleFilter);
     playersController.addListener(_scheduleFilter);
     durationController.addListener(_scheduleFilter);
+    minAgeController.addListener(_scheduleFilter);
   }
 
   void applyFilters() {
