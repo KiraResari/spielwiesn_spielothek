@@ -12,17 +12,26 @@ class BaseDataFilterBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        _buildNumberFilterField(
-          controller.playersController,
-          "Spieleranzahl",
+        Row(
+          children: [
+            Expanded(
+              child: _buildNumberFilterField(
+                controller.playersController,
+                "Spieleranzahl",
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildNumberFilterField(
+                controller.minAgeController,
+                "Mindestalter",
+              ),
+            ),
+          ],
         ),
         _buildNumberFilterField(
           controller.durationController,
           "Dauer (Minuten)",
-        ),
-        _buildNumberFilterField(
-          controller.minAgeController,
-          "Mindestalter",
         ),
       ],
     );
