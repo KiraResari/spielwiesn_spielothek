@@ -7,7 +7,7 @@ import 'utils/shared_preferences_wrapper.dart';
 
 final getIt = GetIt.instance;
 
-void initialiazeGetItContext(){
+void initializeGetItContext(){
   getIt.registerSingleton(SharedPreferencesWrapper());
   getIt.registerSingleton(CsvGameListParser());
   getIt.registerSingleton(GameCsvClient());

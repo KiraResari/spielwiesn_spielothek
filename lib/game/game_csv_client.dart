@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
-import '../getIt.dart';
+import '../get_it_context.dart';
 import '../utils/shared_preferences_wrapper.dart';
 
 class GameCsvClient {

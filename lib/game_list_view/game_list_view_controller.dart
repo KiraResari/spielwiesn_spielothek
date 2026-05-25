@@ -7,7 +7,7 @@ import '../game/game.dart';
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
 import '../game/game_repository.dart';
-import '../getIt.dart';
+import '../get_it_context.dart';
 
 class GameListViewController extends ChangeNotifier {
   static const imprintPath = "assets/Imprint.md";

@@ -5,7 +5,7 @@ import '../constants/legal_info.dart';
 import '../popups/credits_popup.dart';
 import '../popups/markdown_popup.dart';
 import '../game/game.dart';
-import 'filter_popup.dart';
+import 'filter_sheet.dart';
 import 'game_card.dart';
 import 'game_list_view_controller.dart';
 
@@ -215,7 +215,7 @@ class GameListView extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return FilterPopup(controller: controller);
+        return FilterSheet(controller: controller);
       },
     );
   }

@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../getIt.dart';
+import '../get_it_context.dart';
 import '../utils/shared_preferences_wrapper.dart';
 import 'csv_game_list_parser.dart';
 import 'game.dart';
@@ -48,10 +48,6 @@ class GameRepository {
     _favoriteGames.contains(game)
         ? _favoriteGames.remove(game)
         : _favoriteGames.add(game);
-    await _saveFavorites();
-  }
-
-  Future<void> _saveFavorites() async {
     List<String> identifiers = _favoriteGames.map((g) => g.identifier).toList();
     await _sharedPreferencesWrapper.setFavIds(identifiers);
   }

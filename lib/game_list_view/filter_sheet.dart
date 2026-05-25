@@ -4,10 +4,10 @@ import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
 import 'game_list_view_controller.dart';
 
-class FilterPopup extends StatelessWidget {
+class FilterSheet extends StatelessWidget {
   final GameListViewController controller;
 
-  const FilterPopup({super.key, required this.controller});
+  const FilterSheet({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
