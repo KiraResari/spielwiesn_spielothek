@@ -90,7 +90,8 @@ class GameCard extends StatelessWidget {
         Text(game.category.name),
         if (game.cooperative) const Text("Co-Op"),
         if (game.materialType != GameMaterialType.unknown)
-          Text(game.materialType.nameAndEmoji)
+          Text(game.materialType.nameAndEmoji),
+        if (game.minAge > 0) Text("ab ${game.minAge} Jahren"),
       ],
     );
   }

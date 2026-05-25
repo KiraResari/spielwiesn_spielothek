@@ -12,39 +12,43 @@ class BaseDataFilterBlock extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Grunddaten', style: const TextStyle(fontWeight: FontWeight.w600)),
-        const SizedBox(height: 10),
         Row(
           children: [
-            _buildNumberFilterField(
-              controller.playersController,
-              'Spieleranzahl',
+            Expanded(
+              child: _buildNumberFilterField(
+                controller.playersController,
+                "Spieleranzahl",
+              ),
             ),
-            const SizedBox(width: 10),
-            _buildNumberFilterField(
-              controller.durationController,
-              'Dauer (Minuten)',
+            const SizedBox(width: 12),
+            Expanded(
+              child: _buildNumberFilterField(
+                controller.minAgeController,
+                "Mindestalter",
+              ),
             ),
           ],
+        ),
+        _buildNumberFilterField(
+          controller.durationController,
+          "Dauer (Minuten)",
         ),
       ],
     );
   }
 
-  Expanded _buildNumberFilterField(
+  Widget _buildNumberFilterField(
     TextEditingController textFieldController,
     String label,
   ) {
-    return Expanded(
-      child: TextField(
-        controller: textFieldController,
-        keyboardType: TextInputType.number,
-        decoration: InputDecoration(
-          labelText: label,
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () => controller.clearField(textFieldController),
-          ),
+    return TextField(
+      controller: textFieldController,
+      keyboardType: TextInputType.number,
+      decoration: InputDecoration(
+        labelText: label,
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => controller.clearField(textFieldController),
         ),
       ),
     );

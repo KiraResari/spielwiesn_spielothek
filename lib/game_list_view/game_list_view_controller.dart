@@ -24,6 +24,7 @@ class GameListViewController extends ChangeNotifier {
   final nameController = TextEditingController();
   final playersController = TextEditingController();
   final durationController = TextEditingController();
+  final minAgeController = TextEditingController();
   final gameRepository = getIt<GameRepository>();
 
   final void Function(String message) showSnackBar;
@@ -59,6 +60,7 @@ class GameListViewController extends ChangeNotifier {
     nameController.addListener(_scheduleFilter);
     playersController.addListener(_scheduleFilter);
     durationController.addListener(_scheduleFilter);
+    minAgeController.addListener(_scheduleFilter);
   }
 
   void applyFilters() {
@@ -86,6 +88,7 @@ class GameListViewController extends ChangeNotifier {
       return _matchesName(game) &&
           _matchesPlayers(game) &&
           _matchesDuration(game) &&
+          _matchesMinAge(game) &&
           _matchesComplexity(game) &&
           _matchesCategory(game);
     }).toList();
@@ -131,6 +134,11 @@ class GameListViewController extends ChangeNotifier {
         (duration >= game.minPlayTime && duration <= game.maxPlayTime);
   }
 
+  bool _matchesMinAge(Game game) {
+    int? minAge = int.tryParse(minAgeController.text.trim());
+    return minAge == null || (game.minAge >= minAge);
+  }
+
   bool _matchesCategory(Game game) =>
       selectedCategories.isEmpty || selectedCategories.contains(game.category);
 
@@ -162,6 +170,7 @@ class GameListViewController extends ChangeNotifier {
     if (showOnlyFavorites) count++;
     if (playersController.text.trim().isNotEmpty) count++;
     if (durationController.text.trim().isNotEmpty) count++;
+    if (minAgeController.text.trim().isNotEmpty) count++;
     return count;
   }
 
@@ -178,6 +187,7 @@ class GameListViewController extends ChangeNotifier {
     showOnlyFavorites = false;
     playersController.clear();
     durationController.clear();
+    minAgeController.clear();
     applyFilters();
   }
 

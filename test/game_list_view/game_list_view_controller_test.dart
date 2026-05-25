@@ -334,4 +334,30 @@ void main() {
       );
     },
   );
+
+  test("filtering for minimum age should return correct game count", () {
+    controller.minAgeController.text = "18";
+
+    controller.applyFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.adultGamesCount));
+  });
+
+  test("activeFilterCount should include age filter", () {
+    controller.minAgeController.text = "18";
+
+    int activeFilterCount = controller.activeFilterCount;
+
+    expect(activeFilterCount, equals(1));
+  });
+
+  test("clearAllFilters should disable age filter", () {
+    controller.minAgeController.text = "18";
+
+    controller.clearAllFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
 }
