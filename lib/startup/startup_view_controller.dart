@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 
 import '../game/game_repository.dart';
-import '../get_it_context.dart';
+import '../spielwiesn_context.dart';
 
 class StartupViewController extends ChangeNotifier {
   final gameRepository = getIt<GameRepository>();

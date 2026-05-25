@@ -116,11 +116,9 @@ class GameListView extends StatelessWidget {
     GameListViewController controller = context.read<GameListViewController>();
     bool areFiltersActive =
         context.watch<GameListViewController>().hasActiveFilters;
-    return Wrap(
-      alignment: WrapAlignment.center,
+    return Column(
       children: [
         _buildResultText(context),
-        const Spacer(),
         if (areFiltersActive)
           OutlinedButton.icon(
             onPressed: () => controller.clearAllFilters(),

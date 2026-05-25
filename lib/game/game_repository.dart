@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../get_it_context.dart';
+import '../spielwiesn_context.dart';
 import '../utils/shared_preferences_wrapper.dart';
 import 'csv_game_list_parser.dart';
 import 'game.dart';

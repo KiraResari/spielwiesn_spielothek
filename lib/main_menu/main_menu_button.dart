@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:talker_flutter/talker_flutter.dart';
 
 import '../constants/legal_info.dart';
+import '../spielwiesn_context.dart';
 import 'credits_popup.dart';
 import 'markdown_popup.dart';
 
@@ -9,10 +11,13 @@ class MainMenuButton extends StatelessWidget {
   static const privacyKey = "privacy";
   static const creditsKey = "credits";
   static const licencesKey = "licenses";
+  static const debugLogsKey = "debug_logs";
+
   static const imprintTitle = "Impressum";
   static const privacyTitle = "Datenschutzerklärung";
   static const creditsTitle = "Credits";
   static const licencesTitle = "Lizenzen";
+  static const debugLogsTitle = "Debug Logs";
 
   const MainMenuButton({
     super.key,
@@ -35,6 +40,9 @@ class MainMenuButton extends StatelessWidget {
           case licencesKey:
             showLicensePage(context: context);
             break;
+          case debugLogsKey:
+            _showDebugLogs(context);
+            break;
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
@@ -53,6 +61,10 @@ class MainMenuButton extends StatelessWidget {
         const PopupMenuItem<String>(
           value: licencesKey,
           child: Text(licencesTitle),
+        ),
+        const PopupMenuItem<String>(
+          value: debugLogsKey,
+          child: Text(debugLogsTitle),
         ),
       ],
     );
@@ -78,6 +90,14 @@ class MainMenuButton extends StatelessWidget {
     showDialog(
       context: context,
       builder: (_) => CreditsPopup(),
+    );
+  }
+
+  void _showDebugLogs(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => TalkerScreen(talker: talker),
+      ),
     );
   }
 }
