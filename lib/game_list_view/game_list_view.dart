@@ -8,30 +8,31 @@ import 'game_list_view_controller.dart';
 import '../main_menu/main_menu_button.dart';
 
 class GameListView extends StatelessWidget {
-
   const GameListView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => GameListViewController(),
+      create: (_) => GameListViewController(
+          showSnackBar: (message) => _showSnackBar(context, message)),
       builder: (context, child) => _buildMainApp(context),
     );
   }
 
   Widget _buildMainApp(BuildContext context) {
+    var controller = context.read<GameListViewController>();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Spielwiesn Spielothek"),
         backgroundColor: Colors.orange,
-        actions: [MainMenuButton()],
+        actions: [MainMenuButton(controller: controller)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
           children: [
             _buildFilterSection(context),
-            _buildResultList(context),
+            _buildResultListOrLoadingSpinner(context),
           ],
         ),
       ),
@@ -169,6 +170,29 @@ class GameListView extends StatelessWidget {
     );
   }
 
+  Widget _buildResultListOrLoadingSpinner(BuildContext context) {
+    bool isUpdating = context.watch<GameListViewController>().isUpdating;
+    return isUpdating
+        ? _buildLoadingSpinner(context)
+        : _buildResultList(context);
+  }
+
+  Widget _buildLoadingSpinner(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 24),
+        const CircularProgressIndicator(),
+        const SizedBox(height: 24),
+        Text(
+          "Spieleliste wird aktualisiert...",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
+    );
+  }
+
   Widget _buildResultList(BuildContext context) {
     GameListViewController controller = context.read<GameListViewController>();
     return Expanded(
@@ -201,6 +225,13 @@ class GameListView extends StatelessWidget {
       },
     );
   }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(message),
+        duration: const Duration(seconds: 2),
+      ),
+    );
+  }
 }
-
-

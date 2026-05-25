@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 
+import '../exceptions/update_failed_exception.dart';
 import '../spielwiesn_context.dart';
 import '../utils/shared_preferences_wrapper.dart';
 
@@ -15,18 +16,7 @@ class GameCsvClient {
 
   Future<String> get gamesCsv async {
     try {
-      talker.info(
-          "Trying to download latest games csv from $spielelisteDownloadUrl");
-      http.Response response =
-          await http.get(Uri.parse(spielelisteDownloadUrl));
-
-      if (response.statusCode == 200) {
-        String csv = utf8.decode(response.bodyBytes);
-        await _sharedPreferencesWrapper.setGamesCsv(csv);
-        talker.info(
-            "Successfully downloaded latest games csv from $spielelisteDownloadUrl");
-        return csv;
-      }
+      return updateFromSource();
     } catch (e) {
       talker.error("Error while trying to download latest games csv", e);
     }
@@ -38,5 +28,21 @@ class GameCsvClient {
     }
     talker.info("Cached games csv not found; using static fallback list");
     return rootBundle.loadString(csvPath);
+  }
+
+  Future<String> updateFromSource() async {
+    talker.info(
+        "Trying to download latest games csv from $spielelisteDownloadUrl");
+    http.Response response =
+    await http.get(Uri.parse(spielelisteDownloadUrl));
+
+    if (response.statusCode == 200) {
+      String csv = utf8.decode(response.bodyBytes);
+      await _sharedPreferencesWrapper.setGamesCsv(csv);
+      talker.info(
+          "Successfully downloaded latest games csv from $spielelisteDownloadUrl");
+      return csv;
+    }
+    throw UpdateFailedException();
   }
 }

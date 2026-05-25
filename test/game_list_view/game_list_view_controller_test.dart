@@ -1,4 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:spielwiesn_spielothek/exceptions/update_failed_exception.dart';
 import 'package:spielwiesn_spielothek/game/csv_game_list_parser.dart';
 import 'package:spielwiesn_spielothek/game/game.dart';
 import 'package:spielwiesn_spielothek/game/game_category.dart';
@@ -12,22 +13,33 @@ import 'package:spielwiesn_spielothek/spielwiesn_context.dart';
 import 'package:spielwiesn_spielothek/utils/shared_preferences_wrapper.dart';
 
 import '../assets/test_spieleliste.dart';
+import '../assets/test_spieleliste_mini.dart';
 import '../mocks/game_csv_client_mock.dart';
 import '../mocks/shared_preferences_wrapper_mock.dart';
 
 void main() {
   late GameListViewController controller;
+  late GameCsvClientMock gameCsvClientMock;
+
+  String? latestSnackBarMessage;
+
+  void showSnackBar(String message) {
+    latestSnackBarMessage = message;
+  }
 
   setUp(() async {
+    latestSnackBarMessage = null;
     await getIt.reset();
-    getIt.registerSingleton<GameCsvClient>(GameCsvClientMock());
+    gameCsvClientMock = GameCsvClientMock();
+    getIt.registerSingleton<GameCsvClient>(gameCsvClientMock);
     getIt.registerSingleton<SharedPreferencesWrapper>(
         SharedPreferencesWrapperMock());
     getIt.registerSingleton(CsvGameListParser());
     var repository = GameRepository();
     await repository.initialize();
     getIt.registerSingleton(repository);
-    controller = GameListViewController();
+    controller = GameListViewController(
+        showSnackBar: (message) => showSnackBar(message));
   });
 
   test("applyFilters should not change game count if no filters are set", () {
@@ -285,4 +297,39 @@ void main() {
     List<Game> games = controller.filteredGames;
     expect(games.length, equals(TestSpieleliste.gamesCount));
   });
+
+  test("updateSource should correctly update games source", () async {
+    gameCsvClientMock.source = TestSpielelisteMini.csvPath;
+
+    await controller.updateSource();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpielelisteMini.gamesCount));
+  });
+
+  test(
+    "updateSource should show success snack bar message if update succeeds",
+    () async {
+      await controller.updateSource();
+
+      expect(
+        latestSnackBarMessage,
+        equals(GameListViewController.updateSuccessMessage),
+      );
+    },
+  );
+
+  test(
+    "updateSource should show failure snack bar message if update fails",
+    () async {
+      gameCsvClientMock.errorThatShouldBeThrown = UpdateFailedException();
+
+      await controller.updateSource();
+
+      expect(
+        latestSnackBarMessage,
+        equals(GameListViewController.updateFailedMessage),
+      );
+    },
+  );
 }

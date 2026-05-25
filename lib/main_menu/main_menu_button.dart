@@ -2,32 +2,38 @@ import 'package:flutter/material.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
 import '../constants/legal_info.dart';
+import '../game_list_view/game_list_view_controller.dart';
 import '../spielwiesn_context.dart';
 import 'credits_popup.dart';
 import 'markdown_popup.dart';
 
 class MainMenuButton extends StatelessWidget {
+  static const updateGamesKey = "update_games";
   static const imprintKey = "imprint";
   static const privacyKey = "privacy";
   static const creditsKey = "credits";
   static const licencesKey = "licenses";
   static const debugLogsKey = "debug_logs";
 
+  static const updateGamesTitle = "Spieleliste aktualisieren";
   static const imprintTitle = "Impressum";
   static const privacyTitle = "Datenschutzerklärung";
   static const creditsTitle = "Credits";
   static const licencesTitle = "Lizenzen";
   static const debugLogsTitle = "Debug Logs";
 
-  const MainMenuButton({
-    super.key,
-  });
+  final GameListViewController controller;
+
+  const MainMenuButton({super.key, required this.controller});
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       onSelected: (String value) {
         switch (value) {
+          case updateGamesKey:
+            controller.updateSource();
+            break;
           case imprintKey:
             _showImprintPopup(context);
             break;
@@ -46,6 +52,10 @@ class MainMenuButton extends StatelessWidget {
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        const PopupMenuItem<String>(
+          value: updateGamesKey,
+          child: Text(updateGamesTitle),
+        ),
         const PopupMenuItem<String>(
           value: imprintKey,
           child: Text(imprintTitle),
