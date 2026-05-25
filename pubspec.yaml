@@ -19,6 +19,7 @@ dependencies:
   upgrader: ^12.1.0
   markdown_widget: ^2.3.2+8
   url_launcher: ^6.3.2
+  get_it: ^9.2.1
 
 dev_dependencies:
   flutter_test:
@@ -31,8 +32,6 @@ flutter:
   uses-material-design: true
   assets:
     - assets/Spieleliste.csv
-    - assets/Imprint.md
-    - assets/Privacy.md
     - assets/tri-tail_logo.png
     - assets/mpa_logo.png
 
