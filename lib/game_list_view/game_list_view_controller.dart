@@ -6,6 +6,7 @@ import '../game/csv_game_list_parser.dart';
 import '../game/game.dart';
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
+import '../game/game_material_type.dart';
 import '../game/game_repository.dart';
 import '../game/sticker_type.dart';
 import '../spielwiesn_context.dart';
@@ -26,6 +27,7 @@ class GameListViewController extends ChangeNotifier {
   List<GameComplexityLevel> selectedComplexityLevels = [];
   List<GameCategory> selectedCategories = [];
   List<StickerType> selectedStickerTypes = [];
+  List<GameMaterialType> selectedMaterialTypes = [];
   List<bool> selectedCoOp = [];
   List<bool> selectedExclusive = [];
   List<bool> selectedNovelty = [];
@@ -65,6 +67,10 @@ class GameListViewController extends ChangeNotifier {
       }
       if (selectedStickerTypes.isNotEmpty &&
           !selectedStickerTypes.contains(game.stickerType)) {
+        return false;
+      }
+      if (selectedMaterialTypes.isNotEmpty &&
+          !selectedMaterialTypes.contains(game.materialType)) {
         return false;
       }
       return _matchesName(game) &&
@@ -136,6 +142,10 @@ class GameListViewController extends ChangeNotifier {
         selectedStickerTypes.length < StickerType.values.length) {
       count += selectedStickerTypes.length;
     }
+    if (selectedMaterialTypes.isNotEmpty &&
+        selectedMaterialTypes.length < GameMaterialType.values.length) {
+      count += selectedMaterialTypes.length;
+    }
     if (selectedCoOp.contains(true)) count++;
     if (selectedExclusive.contains(true)) count++;
     if (selectedNovelty.contains(true)) count++;
@@ -154,6 +164,7 @@ class GameListViewController extends ChangeNotifier {
     selectedExclusive = [];
     selectedNovelty = [];
     selectedStickerTypes = [];
+    selectedMaterialTypes = [];
     showOnlyFavorites = false;
     playersController.clear();
     durationController.clear();
@@ -184,6 +195,15 @@ class GameListViewController extends ChangeNotifier {
       selectedStickerTypes.remove(stickerType);
     } else {
       selectedStickerTypes.add(stickerType);
+    }
+    applyFilters();
+  }
+
+  void toggleMaterialType(GameMaterialType materialType) {
+    if (selectedMaterialTypes.contains(materialType)) {
+      selectedMaterialTypes.remove(materialType);
+    } else {
+      selectedMaterialTypes.add(materialType);
     }
     applyFilters();
   }

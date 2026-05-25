@@ -4,6 +4,7 @@ import 'package:spielwiesn_spielothek/game/game.dart';
 import 'package:spielwiesn_spielothek/game/game_category.dart';
 import 'package:spielwiesn_spielothek/game/game_complexity_level.dart';
 import 'package:spielwiesn_spielothek/game/game_csv_client.dart';
+import 'package:spielwiesn_spielothek/game/game_material_type.dart';
 import 'package:spielwiesn_spielothek/game/game_repository.dart';
 import 'package:spielwiesn_spielothek/game/sticker_type.dart';
 import 'package:spielwiesn_spielothek/game_list_view/game_list_view_controller.dart';
@@ -246,6 +247,38 @@ void main() {
 
   test("clearAllFilters should disable sticker type filter", () {
     controller.toggleStickerType(StickerType.two);
+
+    controller.clearAllFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("filtering for material type should return correct game count", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.diceGamesCount));
+  });
+
+  test("toggling same material type twice should turn it off", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
+    controller.toggleMaterialType(GameMaterialType.dice);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("activeFilterCount should include material type filter", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
+
+    int activeFilterCount = controller.activeFilterCount;
+
+    expect(activeFilterCount, equals(1));
+  });
+
+  test("clearAllFilters should disable material type filter", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
 
     controller.clearAllFilters();
 

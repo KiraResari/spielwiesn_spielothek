@@ -10,4 +10,5 @@ class TestSpieleliste{
   static const ninePlayerGamesCount = 82;
   static const fiveMinuteGamesCount = 27;
   static const twoPlayerGamesCount = 120;
+  static const diceGamesCount = 100;
 }
