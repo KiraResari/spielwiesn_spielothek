@@ -32,6 +32,7 @@ class GameCard extends StatelessWidget {
           if (game.exklusiv) _buildExklusivCorner(),
           if (game.novelty) _buildNoveltyCorner(),
           if (game.rating > 0) _buildRatingCorner(),
+          _buildCopiesOwnedCorner(),
         ],
       ),
     );
@@ -167,6 +168,14 @@ class GameCard extends StatelessWidget {
       bottom: 0,
       right: 0,
       child: Text("${game.rating}👍"),
+    );
+  }
+
+  Positioned _buildCopiesOwnedCorner() {
+    return Positioned(
+      top: 0,
+      right: 0,
+      child: Text("x${game.copiesOwned}"),
     );
   }
 }
