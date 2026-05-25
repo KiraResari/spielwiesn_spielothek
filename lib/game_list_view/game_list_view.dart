@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../game/game.dart';
-import 'filter_sheet.dart';
+import 'filter/filter_sheet.dart';
 import 'game_card.dart';
 import 'game_list_view_controller.dart';
 import '../main_menu/main_menu_button.dart';

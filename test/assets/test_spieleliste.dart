@@ -9,4 +9,5 @@ class TestSpieleliste{
   static const catanGamesCount = 15;
   static const ninePlayerGamesCount = 82;
   static const fiveMinuteGamesCount = 27;
+  static const twoPlayerGamesCount = 120;
 }
