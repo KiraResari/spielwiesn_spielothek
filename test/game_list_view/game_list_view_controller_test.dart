@@ -235,4 +235,21 @@ void main() {
     List<Game> games = controller.filteredGames;
     expect(games.length, equals(TestSpieleliste.gamesCount));
   });
+
+  test("activeFilterCount should include sticker type filter", () {
+    controller.toggleStickerType(StickerType.two);
+
+    int activeFilterCount = controller.activeFilterCount;
+
+    expect(activeFilterCount, equals(1));
+  });
+
+  test("clearAllFilters should disable sticker type filter", () {
+    controller.toggleStickerType(StickerType.two);
+
+    controller.clearAllFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
 }
