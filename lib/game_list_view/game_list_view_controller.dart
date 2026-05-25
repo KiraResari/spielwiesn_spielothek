@@ -233,7 +233,8 @@ class GameListViewController extends ChangeNotifier {
       await gameRepository.updateSource();
       applyFilters();
       showSnackBar(updateSuccessMessage);
-    } catch (_) {
+    } catch (e) {
+      talker.error("Error while trying to update games", e);
       showErrorSnackBar(updateFailedMessage);
     }
     isUpdating = false;

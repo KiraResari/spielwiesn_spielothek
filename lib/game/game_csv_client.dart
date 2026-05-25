@@ -16,7 +16,7 @@ class GameCsvClient {
 
   Future<String> get gamesCsv async {
     try {
-      return updateFromSource();
+      return await updateFromSource();
     } catch (e) {
       talker.error("Error while trying to download latest games csv", e);
     }
