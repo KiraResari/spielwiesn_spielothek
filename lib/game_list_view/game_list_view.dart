@@ -1,23 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/legal_info.dart';
-import '../popups/credits_popup.dart';
-import '../popups/markdown_popup.dart';
 import '../game/game.dart';
 import 'filter_sheet.dart';
 import 'game_card.dart';
 import 'game_list_view_controller.dart';
+import '../main_menu/main_menu_button.dart';
 
 class GameListView extends StatelessWidget {
-  static const imprintKey = "imprint";
-  static const privacyKey = "privacy";
-  static const creditsKey = "credits";
-  static const licencesKey = "licenses";
-  static const imprintTitle = "Impressum";
-  static const privacyTitle = "Datenschutzerklärung";
-  static const creditsTitle = "Credits";
-  static const licencesTitle = "Lizenzen";
 
   const GameListView({super.key});
 
@@ -34,7 +24,7 @@ class GameListView extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Spielwiesn Spielothek"),
         backgroundColor: Colors.orange,
-        actions: [_buildMenuButton(context)],
+        actions: [MainMenuButton()],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
@@ -45,45 +35,6 @@ class GameListView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  PopupMenuButton<String> _buildMenuButton(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (String value) {
-        switch (value) {
-          case imprintKey:
-            showMarkdownPopup(context, imprintTitle, LegalInfo.imprint);
-            break;
-          case privacyKey:
-            showMarkdownPopup(context, privacyTitle, LegalInfo.privacyAgreement);
-            break;
-          case creditsKey:
-            showCreditsPopup(context);
-            break;
-          case licencesKey:
-            showLicensePage(context: context);
-            break;
-        }
-      },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
-          value: imprintKey,
-          child: Text(imprintTitle),
-        ),
-        const PopupMenuItem<String>(
-          value: privacyKey,
-          child: Text(privacyTitle),
-        ),
-        const PopupMenuItem<String>(
-          value: creditsKey,
-          child: Text(creditsTitle),
-        ),
-        const PopupMenuItem<String>(
-          value: licencesKey,
-          child: Text(licencesTitle),
-        ),
-      ],
     );
   }
 
@@ -165,11 +116,9 @@ class GameListView extends StatelessWidget {
     GameListViewController controller = context.read<GameListViewController>();
     bool areFiltersActive =
         context.watch<GameListViewController>().hasActiveFilters;
-    return Wrap(
-      alignment: WrapAlignment.center,
+    return Column(
       children: [
         _buildResultText(context),
-        const Spacer(),
         if (areFiltersActive)
           OutlinedButton.icon(
             onPressed: () => controller.clearAllFilters(),
@@ -253,3 +202,5 @@ class GameListView extends StatelessWidget {
     );
   }
 }
+
+

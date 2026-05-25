@@ -6,7 +6,7 @@ import 'package:spielwiesn_spielothek/game/game_complexity_level.dart';
 import 'package:spielwiesn_spielothek/game/game_csv_client.dart';
 import 'package:spielwiesn_spielothek/game/game_repository.dart';
 import 'package:spielwiesn_spielothek/game_list_view/game_list_view_controller.dart';
-import 'package:spielwiesn_spielothek/get_it_context.dart';
+import 'package:spielwiesn_spielothek/spielwiesn_context.dart';
 import 'package:spielwiesn_spielothek/utils/shared_preferences_wrapper.dart';
 
 import '../assets/test_spieleliste.dart';
