@@ -5,6 +5,7 @@ import 'package:spielwiesn_spielothek/game/game_category.dart';
 import 'package:spielwiesn_spielothek/game/game_complexity_level.dart';
 import 'package:spielwiesn_spielothek/game/game_csv_client.dart';
 import 'package:spielwiesn_spielothek/game/game_repository.dart';
+import 'package:spielwiesn_spielothek/game/sticker_type.dart';
 import 'package:spielwiesn_spielothek/game_list_view/game_list_view_controller.dart';
 import 'package:spielwiesn_spielothek/spielwiesn_context.dart';
 import 'package:spielwiesn_spielothek/utils/shared_preferences_wrapper.dart';
@@ -215,6 +216,21 @@ void main() {
     controller.applyFilters();
 
     controller.clearField(controller.durationController);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("filtering for sticker type should return correct game count", () {
+    controller.toggleStickerType(StickerType.two);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.twoPlayerGamesCount));
+  });
+
+  test("toggling same sticker type twice should turn it off", () {
+    controller.toggleStickerType(StickerType.two);
+    controller.toggleStickerType(StickerType.two);
 
     List<Game> games = controller.filteredGames;
     expect(games.length, equals(TestSpieleliste.gamesCount));

@@ -7,6 +7,7 @@ import '../game/game.dart';
 import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
 import '../game/game_repository.dart';
+import '../game/sticker_type.dart';
 import '../spielwiesn_context.dart';
 
 class GameListViewController extends ChangeNotifier {
@@ -24,6 +25,7 @@ class GameListViewController extends ChangeNotifier {
 
   List<GameComplexityLevel> selectedComplexityLevels = [];
   List<GameCategory> selectedCategories = [];
+  List<StickerType> selectedStickerTypes = [];
   List<bool> selectedCoOp = [];
   List<bool> selectedExclusive = [];
   List<bool> selectedNovelty = [];
@@ -59,6 +61,10 @@ class GameListViewController extends ChangeNotifier {
       }
       if (selectedNovelty.isNotEmpty &&
           !selectedNovelty.contains(game.novelty)) {
+        return false;
+      }
+      if (selectedStickerTypes.isNotEmpty &&
+          !selectedStickerTypes.contains(game.stickerType)) {
         return false;
       }
       return _matchesName(game) &&
@@ -164,6 +170,15 @@ class GameListViewController extends ChangeNotifier {
       selectedCategories.remove(category);
     } else {
       selectedCategories.add(category);
+    }
+    applyFilters();
+  }
+
+  void toggleStickerType(StickerType stickerType) {
+    if (selectedStickerTypes.contains(stickerType)) {
+      selectedStickerTypes.remove(stickerType);
+    } else {
+      selectedStickerTypes.add(stickerType);
     }
     applyFilters();
   }
