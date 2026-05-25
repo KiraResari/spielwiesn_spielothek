@@ -67,7 +67,7 @@ class GameListView extends StatelessWidget {
       child: TextField(
         controller: controller.nameController,
         decoration: InputDecoration(
-          labelText: 'Name',
+          labelText: "🔎 Spielname",
           suffixIcon: IconButton(
             icon: const Icon(Icons.clear),
             onPressed: () => controller.clearField(controller.nameController),
