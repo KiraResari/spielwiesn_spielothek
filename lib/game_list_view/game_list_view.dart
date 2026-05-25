@@ -157,7 +157,7 @@ class GameListView extends StatelessWidget {
     if (filteredGamesCount == 0) {
       return "Spiele werden geladen...";
     }
-    return "Wir haben insgesamt $filteredGamesCount Spiele";
+    return "Wir haben $filteredGamesCount verschiedene Spiele";
   }
 
   void _showFilterPopup(BuildContext context) {
