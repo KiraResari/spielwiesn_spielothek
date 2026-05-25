@@ -25,6 +25,5 @@ enum GameCategory {
     GameCategory.party,
     GameCategory.quiz,
     GameCategory.mystery,
-    GameCategory.unknown,
   ];
 }

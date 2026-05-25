@@ -32,7 +32,7 @@ class GameSticker extends StatelessWidget {
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   height: 1,
-                  color: stickerType.fontColor,
+                  color: stickerType.textColor,
                 ),
               ),
               if (stickerType.displayName.isNotEmpty)
@@ -41,7 +41,7 @@ class GameSticker extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 8,
                     height: 1.1,
-                    color: stickerType.fontColor,
+                    color: stickerType.textColor,
                   ),
                 ),
             ],

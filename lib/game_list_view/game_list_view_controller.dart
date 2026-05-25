@@ -132,6 +132,10 @@ class GameListViewController extends ChangeNotifier {
         selectedComplexityLevels.length < GameComplexityLevel.values.length) {
       count += selectedComplexityLevels.length;
     }
+    if (selectedStickerTypes.isNotEmpty &&
+        selectedStickerTypes.length < StickerType.values.length) {
+      count += selectedStickerTypes.length;
+    }
     if (selectedCoOp.contains(true)) count++;
     if (selectedExclusive.contains(true)) count++;
     if (selectedNovelty.contains(true)) count++;
@@ -149,6 +153,7 @@ class GameListViewController extends ChangeNotifier {
     selectedCoOp = [];
     selectedExclusive = [];
     selectedNovelty = [];
+    selectedStickerTypes = [];
     showOnlyFavorites = false;
     playersController.clear();
     durationController.clear();
