@@ -9,6 +9,42 @@ class BaseDataFilterBlock extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return _isLandscapeOrientation(context)
+        ? _buildHorizontalLayout()
+        : _buildVerticalLayout();
+  }
+
+  bool _isLandscapeOrientation(BuildContext context) =>
+      MediaQuery.of(context).orientation == Orientation.landscape;
+
+  Row _buildHorizontalLayout() {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildNumberFilterField(
+            controller.playersController,
+            "Spieleranzahl",
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildNumberFilterField(
+            controller.minAgeController,
+            "Mindestalter",
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _buildNumberFilterField(
+            controller.durationController,
+            "Dauer (Minuten)",
+          ),
+        ),
+      ],
+    );
+  }
+
+  Column _buildVerticalLayout() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
