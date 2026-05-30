@@ -6,6 +6,7 @@ import 'category_filter_block.dart';
 import 'complexity_filter_block.dart';
 import 'material_type_filter_block.dart';
 import 'misc_filter_block.dart';
+import 'sort_type_block.dart';
 import 'sticker_type_filter_block.dart';
 
 class FilterSheet extends StatelessWidget {
@@ -87,6 +88,8 @@ class FilterSheet extends StatelessWidget {
             StickerTypeFilterBlock(controller: controller, setState: setState),
             const SizedBox(height: 20),
             MiscFilterBlock(controller: controller, setState: setState),
+            const SizedBox(height: 20),
+            SortTypeBlock(controller: controller, setState: setState),
           ],
         ),
       ),

@@ -290,6 +290,8 @@ class GameListViewController extends ChangeNotifier {
     notifyListeners();
   }
 
+  SortType get sortType => _sortType;
+
   void setSortType(SortType sortType) {
     _sortType = sortType;
     applyFilters();
