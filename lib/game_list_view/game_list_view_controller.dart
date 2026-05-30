@@ -8,6 +8,7 @@ import '../game/game_category.dart';
 import '../game/game_complexity_level.dart';
 import '../game/game_material_type.dart';
 import '../game/game_repository.dart';
+import '../game/sort_type.dart';
 import '../game/sticker_type.dart';
 import '../spielwiesn_context.dart';
 
@@ -41,6 +42,7 @@ class GameListViewController extends ChangeNotifier {
   bool showOnlyFavorites = false;
   bool showFilters = true;
   bool _isUpdating = false;
+  SortType _sortType = SortType.sticker;
 
   List<Game> filteredGames = [];
   List<Game> visibleGames = [];
@@ -61,6 +63,11 @@ class GameListViewController extends ChangeNotifier {
     playersController.addListener(_scheduleFilter);
     durationController.addListener(_scheduleFilter);
     minAgeController.addListener(_scheduleFilter);
+  }
+
+  void _scheduleFilter() {
+    _filterDebounce?.cancel();
+    _filterDebounce = Timer(filterDebounceDuration, applyFilters);
   }
 
   void applyFilters() {
@@ -92,28 +99,8 @@ class GameListViewController extends ChangeNotifier {
           _matchesComplexity(game) &&
           _matchesCategory(game);
     }).toList();
+    _sortResults();
     _resetVisibleGames();
-    notifyListeners();
-  }
-
-  void _scheduleFilter() {
-    _filterDebounce?.cancel();
-    _filterDebounce = Timer(filterDebounceDuration, applyFilters);
-  }
-
-  void _resetVisibleGames() {
-    _visibleCount =
-        filteredGames.length < pageSize ? filteredGames.length : pageSize;
-    visibleGames = filteredGames.take(_visibleCount).toList();
-  }
-
-  void loadMore() {
-    if (_visibleCount >= filteredGames.length) return;
-    final nextCount = (_visibleCount + pageSize) > filteredGames.length
-        ? filteredGames.length
-        : (_visibleCount + pageSize);
-    visibleGames = filteredGames.take(nextCount).toList();
-    _visibleCount = nextCount;
     notifyListeners();
   }
 
@@ -145,6 +132,52 @@ class GameListViewController extends ChangeNotifier {
   bool _matchesComplexity(Game game) =>
       selectedComplexityLevels.isEmpty ||
       selectedComplexityLevels.contains(game.complexityLevel);
+
+  void _sortResults() {
+    switch (_sortType) {
+      case SortType.sticker:
+        _sortByName();
+        _sortByStickerLetter();
+        break;
+
+      case SortType.alphabetic:
+        _sortByName();
+        break;
+
+      case SortType.rating:
+        _sortByName();
+        _sortByRating();
+        break;
+
+      case SortType.random:
+        filteredGames.shuffle();
+        break;
+    }
+  }
+
+  void _sortByStickerLetter() =>
+      filteredGames.sort((a, b) => a.stickerLetter.compareTo(b.stickerLetter));
+
+  void _sortByName() => filteredGames.sort((a, b) => a.name.compareTo(b.name));
+
+  void _sortByRating() =>
+      filteredGames.sort((a, b) => b.rating.compareTo(a.rating));
+
+  void _resetVisibleGames() {
+    _visibleCount =
+        filteredGames.length < pageSize ? filteredGames.length : pageSize;
+    visibleGames = filteredGames.take(_visibleCount).toList();
+  }
+
+  void loadMore() {
+    if (_visibleCount >= filteredGames.length) return;
+    final nextCount = (_visibleCount + pageSize) > filteredGames.length
+        ? filteredGames.length
+        : (_visibleCount + pageSize);
+    visibleGames = filteredGames.take(nextCount).toList();
+    _visibleCount = nextCount;
+    notifyListeners();
+  }
 
   int get activeFilterCount {
     int count = 0;
@@ -255,6 +288,11 @@ class GameListViewController extends ChangeNotifier {
   set isUpdating(bool targetValue) {
     _isUpdating = targetValue;
     notifyListeners();
+  }
+
+  void setSortType(SortType sortType) {
+    _sortType = sortType;
+    applyFilters();
   }
 
   @override

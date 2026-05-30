@@ -7,6 +7,7 @@ import 'package:spielwiesn_spielothek/game/game_complexity_level.dart';
 import 'package:spielwiesn_spielothek/game/game_csv_client.dart';
 import 'package:spielwiesn_spielothek/game/game_material_type.dart';
 import 'package:spielwiesn_spielothek/game/game_repository.dart';
+import 'package:spielwiesn_spielothek/game/sort_type.dart';
 import 'package:spielwiesn_spielothek/game/sticker_type.dart';
 import 'package:spielwiesn_spielothek/game_list_view/game_list_view_controller.dart';
 import 'package:spielwiesn_spielothek/spielwiesn_context.dart';
@@ -359,5 +360,36 @@ void main() {
 
     List<Game> games = controller.filteredGames;
     expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("games should be sorted by sticker letter by default", () {
+    Game firstGame = controller.filteredGames.first;
+    expect(firstGame.name,
+        equals(TestSpieleliste.firstGameWhenSortedByStickerName));
+  });
+
+  test("sorting alphabetically should work correctly", () {
+    controller.setSortType(SortType.alphabetic);
+
+    Game firstGame = controller.filteredGames.first;
+    expect(firstGame.name,
+        equals(TestSpieleliste.firstGameWhenSortedAlphabetically));
+  });
+
+  test("sorting by rating should work correctly", () {
+    controller.setSortType(SortType.rating);
+
+    Game firstGame = controller.filteredGames.first;
+    expect(firstGame.name, equals(TestSpieleliste.firstGameWhenSortedByRating));
+  });
+
+  test("randomized sorting should change order of games list", () {
+    final List<Game> originalGameList = List.of(controller.filteredGames);
+
+    controller.setSortType(SortType.random);
+
+    final List<Game> randomizedGameList = controller.filteredGames;
+    expect(randomizedGameList, unorderedEquals(originalGameList));
+    expect(randomizedGameList, isNot(orderedEquals(originalGameList)));
   });
 }
