@@ -144,7 +144,6 @@ class GameListViewController extends ChangeNotifier {
         break;
 
       case SortType.rating:
-        _sortByName();
         _sortByRating();
         break;
 

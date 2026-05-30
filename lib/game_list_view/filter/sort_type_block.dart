@@ -20,11 +20,7 @@ class SortTypeBlock extends StatelessWidget {
       children: [
         Text('Sortierung', style: const TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 10),
-        Wrap(
-          spacing: 10,
-          runSpacing: 10,
-          children: _buildChips(),
-        ),
+        Wrap(spacing: 10, runSpacing: 10, children: _buildChips()),
       ],
     );
   }
