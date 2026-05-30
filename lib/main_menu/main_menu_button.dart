@@ -52,9 +52,9 @@ class MainMenuButton extends StatelessWidget {
         }
       },
       itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
+        PopupMenuItem<String>(
           value: updateGamesKey,
-          child: Text(updateGamesTitle),
+          child: _buildUpdatePanel(context),
         ),
         const PopupMenuItem<String>(
           value: imprintKey,
@@ -78,6 +78,28 @@ class MainMenuButton extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildUpdatePanel(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(updateGamesTitle),
+        Text(
+          _buildLastUpdateString(),
+          style: Theme.of(context).textTheme.bodySmall,
+        ),
+      ],
+    );
+  }
+
+  String _buildLastUpdateString() {
+    DateTime? lastUpdateTimestamp = controller.lastUpdateTimestamp;
+    if(lastUpdateTimestamp == null){
+      return "Spieleliste ist noch auf Werkseinstellungen";
+    }
+    String timeString = lastUpdateTimestamp.toString().substring(0, 16);
+    return "Letztes Update: $timeString";
   }
 
   void _showImprintPopup(BuildContext context) {

@@ -301,6 +301,8 @@ class GameListViewController extends ChangeNotifier {
 
   SortType get sortType => _sortType;
 
+  DateTime? get lastUpdateTimestamp => gameRepository.lastUpdateTimestamp;
+
   void setSortType(SortType sortType) {
     _sortType = sortType;
     applyFilters();
