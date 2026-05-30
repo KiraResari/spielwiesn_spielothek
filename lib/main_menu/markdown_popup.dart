@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:markdown_widget/widget/markdown.dart';
 
-void showMarkdownPopup(
-  BuildContext context,
-  String title,
-  String content,
-) async {
-  showDialog(
-    context: context,
-    builder: (_) => AlertDialog(
+class MarkdownPopup extends StatelessWidget{
+  final String title;
+  final String content;
+
+  const MarkdownPopup({super.key, required this.title, required this.content});
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
       title: Text(title),
       content: SizedBox(
         width: MediaQuery.of(context).size.width,
@@ -26,6 +27,6 @@ void showMarkdownPopup(
           child: const Text('Schließen'),
         ),
       ],
-    ),
-  );
+    );
+  }
 }

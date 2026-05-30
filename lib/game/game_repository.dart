@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 
-import '../get_it_context.dart';
+import '../spielwiesn_context.dart';
 import '../utils/shared_preferences_wrapper.dart';
 import 'csv_game_list_parser.dart';
 import 'game.dart';
@@ -51,4 +51,13 @@ class GameRepository {
     List<String> identifiers = _favoriteGames.map((g) => g.identifier).toList();
     await _sharedPreferencesWrapper.setFavIds(identifiers);
   }
+
+  Future<void> updateSource() async {
+    String csvString = await _client.updateFromSource();
+    csvString = _sanitizeCsv(csvString);
+    _games = await compute(_parser.parseCsv, csvString);
+    await _loadFavorites();
+  }
+
+  DateTime? get lastUpdateTimestamp => _client.lastUpdateTimestamp;
 }

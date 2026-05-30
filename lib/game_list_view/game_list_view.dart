@@ -1,88 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import '../constants/legal_info.dart';
-import '../popups/credits_popup.dart';
-import '../popups/markdown_popup.dart';
 import '../game/game.dart';
-import 'filter_sheet.dart';
+import 'filter/filter_sheet.dart';
 import 'game_card.dart';
 import 'game_list_view_controller.dart';
+import '../main_menu/main_menu_button.dart';
 
 class GameListView extends StatelessWidget {
-  static const imprintKey = "imprint";
-  static const privacyKey = "privacy";
-  static const creditsKey = "credits";
-  static const licencesKey = "licenses";
-  static const imprintTitle = "Impressum";
-  static const privacyTitle = "Datenschutzerklärung";
-  static const creditsTitle = "Credits";
-  static const licencesTitle = "Lizenzen";
-
   const GameListView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
-      create: (_) => GameListViewController(),
+      create: (_) => GameListViewController(
+        showSnackBar: (message) => _showSnackBar(context, message),
+        showErrorSnackBar: (message) => _showErrorSnackBar(context, message),
+      ),
       builder: (context, child) => _buildMainApp(context),
     );
   }
 
   Widget _buildMainApp(BuildContext context) {
+    var controller = context.read<GameListViewController>();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Spielwiesn Spielothek"),
         backgroundColor: Colors.orange,
-        actions: [_buildMenuButton(context)],
+        actions: [MainMenuButton(controller: controller)],
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            _buildFilterSection(context),
-            _buildResultList(context),
-          ],
-        ),
+        child: _isLandscapeOrientation(context)
+            ? _buildHorizontalLayout(context)
+            : _buildVerticalLayout(context),
       ),
     );
   }
 
-  PopupMenuButton<String> _buildMenuButton(BuildContext context) {
-    return PopupMenuButton<String>(
-      onSelected: (String value) {
-        switch (value) {
-          case imprintKey:
-            showMarkdownPopup(context, imprintTitle, LegalInfo.imprint);
-            break;
-          case privacyKey:
-            showMarkdownPopup(context, privacyTitle, LegalInfo.privacyAgreement);
-            break;
-          case creditsKey:
-            showCreditsPopup(context);
-            break;
-          case licencesKey:
-            showLicensePage(context: context);
-            break;
-        }
-      },
-      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
-        const PopupMenuItem<String>(
-          value: imprintKey,
-          child: Text(imprintTitle),
+  bool _isLandscapeOrientation(BuildContext context) =>
+      MediaQuery.of(context).orientation == Orientation.landscape;
+
+  Row _buildHorizontalLayout(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * .35,
+          child: _buildFilterSection(context),
         ),
-        const PopupMenuItem<String>(
-          value: privacyKey,
-          child: Text(privacyTitle),
-        ),
-        const PopupMenuItem<String>(
-          value: creditsKey,
-          child: Text(creditsTitle),
-        ),
-        const PopupMenuItem<String>(
-          value: licencesKey,
-          child: Text(licencesTitle),
-        ),
+        const SizedBox(width: 8),
+        _buildResultListOrLoadingSpinner(context),
+      ],
+    );
+  }
+
+  Column _buildVerticalLayout(BuildContext context) {
+    return Column(
+      children: [
+        _buildFilterSection(context),
+        _buildResultListOrLoadingSpinner(context),
       ],
     );
   }
@@ -90,17 +67,23 @@ class GameListView extends StatelessWidget {
   Widget _buildFilterSection(BuildContext context) {
     return Column(
       children: [
-        _buildSearchFieldAndFilterButtonRow(context),
+        _buildSearchFieldAndFilterButtonSection(context),
         const SizedBox(height: 8),
         _buildResultCountAndFilterResetButtonBlock(context),
       ],
     );
   }
 
-  Row _buildSearchFieldAndFilterButtonRow(BuildContext context) {
-    return Row(
+  Widget _buildSearchFieldAndFilterButtonSection(BuildContext context) {
+    return _isLandscapeOrientation(context) ? Column(
       children: [
         _buildSearchField(context),
+        const SizedBox(width: 8),
+        _buildFilterButton(context),
+      ],
+    ) : Row(
+      children: [
+        Expanded(child: _buildSearchField(context)),
         const SizedBox(width: 8),
         _buildFilterButton(context),
       ],
@@ -109,15 +92,13 @@ class GameListView extends StatelessWidget {
 
   Widget _buildSearchField(BuildContext context) {
     GameListViewController controller = context.read<GameListViewController>();
-    return Expanded(
-      child: TextField(
-        controller: controller.nameController,
-        decoration: InputDecoration(
-          labelText: 'Name',
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () => controller.clearField(controller.nameController),
-          ),
+    return TextField(
+      controller: controller.nameController,
+      decoration: InputDecoration(
+        labelText: "🔎 Spielname",
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => controller.clearField(controller.nameController),
         ),
       ),
     );
@@ -165,11 +146,9 @@ class GameListView extends StatelessWidget {
     GameListViewController controller = context.read<GameListViewController>();
     bool areFiltersActive =
         context.watch<GameListViewController>().hasActiveFilters;
-    return Wrap(
-      alignment: WrapAlignment.center,
+    return Column(
       children: [
         _buildResultText(context),
-        const Spacer(),
         if (areFiltersActive)
           OutlinedButton.icon(
             onPressed: () => controller.clearAllFilters(),
@@ -205,7 +184,7 @@ class GameListView extends StatelessWidget {
     if (filteredGamesCount == 0) {
       return "Spiele werden geladen...";
     }
-    return "Wir haben insgesamt $filteredGamesCount Spiele";
+    return "Wir haben $filteredGamesCount verschiedene Spiele";
   }
 
   void _showFilterPopup(BuildContext context) {
@@ -217,6 +196,29 @@ class GameListView extends StatelessWidget {
       builder: (context) {
         return FilterSheet(controller: controller);
       },
+    );
+  }
+
+  Widget _buildResultListOrLoadingSpinner(BuildContext context) {
+    bool isUpdating = context.watch<GameListViewController>().isUpdating;
+    return isUpdating
+        ? _buildLoadingSpinner(context)
+        : _buildResultList(context);
+  }
+
+  Widget _buildLoadingSpinner(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const SizedBox(height: 24),
+        const CircularProgressIndicator(),
+        const SizedBox(height: 24),
+        Text(
+          "Spieleliste wird aktualisiert...",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.titleMedium,
+        ),
+      ],
     );
   }
 
@@ -250,6 +252,25 @@ class GameListView extends StatelessWidget {
           },
         );
       },
+    );
+  }
+
+  void _showSnackBar(BuildContext context, String message) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(message)),
+    );
+  }
+
+  void _showErrorSnackBar(BuildContext context, String message) {
+    ColorScheme colorScheme = Theme.of(context).colorScheme;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          message,
+          style: TextStyle(color: colorScheme.onErrorContainer),
+        ),
+        backgroundColor: colorScheme.errorContainer,
+      ),
     );
   }
 }

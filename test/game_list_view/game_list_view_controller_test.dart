@@ -1,31 +1,48 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:spielwiesn_spielothek/exceptions/update_failed_exception.dart';
 import 'package:spielwiesn_spielothek/game/csv_game_list_parser.dart';
 import 'package:spielwiesn_spielothek/game/game.dart';
 import 'package:spielwiesn_spielothek/game/game_category.dart';
 import 'package:spielwiesn_spielothek/game/game_complexity_level.dart';
 import 'package:spielwiesn_spielothek/game/game_csv_client.dart';
+import 'package:spielwiesn_spielothek/game/game_material_type.dart';
 import 'package:spielwiesn_spielothek/game/game_repository.dart';
+import 'package:spielwiesn_spielothek/game/sort_type.dart';
+import 'package:spielwiesn_spielothek/game/sticker_type.dart';
 import 'package:spielwiesn_spielothek/game_list_view/game_list_view_controller.dart';
-import 'package:spielwiesn_spielothek/get_it_context.dart';
+import 'package:spielwiesn_spielothek/spielwiesn_context.dart';
 import 'package:spielwiesn_spielothek/utils/shared_preferences_wrapper.dart';
 
 import '../assets/test_spieleliste.dart';
+import '../assets/test_spieleliste_mini.dart';
 import '../mocks/game_csv_client_mock.dart';
 import '../mocks/shared_preferences_wrapper_mock.dart';
 
 void main() {
   late GameListViewController controller;
+  late GameCsvClientMock gameCsvClientMock;
+
+  String? latestSnackBarMessage;
+
+  void showSnackBar(String message) {
+    latestSnackBarMessage = message;
+  }
 
   setUp(() async {
+    latestSnackBarMessage = null;
     await getIt.reset();
-    getIt.registerSingleton<GameCsvClient>(GameCsvClientMock());
+    gameCsvClientMock = GameCsvClientMock();
+    getIt.registerSingleton<GameCsvClient>(gameCsvClientMock);
     getIt.registerSingleton<SharedPreferencesWrapper>(
         SharedPreferencesWrapperMock());
     getIt.registerSingleton(CsvGameListParser());
     var repository = GameRepository();
     await repository.initialize();
     getIt.registerSingleton(repository);
-    controller = GameListViewController();
+    controller = GameListViewController(
+      showSnackBar: (message) => showSnackBar(message),
+      showErrorSnackBar: (message) => showSnackBar(message),
+    );
   });
 
   test("applyFilters should not change game count if no filters are set", () {
@@ -218,5 +235,163 @@ void main() {
 
     List<Game> games = controller.filteredGames;
     expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("filtering for sticker type should return correct game count", () {
+    controller.toggleStickerType(StickerType.two);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.twoPlayerGamesCount));
+  });
+
+  test("toggling same sticker type twice should turn it off", () {
+    controller.toggleStickerType(StickerType.two);
+    controller.toggleStickerType(StickerType.two);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("activeFilterCount should include sticker type filter", () {
+    controller.toggleStickerType(StickerType.two);
+
+    int activeFilterCount = controller.activeFilterCount;
+
+    expect(activeFilterCount, equals(1));
+  });
+
+  test("clearAllFilters should disable sticker type filter", () {
+    controller.toggleStickerType(StickerType.two);
+
+    controller.clearAllFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("filtering for material type should return correct game count", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.diceGamesCount));
+  });
+
+  test("toggling same material type twice should turn it off", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
+    controller.toggleMaterialType(GameMaterialType.dice);
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("activeFilterCount should include material type filter", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
+
+    int activeFilterCount = controller.activeFilterCount;
+
+    expect(activeFilterCount, equals(1));
+  });
+
+  test("clearAllFilters should disable material type filter", () {
+    controller.toggleMaterialType(GameMaterialType.dice);
+
+    controller.clearAllFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("updateSource should correctly update games source", () async {
+    gameCsvClientMock.source = TestSpielelisteMini.csvPath;
+
+    await controller.updateSource();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpielelisteMini.gamesCount));
+  });
+
+  test(
+    "updateSource should show success snack bar message if update succeeds",
+    () async {
+      await controller.updateSource();
+
+      expect(
+        latestSnackBarMessage,
+        equals(GameListViewController.updateSuccessMessage),
+      );
+    },
+  );
+
+  test(
+    "updateSource should show failure snack bar message if update fails",
+    () async {
+      gameCsvClientMock.errorThatShouldBeThrown = UpdateFailedException();
+
+      await controller.updateSource();
+
+      expect(
+        latestSnackBarMessage,
+        equals(GameListViewController.updateFailedMessage),
+      );
+    },
+  );
+
+  test("filtering for minimum age should return correct game count", () {
+    controller.minAgeController.text = "18";
+
+    controller.applyFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.adultGamesCount));
+  });
+
+  test("activeFilterCount should include age filter", () {
+    controller.minAgeController.text = "18";
+
+    int activeFilterCount = controller.activeFilterCount;
+
+    expect(activeFilterCount, equals(1));
+  });
+
+  test("clearAllFilters should disable age filter", () {
+    controller.minAgeController.text = "18";
+
+    controller.clearAllFilters();
+
+    List<Game> games = controller.filteredGames;
+    expect(games.length, equals(TestSpieleliste.gamesCount));
+  });
+
+  test("sorting by sticker name should work correctly", () {
+    controller.setSortType(SortType.sticker);
+
+    Game firstGame = controller.filteredGames.first;
+    expect(firstGame.name,
+        equals(TestSpieleliste.firstGameWhenSortedByStickerName));
+  });
+
+  test("sorting alphabetically should work correctly", () {
+    controller.setSortType(SortType.alphabetic);
+
+    Game firstGame = controller.filteredGames.first;
+    expect(firstGame.name,
+        equals(TestSpieleliste.firstGameWhenSortedAlphabetically));
+  });
+
+  test("sorting by rating should work correctly", () {
+    controller.setSortType(SortType.rating);
+
+    Game firstGame = controller.filteredGames.first;
+    expect(firstGame.name, equals(TestSpieleliste.firstGameWhenSortedByRating));
+  });
+
+  test("randomized sorting should change order of games list", () {
+    final List<Game> originalGameList = List.of(controller.filteredGames);
+
+    controller.setSortType(SortType.random);
+
+    final List<Game> randomizedGameList = controller.filteredGames;
+    expect(randomizedGameList, unorderedEquals(originalGameList));
+    expect(randomizedGameList, isNot(orderedEquals(originalGameList)));
   });
 }

@@ -6,7 +6,7 @@ enum StickerType {
     name: "Karten",
     displayName: "Karten",
     stickerColor: Colors.lightBlue,
-    fontColor: Colors.white,
+    textColor: Colors.white,
   ),
   child(name: "Kind", displayName: "Kind", stickerColor: Colors.yellow),
   normal(name: "Normal", stickerColor: Colors.white),
@@ -15,13 +15,13 @@ enum StickerType {
   final String name;
   final String displayName;
   final Color stickerColor;
-  final Color fontColor;
+  final Color textColor;
 
   const StickerType({
     required this.name,
     this.displayName = "",
     required this.stickerColor,
-    this.fontColor = Colors.black,
+    this.textColor = Colors.black,
   });
 
   factory StickerType.fromName(String name) {
@@ -30,4 +30,11 @@ enum StickerType {
       orElse: () => unknown,
     );
   }
+
+  static  List<StickerType> get filterOrder => [
+    StickerType.normal,
+    StickerType.cards,
+    StickerType.two,
+    StickerType.child,
+  ];
 }

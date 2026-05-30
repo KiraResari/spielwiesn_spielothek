@@ -3,7 +3,7 @@ import 'package:spielwiesn_spielothek/game/csv_game_list_parser.dart';
 import 'package:spielwiesn_spielothek/game/game.dart';
 import 'package:spielwiesn_spielothek/game/game_csv_client.dart';
 import 'package:spielwiesn_spielothek/game/game_repository.dart';
-import 'package:spielwiesn_spielothek/get_it_context.dart';
+import 'package:spielwiesn_spielothek/spielwiesn_context.dart';
 import 'package:spielwiesn_spielothek/utils/shared_preferences_wrapper.dart';
 
 import '../assets/test_spieleliste.dart';

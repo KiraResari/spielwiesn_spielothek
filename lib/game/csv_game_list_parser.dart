@@ -2,7 +2,7 @@ import 'package:csv/csv.dart';
 
 import 'game.dart';
 import 'game_category.dart';
-import 'material_type.dart';
+import 'game_material_type.dart';
 import 'sticker_type.dart';
 
 class CsvGameListParser {
@@ -27,7 +27,7 @@ class CsvGameListParser {
     final stickerLetter = _determineStickerLetter(values);
     final stickerType = StickerType.fromName(values[4]?.toString() ?? "");
     final category = GameCategory.fromName(values[5]?.toString() ?? "");
-    final materialType = MaterialType.fromName(values[6]?.toString() ?? "");
+    final materialType = GameMaterialType.fromName(values[6]?.toString() ?? "");
     final rating = double.tryParse(values[7].toString()) ?? 0.0;
     final yearPublished = int.tryParse(values[8].toString()) ?? 0;
     final minPlayers = int.tryParse(values[9].toString()) ?? 0;
