@@ -31,30 +31,59 @@ class GameListView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            _buildFilterSection(context),
-            _buildResultListOrLoadingSpinner(context),
-          ],
-        ),
+        child: _isLandscapeOrientation(context)
+            ? _buildHorizontalLayout(context)
+            : _buildVerticalLayout(context),
       ),
+    );
+  }
+
+  bool _isLandscapeOrientation(BuildContext context) =>
+      MediaQuery.of(context).orientation == Orientation.landscape;
+
+  Row _buildHorizontalLayout(BuildContext context) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        SizedBox(
+          width: MediaQuery.of(context).size.width * .35,
+          child: _buildFilterSection(context),
+        ),
+        const SizedBox(width: 8),
+        _buildResultListOrLoadingSpinner(context),
+      ],
+    );
+  }
+
+  Column _buildVerticalLayout(BuildContext context) {
+    return Column(
+      children: [
+        _buildFilterSection(context),
+        _buildResultListOrLoadingSpinner(context),
+      ],
     );
   }
 
   Widget _buildFilterSection(BuildContext context) {
     return Column(
       children: [
-        _buildSearchFieldAndFilterButtonRow(context),
+        _buildSearchFieldAndFilterButtonSection(context),
         const SizedBox(height: 8),
         _buildResultCountAndFilterResetButtonBlock(context),
       ],
     );
   }
 
-  Row _buildSearchFieldAndFilterButtonRow(BuildContext context) {
-    return Row(
+  Widget _buildSearchFieldAndFilterButtonSection(BuildContext context) {
+    return _isLandscapeOrientation(context) ? Column(
       children: [
         _buildSearchField(context),
+        const SizedBox(width: 8),
+        _buildFilterButton(context),
+      ],
+    ) : Row(
+      children: [
+        Expanded(child: _buildSearchField(context)),
         const SizedBox(width: 8),
         _buildFilterButton(context),
       ],
@@ -63,15 +92,13 @@ class GameListView extends StatelessWidget {
 
   Widget _buildSearchField(BuildContext context) {
     GameListViewController controller = context.read<GameListViewController>();
-    return Expanded(
-      child: TextField(
-        controller: controller.nameController,
-        decoration: InputDecoration(
-          labelText: "🔎 Spielname",
-          suffixIcon: IconButton(
-            icon: const Icon(Icons.clear),
-            onPressed: () => controller.clearField(controller.nameController),
-          ),
+    return TextField(
+      controller: controller.nameController,
+      decoration: InputDecoration(
+        labelText: "🔎 Spielname",
+        suffixIcon: IconButton(
+          icon: const Icon(Icons.clear),
+          onPressed: () => controller.clearField(controller.nameController),
         ),
       ),
     );
