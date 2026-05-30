@@ -362,7 +362,9 @@ void main() {
     expect(games.length, equals(TestSpieleliste.gamesCount));
   });
 
-  test("games should be sorted by sticker letter by default", () {
+  test("sorting by sticker name should work correctly", () {
+    controller.setSortType(SortType.sticker);
+
     Game firstGame = controller.filteredGames.first;
     expect(firstGame.name,
         equals(TestSpieleliste.firstGameWhenSortedByStickerName));

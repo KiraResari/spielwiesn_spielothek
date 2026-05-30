@@ -136,7 +136,6 @@ class GameListViewController extends ChangeNotifier {
   void _sortResults() {
     switch (_sortType) {
       case SortType.sticker:
-        _sortByName();
         _sortByStickerLetter();
         break;
 
@@ -155,13 +154,24 @@ class GameListViewController extends ChangeNotifier {
     }
   }
 
-  void _sortByStickerLetter() =>
-      filteredGames.sort((a, b) => a.stickerLetter.compareTo(b.stickerLetter));
+  void _sortByStickerLetter() => filteredGames.sort((a, b) {
+        int stickerComparison = a.stickerLetter.compareTo(b.stickerLetter);
+        if (stickerComparison != 0) {
+          return stickerComparison;
+        }
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      });
 
-  void _sortByName() => filteredGames.sort((a, b) => a.name.compareTo(b.name));
+  void _sortByName() => filteredGames
+      .sort((a, b) => a.name.toLowerCase().compareTo(b.name.toLowerCase()));
 
-  void _sortByRating() =>
-      filteredGames.sort((a, b) => b.rating.compareTo(a.rating));
+  void _sortByRating() => filteredGames.sort((a, b) {
+        int ratingComparison = b.rating.compareTo(a.rating);
+        if (ratingComparison != 0) {
+          return ratingComparison;
+        }
+        return a.name.toLowerCase().compareTo(b.name.toLowerCase());
+      });
 
   void _resetVisibleGames() {
     _visibleCount =

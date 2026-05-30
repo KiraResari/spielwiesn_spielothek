@@ -20,26 +20,27 @@ class SortTypeBlock extends StatelessWidget {
       children: [
         Text('Sortierung', style: const TextStyle(fontWeight: FontWeight.w600)),
         const SizedBox(height: 10),
-        _buildDropdownButton(),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: _buildChips(),
+        ),
       ],
     );
   }
 
-  DropdownButton<SortType> _buildDropdownButton() {
-    return DropdownButton<SortType>(
-      value: controller.sortType,
-      onChanged: (SortType? newSortType) {
-        if (newSortType != null) {
-          controller.setSortType(newSortType);
+  List<Widget> _buildChips() {
+    return SortType.values.map((sortType) {
+      bool isSelected = controller.sortType == sortType;
+      return FilterChip(
+        label: Text(sortType.name),
+        selected: isSelected,
+        selectedColor: Colors.lightGreen,
+        onSelected: (_) {
+          controller.setSortType(sortType);
           setState(() {});
-        }
-      },
-      items: SortType.values.map((sortType) {
-        return DropdownMenuItem<SortType>(
-          value: sortType,
-          child: Text(sortType.name),
-        );
-      }).toList(),
-    );
+        },
+      );
+    }).toList();
   }
 }
