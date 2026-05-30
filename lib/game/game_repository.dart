@@ -58,4 +58,6 @@ class GameRepository {
     _games = await compute(_parser.parseCsv, csvString);
     await _loadFavorites();
   }
+
+  DateTime? get lastUpdateTimestamp => _client.lastUpdateTimestamp;
 }

@@ -14,6 +14,10 @@ class GameCsvClient {
 
   final _sharedPreferencesWrapper = getIt.get<SharedPreferencesWrapper>();
 
+  DateTime? _lastUpdateTimestamp;
+
+  DateTime? get lastUpdateTimestamp => _lastUpdateTimestamp;
+
   Future<String> get gamesCsv async {
     try {
       return await updateFromSource();
@@ -41,6 +45,7 @@ class GameCsvClient {
       await _sharedPreferencesWrapper.setGamesCsv(csv);
       talker.info(
           "Successfully downloaded latest games csv from $spielelisteDownloadUrl");
+      _lastUpdateTimestamp = DateTime.now();
       return csv;
     }
     throw UpdateFailedException();
