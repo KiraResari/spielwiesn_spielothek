@@ -16,7 +16,7 @@ dependencies:
   csv: ^6.0.0
   http: ^1.5.0
   shared_preferences: ^2.5.3
-  upgrader: ^12.1.0
+  upgrader: ^13.7.0
   markdown_widget: ^2.3.2+8
   url_launcher: ^6.3.2
   get_it: ^9.2.1

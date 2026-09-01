@@ -7,7 +7,7 @@ import 'sticker_type.dart';
 
 class CsvGameListParser {
   List<Game> parseCsv(String csvString) {
-    final rows = const CsvToListConverter(
+    final rows = CsvToListConverter(
       fieldDelimiter: ',',
       eol: '\n',
       shouldParseNumbers: false,
