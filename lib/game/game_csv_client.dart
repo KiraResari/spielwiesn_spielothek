@@ -9,7 +9,7 @@ import '../utils/shared_preferences_wrapper.dart';
 
 class GameCsvClient {
   static const spielelisteDownloadUrl =
-      'http://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
+      'https://www.tri-tail.com/Spielwiesn/Spieleliste.csv';
   static const csvPath = "assets/Spieleliste.csv";
 
   final _sharedPreferencesWrapper = getIt.get<SharedPreferencesWrapper>();
