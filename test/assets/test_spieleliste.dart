@@ -11,7 +11,7 @@ class TestSpieleliste{
   static const fiveMinuteGamesCount = 27;
   static const twoPlayerGamesCount = 120;
   static const diceGamesCount = 100;
-  static const adultGamesCount = 4;
+  static const juniorGamesCount = 137;
   static const firstGameWhenSortedByStickerName = "Aales oder Nichts";
   static const firstGameWhenSortedAlphabetically = "#mylife";
   static const firstGameWhenSortedByRating = "Age of Innovation";
