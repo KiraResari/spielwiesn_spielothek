@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -173,8 +174,7 @@ class GameListViewController extends ChangeNotifier {
       });
 
   void _resetVisibleGames() {
-    _visibleCount =
-        filteredGames.length < pageSize ? filteredGames.length : pageSize;
+    _visibleCount = min(filteredGames.length, max(_visibleCount, pageSize));
     visibleGames = filteredGames.take(_visibleCount).toList();
   }
 
