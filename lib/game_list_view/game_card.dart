@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../game/game.dart';
 import '../game/game_material_type.dart';
+import '../spielwiesn_context.dart';
 import 'game_list_view_controller.dart';
 import 'game_sticker.dart';
 
@@ -15,26 +17,33 @@ class GameCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.all(8.0),
-      child: Stack(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12.0),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GameSticker(game),
-                const SizedBox(width: 12),
-                _buildTextElements(),
-                _buildFavButton(context),
-              ],
-            ),
-          ),
-          if (game.exklusiv) _buildExklusivCorner(),
-          if (game.novelty) _buildNoveltyCorner(),
-          if (game.rating > 0) _buildRatingCorner(),
-          _buildCopiesOwnedCorner(),
-        ],
+      child: InkWell(
+        onTap: () => _openLink(context),
+        child: _buildContentAndCorners(context),
       ),
+    );
+  }
+
+  Widget _buildContentAndCorners(BuildContext context) {
+    return Stack(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              GameSticker(game),
+              const SizedBox(width: 12),
+              _buildTextElements(),
+              _buildFavButton(context),
+            ],
+          ),
+        ),
+        if (game.exklusiv) _buildExklusivCorner(),
+        if (game.novelty) _buildNoveltyCorner(),
+        if (game.rating > 0) _buildRatingCorner(),
+        _buildCopiesOwnedCorner(),
+      ],
     );
   }
 
@@ -178,5 +187,36 @@ class GameCard extends StatelessWidget {
       right: 0,
       child: Text("x${game.copiesOwned}"),
     );
+  }
+
+  Future<void> _openLink(BuildContext context) async {
+    Uri? uri = Uri.tryParse(game.link);
+
+    if (uri == null || uri.path.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Zu diesem Spiel gibts leider keine Details'),
+          ),
+        );
+      }
+      return;
+    }
+
+    bool success = await launchUrl(
+      uri,
+      mode: LaunchMode.externalApplication,
+    );
+
+    if (!success) {
+      talker.error("Fehler beim öffnen des Links: $uri");
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Fehler beim öffnen des Links.'),
+          ),
+        );
+      }
+    }
   }
 }
