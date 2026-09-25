@@ -12,25 +12,24 @@ import 'sort_type_block.dart';
 import 'sticker_type_filter_block.dart';
 
 class FilterSheet extends StatelessWidget {
-  final GameListViewController controller;
-
-  const FilterSheet({super.key, required this.controller});
+  const FilterSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
-    context.watch<GameListViewController>();
-
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
       minChildSize: 0.5,
       maxChildSize: 0.95,
       builder: (context, scrollController) {
-        return _buildScrollSheetContent(scrollController);
+        return _buildScrollSheetContent(context, scrollController);
       },
     );
   }
 
-  Container _buildScrollSheetContent(ScrollController scrollController) {
+  Container _buildScrollSheetContent(
+      BuildContext context, ScrollController scrollController) {
+    bool hasActiveFilters =
+        context.watch<GameListViewController>().hasActiveFilters;
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -43,9 +42,9 @@ class FilterSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildTitleRow(context),
-              if (controller.hasActiveFilters) ResetFiltersButton(),
+              if (hasActiveFilters) ResetFiltersButton(),
               const SizedBox(height: 8),
-              _buildFilterBlock(scrollController, setState),
+              _buildFilterBlock(context, scrollController, setState),
             ],
           );
         }),
@@ -73,9 +72,11 @@ class FilterSheet extends StatelessWidget {
   }
 
   Expanded _buildFilterBlock(
+    BuildContext context,
     ScrollController scrollController,
     StateSetter setState,
   ) {
+    var controller = context.read<GameListViewController>();
     return Expanded(
       child: SingleChildScrollView(
         controller: scrollController,

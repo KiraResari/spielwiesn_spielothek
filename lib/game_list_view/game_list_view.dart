@@ -144,7 +144,6 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildResultCountAndFilterResetButtonBlock(BuildContext context) {
-    GameListViewController controller = context.read<GameListViewController>();
     bool areFiltersActive =
         context.watch<GameListViewController>().hasActiveFilters;
     return Column(
@@ -192,7 +191,7 @@ class GameListView extends StatelessWidget {
       builder: (context) {
         return ChangeNotifierProvider.value(
           value: controller,
-          child: FilterSheet(controller: controller),
+          child: FilterSheet(),
         );
       },
     );
