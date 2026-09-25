@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../game_list_view_controller.dart';
 import 'base_data_filter_block.dart';
@@ -6,6 +7,7 @@ import 'category_filter_block.dart';
 import 'complexity_filter_block.dart';
 import 'material_type_filter_block.dart';
 import 'misc_filter_block.dart';
+import 'reset_filters_button.dart';
 import 'sort_type_block.dart';
 import 'sticker_type_filter_block.dart';
 
@@ -16,6 +18,8 @@ class FilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<GameListViewController>();
+
     return DraggableScrollableSheet(
       initialChildSize: 0.85,
       minChildSize: 0.5,
@@ -39,6 +43,7 @@ class FilterSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildTitleRow(context),
+              if (controller.hasActiveFilters) ResetFiltersButton(),
               const SizedBox(height: 8),
               _buildFilterBlock(scrollController, setState),
             ],
