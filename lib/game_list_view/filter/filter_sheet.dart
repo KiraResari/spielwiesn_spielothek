@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../game_list_view_controller.dart';
 import 'base_data_filter_block.dart';
@@ -6,13 +7,12 @@ import 'category_filter_block.dart';
 import 'complexity_filter_block.dart';
 import 'material_type_filter_block.dart';
 import 'misc_filter_block.dart';
+import 'reset_filters_button.dart';
 import 'sort_type_block.dart';
 import 'sticker_type_filter_block.dart';
 
 class FilterSheet extends StatelessWidget {
-  final GameListViewController controller;
-
-  const FilterSheet({super.key, required this.controller});
+  const FilterSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -21,12 +21,15 @@ class FilterSheet extends StatelessWidget {
       minChildSize: 0.5,
       maxChildSize: 0.95,
       builder: (context, scrollController) {
-        return _buildScrollSheetContent(scrollController);
+        return _buildScrollSheetContent(context, scrollController);
       },
     );
   }
 
-  Container _buildScrollSheetContent(ScrollController scrollController) {
+  Container _buildScrollSheetContent(
+      BuildContext context, ScrollController scrollController) {
+    bool hasActiveFilters =
+        context.watch<GameListViewController>().hasActiveFilters;
     return Container(
       decoration: const BoxDecoration(
         color: Colors.white,
@@ -39,8 +42,9 @@ class FilterSheet extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               _buildTitleRow(context),
+              if (hasActiveFilters) ResetFiltersButton(),
               const SizedBox(height: 8),
-              _buildFilterBlock(scrollController, setState),
+              _buildFilterBlock(context, scrollController, setState),
             ],
           );
         }),
@@ -60,7 +64,7 @@ class FilterSheet extends StatelessWidget {
         ),
         const Spacer(),
         IconButton(
-          icon: const Icon(Icons.close),
+          icon: const Icon(Icons.keyboard_arrow_down),
           onPressed: () => Navigator.of(context).pop(),
         ),
       ],
@@ -68,9 +72,11 @@ class FilterSheet extends StatelessWidget {
   }
 
   Expanded _buildFilterBlock(
+    BuildContext context,
     ScrollController scrollController,
     StateSetter setState,
   ) {
+    var controller = context.read<GameListViewController>();
     return Expanded(
       child: SingleChildScrollView(
         controller: scrollController,

@@ -124,7 +124,7 @@ class GameListViewController extends ChangeNotifier {
 
   bool _matchesMinAge(Game game) {
     int? minAge = int.tryParse(minAgeController.text.trim());
-    return minAge == null || (game.minAge >= minAge);
+    return minAge == null || (game.minAge <= minAge);
   }
 
   bool _matchesCategory(Game game) =>

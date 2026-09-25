@@ -337,12 +337,12 @@ void main() {
   );
 
   test("filtering for minimum age should return correct game count", () {
-    controller.minAgeController.text = "18";
+    controller.minAgeController.text = "4";
 
     controller.applyFilters();
 
     List<Game> games = controller.filteredGames;
-    expect(games.length, equals(TestSpieleliste.adultGamesCount));
+    expect(games.length, equals(TestSpieleliste.juniorGamesCount));
   });
 
   test("activeFilterCount should include age filter", () {
