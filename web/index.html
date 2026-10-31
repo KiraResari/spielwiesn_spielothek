@@ -43,7 +43,7 @@
     <meta name="mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black" />
     <meta name="apple-mobile-web-app-title" content="spielwiesn_spielothek" />
-    <link rel="apple-touch-icon" href="icons/Icon-192.png" />
+    <link rel="apple-touch-icon" href="app_icons/Icon-192.png" />
 
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png" />
@@ -65,26 +65,8 @@
       crossorigin="anonymous"
     />
 
-    <script>
-      const serviceWorkerVersion = "{{flutter_service_worker_version}}";
-    </script>
     <script src="flutter.js" defer></script>
     <script src="flutter_bootstrap.js" defer></script>
   </head>
-  <body>
-    <script>
-      window.addEventListener("load", function (ev) {
-        _flutter.loader.load({
-          serviceWorker: {
-            serviceWorkerVersion: serviceWorkerVersion,
-          },
-          onEntrypointLoaded: function (engineInitializer) {
-            engineInitializer.initializeEngine().then(function (appRunner) {
-              appRunner.runApp();
-            });
-          },
-        });
-      });
-    </script>
-  </body>
+  <body></body>
 </html>
