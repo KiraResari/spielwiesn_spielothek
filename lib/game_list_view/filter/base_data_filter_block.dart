@@ -28,10 +28,7 @@ class BaseDataFilterBlock extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         Expanded(
-          child: _buildNumberFilterField(
-            controller.minAgeController,
-            "Mindestalter",
-          ),
+          child: _buildNumberFilterField(controller.minAgeController, "Alter"),
         ),
         const SizedBox(width: 12),
         Expanded(

@@ -2,7 +2,7 @@ name: spielwiesn_spielothek
 description: "Eine App für die Spielothek auf der Spielwiesn"
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.1.0+2
+version: 1.2.0+3
 
 environment:
   sdk: '>=3.2.3 <4.0.0'
@@ -16,7 +16,7 @@ dependencies:
   csv: ^6.0.0
   http: ^1.5.0
   shared_preferences: ^2.5.3
-  upgrader: ^12.1.0
+  upgrader: ^13.7.0
   markdown_widget: ^2.3.2+8
   url_launcher: ^6.3.2
   get_it: ^9.2.1

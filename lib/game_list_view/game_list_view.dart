@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../game/game.dart';
 import 'filter/filter_sheet.dart';
+import 'filter/reset_filters_button.dart';
 import 'game_card.dart';
 import 'game_list_view_controller.dart';
 import '../main_menu/main_menu_button.dart';
@@ -143,18 +144,12 @@ class GameListView extends StatelessWidget {
   }
 
   Widget _buildResultCountAndFilterResetButtonBlock(BuildContext context) {
-    GameListViewController controller = context.read<GameListViewController>();
     bool areFiltersActive =
         context.watch<GameListViewController>().hasActiveFilters;
     return Column(
       children: [
         _buildResultText(context),
-        if (areFiltersActive)
-          OutlinedButton.icon(
-            onPressed: () => controller.clearAllFilters(),
-            icon: const Icon(Icons.refresh),
-            label: const Text('Filter zurücksetzen'),
-          ),
+        if (areFiltersActive) ResetFiltersButton()
       ],
     );
   }
@@ -194,7 +189,10 @@ class GameListView extends StatelessWidget {
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
       builder: (context) {
-        return FilterSheet(controller: controller);
+        return ChangeNotifierProvider.value(
+          value: controller,
+          child: FilterSheet(),
+        );
       },
     );
   }

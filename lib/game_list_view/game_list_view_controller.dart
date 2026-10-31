@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -123,7 +124,7 @@ class GameListViewController extends ChangeNotifier {
 
   bool _matchesMinAge(Game game) {
     int? minAge = int.tryParse(minAgeController.text.trim());
-    return minAge == null || (game.minAge >= minAge);
+    return minAge == null || (game.minAge <= minAge);
   }
 
   bool _matchesCategory(Game game) =>
@@ -173,8 +174,7 @@ class GameListViewController extends ChangeNotifier {
       });
 
   void _resetVisibleGames() {
-    _visibleCount =
-        filteredGames.length < pageSize ? filteredGames.length : pageSize;
+    _visibleCount = min(filteredGames.length, max(_visibleCount, pageSize));
     visibleGames = filteredGames.take(_visibleCount).toList();
   }
 
