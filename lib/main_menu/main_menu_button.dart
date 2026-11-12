@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:talker_flutter/talker_flutter.dart';
 
+import '../constants/app_version.dart';
 import '../constants/legal_info.dart';
 import '../game_list_view/game_list_view_controller.dart';
 import '../spielwiesn_context.dart';
@@ -21,6 +22,7 @@ class MainMenuButton extends StatelessWidget {
   static const creditsTitle = "Credits";
   static const licencesTitle = "Lizenzen";
   static const debugLogsTitle = "Debug Logs";
+  static const versionTitle = "Version";
 
   final GameListViewController controller;
 
@@ -75,6 +77,13 @@ class MainMenuButton extends StatelessWidget {
         const PopupMenuItem<String>(
           value: debugLogsKey,
           child: Text(debugLogsTitle),
+        ),
+        PopupMenuItem<String>(
+          enabled: false,
+          child: Text(
+            '$versionTitle ${AppVersion.value}',
+            style: Theme.of(context).textTheme.bodySmall,
+          ),
         ),
       ],
     );
